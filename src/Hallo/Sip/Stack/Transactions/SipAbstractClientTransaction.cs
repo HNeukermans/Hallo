@@ -9,7 +9,7 @@ using Hallo.Util;
 
 namespace Hallo.Sip.Stack.Transactions
 {
-    public abstract class AbstractClientTransaction : ISipClientTransaction, IDisposable, IResponseProcessor
+    public abstract class SipAbstractClientTransaction : ISipClientTransaction, IDisposable, IResponseProcessor
     {
         protected readonly SipClientTransactionTable _table;
         protected readonly ISipMessageSender _messageSender;
@@ -22,7 +22,7 @@ namespace Hallo.Sip.Stack.Transactions
 
         protected IObserver<SipTransactionStateInfo> _stateObserver;
 
-        protected AbstractClientTransaction(
+        protected SipAbstractClientTransaction(
             SipClientTransactionTable table,
             SipRequest request, 
             ISipMessageSender messageSender,

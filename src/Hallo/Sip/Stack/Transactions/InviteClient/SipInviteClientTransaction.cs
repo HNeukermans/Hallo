@@ -12,7 +12,7 @@ using Hallo.Util;
 
 namespace Hallo.Sip.Stack.Transactions.InviteClient
 {
-    public partial class SipInviteClientTransaction : AbstractClientTransaction
+    public partial class SipInviteClientTransaction : SipAbstractClientTransaction
     {
         private readonly SipHeaderFactory _headerFactory;
         private readonly SipMessageFactory _messageFactory;
@@ -20,7 +20,7 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
         internal static readonly ProceedingCtxState ProceedingState = new ProceedingCtxState();
         internal static readonly CompletedCtxState CompletedState = new CompletedCtxState();
         internal static readonly TerminatedCtxState TerminatedState = new TerminatedCtxState();
-        private AbstractDialog _dialog;
+        private SipAbstractDialog _dialog;
 
         internal SipInviteClientTransaction(
             SipClientTransactionTable table,
@@ -81,7 +81,7 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
                 TimeOutTimer.Dispose();
                 EndCompletedTimer.Dispose();
                 
-                AbstractClientTransaction tx;
+                SipAbstractClientTransaction tx;
                 _table.TryRemove(this.GetId(), out tx);
 
                 //State = TerminatedState; is done outside of this method
@@ -184,12 +184,12 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
             get { return SipTransactionType.InviteClient; }
         }
 
-        internal void SetDialog(AbstractDialog dialog)
+        internal void SetDialog(SipAbstractDialog dialog)
         {
             _dialog = dialog;
         }
 
-        public AbstractDialog GetDialog()
+        public SipAbstractDialog GetDialog()
         {
             return _dialog;
         }

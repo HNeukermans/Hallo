@@ -9,7 +9,7 @@ using NLog;
 
 namespace Hallo.Sip.Stack.Dialogs
 {
-    public sealed class SipInviteServerDialog : AbstractDialog, ISipDialog
+    public sealed class SipInviteServerDialog : SipAbstractDialog, ISipDialog
     {
         private ITimerFactory _timerFactory;
         private readonly SipDialogTable _dialogTable;
@@ -103,7 +103,7 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public override void Terminate()
         {
-            AbstractDialog removed;
+            SipAbstractDialog removed;
             if (!_dialogTable.TryRemove(GetId(), out removed))
             {
                 _logger.Warn("could not remove dialog with id: {0}", GetId());

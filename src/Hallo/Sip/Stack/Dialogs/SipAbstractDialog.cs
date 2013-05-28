@@ -9,7 +9,7 @@ using Hallo.Util;
 
 namespace Hallo.Sip.Stack.Dialogs
 {
-    public abstract class AbstractDialog : ISipListener
+    public abstract class SipAbstractDialog : ISipListener
     {
         protected readonly ISipListener _listener;
         protected readonly IPEndPoint _listeningPoint;
@@ -115,7 +115,7 @@ namespace Hallo.Sip.Stack.Dialogs
         
         #endregion
 
-        protected AbstractDialog(SipHeaderFactory headerFactory,
+        protected SipAbstractDialog(SipHeaderFactory headerFactory,
              SipMessageFactory messageFactory,
              SipAddressFactory addressFactory,
              ISipMessageSender messageSender,

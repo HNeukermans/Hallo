@@ -9,7 +9,7 @@ using Hallo.Util;
 
 namespace Hallo.Sip.Stack.Transactions.NonInviteClient
 {
-    public class SipNonInviteClientTransaction : AbstractClientTransaction
+    public class SipNonInviteClientTransaction : SipAbstractClientTransaction
     {
         internal static readonly TryingCtxState TryingState = new TryingCtxState();
         internal static readonly ProceedingCtxState ProceedingState = new ProceedingCtxState();
@@ -66,7 +66,7 @@ namespace Hallo.Sip.Stack.Transactions.NonInviteClient
                 TimeOutTimer.Dispose();
                 EndCompletedTimer.Dispose();
 
-                AbstractClientTransaction tx;
+                SipAbstractClientTransaction tx;
                 _table.TryRemove(this.GetId(), out tx);
             }
 

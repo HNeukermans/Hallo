@@ -232,7 +232,7 @@ namespace Hallo.Sip
 
             ISipListener txListener = _sipListener;
 
-            AbstractDialog dialog;
+            SipAbstractDialog dialog;
             if (_dialogTable.TryGetValue(GetDialogId(request, true), out dialog))
             {
                 txListener = dialog;
@@ -267,7 +267,7 @@ namespace Hallo.Sip
         /// <remarks>
         /// This is done because tx's are externalized by the ISipServerTransaction which don't have a GetDialog() message.
         /// </remarks>
-        public AbstractDialog GetDialog(ISipServerTransaction tx)
+        public SipAbstractDialog GetDialog(ISipServerTransaction tx)
         {
             Check.IsTrue(tx is SipInviteServerTransaction, "Tx is not a SipInviteServerTransaction. Only SipInviteServerTransaction can have an associated dialog !");
             return ((SipInviteServerTransaction) tx).GetDialog();
@@ -408,7 +408,7 @@ namespace Hallo.Sip
             _sipListener = sipListener;
         }
        
-        private AbstractServerTransaction AddNewServerTx(SipRequest request)
+        private SipAbstractServerTransaction AddNewServerTx(SipRequest request)
         {
             if(request.RequestLine.Method == SipMethods.Invite)
             {
@@ -513,7 +513,7 @@ namespace Hallo.Sip
             var responseEvent = new SipResponseEvent(context);
 
              //get dialog. if dialog found, the listener for the tx is the dialog.
-            AbstractClientTransaction ctx;
+            SipAbstractClientTransaction ctx;
             if(_ctxTable.TryGetValue(GetClientTransactionId(responseEvent.Response), out ctx))
             {
                 responseProcessor = ctx;
@@ -521,7 +521,7 @@ namespace Hallo.Sip
             else
             {
                 /*try dialog as processor*/
-                AbstractDialog dialog;
+                SipAbstractDialog dialog;
                 if (_dialogTable.TryGetValue(GetDialogId(responseEvent.Response, false), out dialog))
                 {
                     responseProcessor = dialog;
@@ -555,7 +555,7 @@ namespace Hallo.Sip
             IRequestProcessor requestProcessor = _sipListener;
 
             //get dialog. if dialog found, the listener for the tx is the dialog.
-            AbstractServerTransaction stx;
+            SipAbstractServerTransaction stx;
             if(_stxTable.TryGetValue(GetServerTransactionId(context.Request), out stx))
             {
                 requestProcessor = stx;
@@ -567,7 +567,7 @@ namespace Hallo.Sip
             }
             else
             {
-                AbstractDialog dialog;
+                SipAbstractDialog dialog;
                 if (_dialogTable.TryGetValue(GetDialogId(context.Request, true), out dialog))
                 {
                     requestProcessor = dialog;
@@ -619,7 +619,7 @@ namespace Hallo.Sip
 
         private void SetDialog(SipInviteClientTransaction tx)
         {
-            AbstractDialog inTableDialog;
+            SipAbstractDialog inTableDialog;
             if (_dialogTable.TryGetValue(GetDialogId(tx.Request, true), out inTableDialog))
             {
                 tx.SetDialog(inTableDialog);
@@ -628,7 +628,7 @@ namespace Hallo.Sip
 
         private void SetDialog(SipInviteServerTransaction stx)
         {
-            AbstractDialog inTableDialog;
+            SipAbstractDialog inTableDialog;
             if (_dialogTable.TryGetValue(GetDialogId(stx.Request, true), out inTableDialog))
             {
                 stx.SetDialog((SipInviteServerDialog)inTableDialog);

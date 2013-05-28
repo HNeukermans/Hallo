@@ -9,16 +9,16 @@ using System.Reactive.Disposables;
 
 namespace Hallo.Sip
 {
-    public class SipServerTransactionTable : ConcurrentDictionary<string, AbstractServerTransaction>
+    public class SipServerTransactionTable : ConcurrentDictionary<string, SipAbstractServerTransaction>
     {
         private IObserver<IObservable<Timestamped<SipTransactionStateInfo>>> _observer;
        
-        public new AbstractServerTransaction GetOrAdd(string key, Func<string, AbstractServerTransaction> factory)
+        public new SipAbstractServerTransaction GetOrAdd(string key, Func<string, SipAbstractServerTransaction> factory)
         {
             throw new InvalidOperationException("This method is not supported.");
         }
 
-        public AbstractServerTransaction GetOrAdd(string key, Func<AbstractServerTransaction> factoryMethod)
+        public SipAbstractServerTransaction GetOrAdd(string key, Func<SipAbstractServerTransaction> factoryMethod)
         {
             var tx = base.GetOrAdd(key, s => BeforeAddTx(factoryMethod()));
             return tx;
@@ -28,7 +28,7 @@ namespace Hallo.Sip
         /// <summary>
         /// Initializes the Tx before adding it to the table.
         /// </summary>
-        private AbstractServerTransaction BeforeAddTx(AbstractServerTransaction tx)
+        private SipAbstractServerTransaction BeforeAddTx(SipAbstractServerTransaction tx)
         {
             if (_observer != null) _observer.OnNext(tx.Observe().Timestamp());
             tx.Start();

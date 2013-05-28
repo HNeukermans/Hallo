@@ -123,7 +123,7 @@ namespace Hallo.Client.Forms
                 GoToState(PhoneState.WaitForProvisional);
         }
 
-        private void RefreshDialogForm(AbstractDialog dialog)
+        private void RefreshDialogForm(SipAbstractDialog dialog)
         {
             if (dialog.State != DialogState.Null)
             {

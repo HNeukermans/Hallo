@@ -7,11 +7,11 @@ using System.Reactive.Linq;
 
 namespace Hallo.Sip
 {
-    public class SipClientTransactionTable : ConcurrentDictionary<string, AbstractClientTransaction>
+    public class SipClientTransactionTable : ConcurrentDictionary<string, SipAbstractClientTransaction>
     {
         private IObserver<IObservable<Timestamped<SipTransactionStateInfo>>> _observer;
         
-        public new bool TryAdd(string key, AbstractClientTransaction ctx)
+        public new bool TryAdd(string key, SipAbstractClientTransaction ctx)
         {
             bool result = base.TryAdd(key, ctx);
 

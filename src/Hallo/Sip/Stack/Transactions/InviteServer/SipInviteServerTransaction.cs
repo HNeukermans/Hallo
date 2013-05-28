@@ -4,7 +4,7 @@ using Hallo.Util;
 
 namespace Hallo.Sip.Stack.Transactions.InviteServer
 {
-    public partial class SipInviteServerTransaction : AbstractServerTransaction
+    public partial class SipInviteServerTransaction : SipAbstractServerTransaction
     {
         internal static readonly ConfirmedStxState ConfirmedState = new ConfirmedStxState();
         internal static readonly ProceedingStxState ProceedingState = new ProceedingStxState();
@@ -71,7 +71,7 @@ namespace Hallo.Sip.Stack.Transactions.InviteServer
                 EndCompletedTimer.Dispose();
                 SendTryingTimer.Dispose();
 
-                AbstractServerTransaction tx;
+                SipAbstractServerTransaction tx;
                 _table.TryRemove(this.GetId(), out tx);
 
                  _state = TerminatedState;

@@ -9,7 +9,7 @@ using Hallo.Util;
 
 namespace Hallo.Sip.Stack.Transactions.NonInviteServer
 {
-    public partial class SipNonInviteServerTransaction : AbstractServerTransaction
+    public partial class SipNonInviteServerTransaction : SipAbstractServerTransaction
     {
         private readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
        
@@ -86,7 +86,7 @@ namespace Hallo.Sip.Stack.Transactions.NonInviteServer
                 _isDisposed = true;
                 EndCompletedTimer.Dispose();
 
-                AbstractServerTransaction tx;
+                SipAbstractServerTransaction tx;
                 if(!_table.TryRemove(this.GetId(), out tx))
                 {
                     if(_logger.IsWarnEnabled) _logger.Warn("The server transaction with id '{0}' could not be removed from the table.");

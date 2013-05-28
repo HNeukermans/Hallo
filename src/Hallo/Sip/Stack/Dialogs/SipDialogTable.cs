@@ -2,7 +2,7 @@
 
 namespace Hallo.Sip.Stack.Dialogs
 {
-    public class SipDialogTable : ConcurrentDictionary<string, AbstractDialog>
+    public class SipDialogTable : ConcurrentDictionary<string, SipAbstractDialog>
     {
          
     }

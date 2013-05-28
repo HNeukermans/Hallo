@@ -11,7 +11,7 @@ using Ninject.Activation;
 
 namespace Hallo.Sip.Stack.Dialogs
 {
-    public class SipInviteClientDialog : AbstractDialog, ISipDialog
+    public class SipInviteClientDialog : SipAbstractDialog, ISipDialog
     {
         private readonly SipDialogTable _dialogTable;
         private readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
@@ -148,7 +148,7 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public override void Terminate()
         {
-            AbstractDialog removed;
+            SipAbstractDialog removed;
             if(!_dialogTable.TryRemove(GetId(), out removed))
             {
                 _logger.Warn("could not remove dialog with id: {0}", GetId());

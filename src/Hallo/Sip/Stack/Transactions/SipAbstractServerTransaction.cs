@@ -7,7 +7,7 @@ using Hallo.Util;
 
 namespace Hallo.Sip.Stack.Transactions
 {
-    public abstract class AbstractServerTransaction : ISipServerTransaction
+    public abstract class SipAbstractServerTransaction : ISipServerTransaction
     {
         protected IObserver<SipTransactionStateInfo> _stateObserver;
         protected readonly object _lock = new object();
@@ -19,7 +19,7 @@ namespace Hallo.Sip.Stack.Transactions
         protected bool _isDisposed;
         protected SipTransactionType _type;
 
-        protected AbstractServerTransaction(SipServerTransactionTable table, SipRequest request, ISipListener listener, ISipMessageSender messageSender, ITimerFactory timerFactory)
+        protected SipAbstractServerTransaction(SipServerTransactionTable table, SipRequest request, ISipListener listener, ISipMessageSender messageSender, ITimerFactory timerFactory)
         {
             Check.Require(table, "table");
             Check.Require(request, "request");

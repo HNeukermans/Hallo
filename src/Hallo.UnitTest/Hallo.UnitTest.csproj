@@ -146,6 +146,11 @@
     <Compile Include="Sip\SipInviteClientTransactionTests\When_the_Ctx_SendRequest_is_invoked.cs" />
     <Compile Include="Sip\SipInviteServerDialogTests\SipInviteServerDialogSpecificationBase.cs" />
     <Compile Include="Sip\SipInviteServerDialogTests\When_a_dialog_is_created.cs" />
+    <Compile Include="Sip\SipInviteServerDialogTests\When_in_early_state.cs" />
+    <Compile Include="Sip\SipInviteServerDialogTests\When_in_early_state_a_ok_response_is_send.cs" />
+    <Compile Include="Sip\SipInviteServerDialogTests\When_in_null_state.cs" />
+    <Compile Include="Sip\SipInviteServerDialogTests\When_in_null_state_a_ok_response_is_sent.cs" />
+    <Compile Include="Sip\SipInviteServerDialogTests\When_in_null_state_a_ringing_response_is_sent.cs" />
     <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state.cs" />
     <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state_an_ack_is_received.cs" />
     <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state_base.cs" />

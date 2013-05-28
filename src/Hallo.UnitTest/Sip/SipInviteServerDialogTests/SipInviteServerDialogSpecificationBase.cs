@@ -37,7 +37,12 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         protected SipRequestEvent _requestEvent;
         protected SipResponse _response;
         protected ISipServerTransaction _inviteTransaction;
+
+
+        protected TxTimerStub RetransitOkTimer { get; set; }
+        protected TxTimerStub TimeOutTimer { get; set; }
         
+
         protected SipRequest CreateInviteRequest()
         {
             var r = new SipRequestBuilder()
@@ -66,14 +71,14 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
 
         protected SipResponse CreateRingingResponse()
         {
-            var r = _inviteRequest.CreateResponse(SipResponseCodes.x180_Ringing);
+            var r = ReceivedRequest.CreateResponse(SipResponseCodes.x180_Ringing);
             r.To.Tag = _toTag;
             return r;
         }
 
         protected SipResponse CreateOkResponse()
         {
-            var r = _inviteRequest.CreateResponse(SipResponseCodes.x200_Ok);
+            var r = ReceivedRequest.CreateResponse(SipResponseCodes.x200_Ok);
             r.To.Tag = _toTag;
             return r;
         }
@@ -121,6 +126,8 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
                                                    Sender.Object,
                                                    Listener.Object,
                                                    TestConstants.IpEndPoint1);
+
+            GivenOverride();
         }
 
        
