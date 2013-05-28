@@ -38,6 +38,9 @@
     <Reference Include="FluentAssertions">
       <HintPath>..\Lib\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="KellermanSoftware.Compare-NET-Objects">
+      <HintPath>..\Compare-NET-Objects\bin\Debug\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\Lib\Moq.dll</HintPath>
     </Reference>
@@ -255,10 +258,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Compare-NET-Objects\Compare-NET-Objects.csproj">
-      <Project>{94F1F5F2-6BC4-464B-AC51-FBDB4FA3F3AD}</Project>
-      <Name>Compare-NET-Objects</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Hallo\Hallo.csproj">
       <Project>{B812B01B-5E65-4A3F-A59F-D0F97F2E52A8}</Project>
       <Name>Hallo</Name>
