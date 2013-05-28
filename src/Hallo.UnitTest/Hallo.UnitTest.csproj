@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{04C92C50-CCFA-4D7D-88A9-EE1DEBD19926}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Hallo.UnitTest</RootNamespace>
+    <AssemblyName>Hallo.UnitTest</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FluentAssertions">
+      <HintPath>..\Lib\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\Lib\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit-console-runner">
+      <HintPath>NUnit\nunit-console-runner.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>NUnit\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.mocks, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="SmartThreadPool, Version=2.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\SmartThreadPool.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Reactive.Core, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BufferReaderTests.cs" />
+    <Compile Include="Builders\DataBytesBuilder.cs" />
+    <Compile Include="Builders\ObjectBuilder.cs" />
+    <Compile Include="Builders\SipCallIdHeaderBuilder.cs" />
+    <Compile Include="Builders\SipContactHeaderBuilder.cs" />
+    <Compile Include="Builders\SipContactHeaderListBuilder.cs" />
+    <Compile Include="Builders\SipContentLengthHeaderBuilder.cs" />
+    <Compile Include="Builders\SipContextBuilder.cs" />
+    <Compile Include="Builders\SipCSeqHeaderBuilder.cs" />
+    <Compile Include="Builders\SipFromHeaderBuilder.cs" />
+    <Compile Include="Builders\SipMaxForwardsHeaderBuilder.cs" />
+    <Compile Include="Builders\SipMessageBodyBuilder.cs" />
+    <Compile Include="Builders\SipRecordRouteHeaderBuilder.cs" />
+    <Compile Include="Builders\SipRecordRouteHeaderListBuilder.cs" />
+    <Compile Include="Builders\SipResponseBuilder.cs" />
+    <Compile Include="Builders\TimerFactoryMockBuilder.cs" />
+    <Compile Include="Builders\TxTimerBuilder.cs" />
+    <Compile Include="Helpers\SipMessageBodyHelper.cs" />
+    <Compile Include="Builders\SipMessageBuilder.cs" />
+    <Compile Include="Builders\SipRequestBuilder.cs" />
+    <Compile Include="Builders\SipRequestLineBuilder.cs" />
+    <Compile Include="Builders\SipStatusLineBuilder.cs" />
+    <Compile Include="Builders\SipToHeaderBuilder.cs" />
+    <Compile Include="Builders\SipUriBuilder.cs" />
+    <Compile Include="Builders\SipViaHeaderBuilder.cs" />
+    <Compile Include="Builders\SipViaHeaderListBuilder.cs" />
+    <Compile Include="Builders\UdpPacketBuilder.cs" />
+    <Compile Include="Helpers\KnownSipStrings.cs" />
+    <Compile Include="Helpers\ObjectComparer.cs" />
+    <Compile Include="Helpers\TestConstants.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sip\SipAllowHeaderTests.cs" />
+    <Compile Include="Sip\SipClientDialogTests\SipDialogSpecificationBase.cs" />
+    <Compile Include="Sip\SipClientDialogTests\StubSipListener.cs" />
+    <Compile Include="Sip\SipClientDialogTests\When_an_invite_request_is_sent.cs" />
+    <Compile Include="Sip\SipClientDialogTests\When_an_ok_response_is_received.cs" />
+    <Compile Include="Sip\SipClientDialogTests\When_a_ringing_response_is_received.cs" />
+    <Compile Include="Sip\SipClientDialogTests\When_a_ringing_response_is_received_twice.cs" />
+    <Compile Include="Sip\SipContactsHeaderTests.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\TxSpecificationBase.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_calling_state_a_non2xx_final_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_calling_state_a_provisional_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_completed_state.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_completed_state_a_retransmission_of_the_non2xx_final_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_calling_state_the_timeout_timer_has_fired.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_proceeding_state.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_proceeding_state_a_2xx_final_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_proceeding_state_a_non2xx_final_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_proceeding_state_a_provisional_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_state_base.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_calling_state.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_in_calling_state_a_2xx_final_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientTransactionTests\When_the_Ctx_SendRequest_is_invoked.cs" />
+    <Compile Include="Sip\SipInviteServerDialogTests\SipInviteServerDialogSpecificationBase.cs" />
+    <Compile Include="Sip\SipInviteServerDialogTests\When_a_dialog_is_created.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state_an_ack_is_received.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state_base.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state_the_endcompleted_timer_fired.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state_the_retransit_timer_fired_3_times.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state_the_retransit_timer_fired_5_times.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state_the_retransit_timer_fired_1_times.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_completed_state_the_retransit_timer_fired_2_times.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_confirmed_state.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_confirmed_state_a_resent_request_is_received.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_confirmed_state_the_end_timer_has_fired.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_proceeding_state_a_nonx200final_response_is_send.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_proceeding_state_a_resent_request_is_received.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_proceeding_state_a_x200final_response_is_send.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_proceeding_state_the_send_trying_timer_fired.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\TxSpecificationBase.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_state_base.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_proceeding_state.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_in_proceeding_state_a_provisional_response_is_send.cs" />
+    <Compile Include="Sip\SipInviteServerTransactionTests\When_the_stx_is_started.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\VariousTests.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\TxSpecificationBase.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_completed_state.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_completed_state_a_final_response_is_received_.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_completed_state_a_provisional_response_is_received_.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_completed_state_the_end_timer_has_fired.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_proceeding_state.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_proceeding_state_a_final_response_is_received_.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_proceeding_state_a_provisional_response_is_received_.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_state_base.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_trying_state.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_trying_state_a_final_response_is_received.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_trying_state_a_provisional_response_is_received.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_trying_state_a_timeout_has_occured.cs" />
+    <Compile Include="Sip\SipNonInviteClientTransactionTests\When_the_Ctx_SendRequest_is_invoked.cs" />
+    <Compile Include="Sip\SipHeaderFactoryTests\When_the_CreateHeader_is_invoked_with_Base.cs" />
+    <Compile Include="Sip\SipHeaderFactoryTests\When_the_CreateHeader_is_invoked_with_from.cs" />
+    <Compile Include="Sip\SipHeaderFactoryTests\When_the_CreateHeader_is_invoked_with_from_MixedCase.cs" />
+    <Compile Include="Sip\SipHeaderFactoryTests\When_the_CreateHeader_is_invoked_with_unknown.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\TxSpecificationBase.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\VariousTests.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_completed_state.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_completed_state_a_final_response_is_send.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_completed_state_a_provisional_response_is_send.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_completed_state_a_resent_request_is_received.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_completed_state_the_end_timer_has_fired.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_proceeding_state.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_proceeding_state_a_final_response_is_send.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_proceeding_state_a_provisional_response_is_send.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_proceeding_state_a_resent_request_is_received.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_trying_state.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_trying_state_a_final_response_is_send.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_trying_state_a_provisional_response_is_send.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_trying_state_a_resent_request_is_received.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_the_stx_is_instantiated.cs" />
+    <Compile Include="Sip\SipParameterCollectionTests.cs" />
+    <Compile Include="Sip\SipParserContextTests\rfc_7_3_1\When_headerlines_are_folded.cs" />
+    <Compile Include="Sip\SipParserContextTests\rfc_7_3_1\When_multiple_headerlines_with_the_same_name_are_present.cs" />
+    <Compile Include="Sip\SipParserContextTests\rfc_7_3_1\When_spaces_separate_headername_from_value.cs" />
+    <Compile Include="Sip\SipParserContextTests\SipParserContextTestBase.cs" />
+    <Compile Include="Sip\SipParserContextTests\When_a_request_is_parsed_from_the_known_register_string.cs" />
+    <Compile Include="Sip\SipParserTests\SipParserTestBase.cs" />
+    <Compile Include="Sip\SipParserTests\When_a_request_with_2_via_headers_is_parsed.cs" />
+    <Compile Include="Sip\SipParserTests\When_a_request_with_a_body_is_parsed.cs" />
+    <Compile Include="Sip\SipParserTests\When_a_request_is_parsed.cs" />
+    <Compile Include="Sip\SipContentLenghtHeaderTests.cs" />
+    <Compile Include="Sip\SipCallIdHeaderTests.cs" />
+    <Compile Include="Sip\SipCSeqHeaderTests.cs" />
+    <None Include="Sip\SipMessageParserTest.cs" />
+    <Compile Include="Sip\SipParserTests\SipRequestParserTests.cs" />
+    <Compile Include="Sip\SipRecordRouteHeaderTests.cs" />
+    <Compile Include="Sip\SipServerDialogIntegrationTests\SipDialogSpecificationBase.cs" />
+    <Compile Include="Sip\SipServerDialogIntegrationTests\When_a_dialog_is_created.cs" />
+    <Compile Include="Sip\SipServerDialogIntegrationTests\When_in_early_state_an_ok_response_is_sent.cs" />
+    <Compile Include="Sip\SipServerDialogIntegrationTests\When_an_invite_request_is_received.cs" />
+    <Compile Include="Sip\SipServerDialogIntegrationTests\When_in_confirmed_state_an_ack_request_is_received.cs" />
+    <Compile Include="Sip\SipServerDialogIntegrationTests\When_in_null_state_a_ringing_response_is_sent_without_a_to_tag.cs" />
+    <Compile Include="Sip\SipServerDialogIntegrationTests\When_in_null_state_a_ringing_response_is_sent.cs" />
+    <Compile Include="Sip\SipStatusLineParserTest.cs" />
+    <None Include="Sip\SipToHeaderParserTest.cs" />
+    <Compile Include="Sip\SipFromHeaderTest.cs" />
+    <Compile Include="Sip\SipUriTest.cs" />
+    <Compile Include="Sip\SipUserAgentHeaderTests.cs" />
+    <Compile Include="Sip\SipValidatorTests.cs" />
+    <None Include="Sip\SipViaHeaderParserTest.cs" />
+    <Compile Include="Sip\TxTimerTests\TxTimerTest.cs" />
+    <None Include="Sip\UdpSipListenerTests\UdpSipListenerLoadTest.cs" />
+    <None Include="Sip\UdpSipListenerTests\UdpSipListenerTests.cs" />
+    <Compile Include="Sip\When_a_ok_response_is_created_from_a_request.cs" />
+    <Compile Include="Sip\SipParserContextTests\When_a_request_is_string_formatted_and_then_reconstructed.cs" />
+    <Compile Include="Sip\SipParserContextTests\When_a_response_is_formatted_and_then_parsed.cs" />
+    <Compile Include="Specification.cs" />
+    <Compile Include="Stubs\FakeContextSource.cs" />
+    <Compile Include="Stubs\ResponseSenderStub.cs" />
+    <Compile Include="Stubs\TimerFactoryStub.cs" />
+    <Compile Include="Stubs\RequestSenderStub.cs" />
+    <Compile Include="Stubs\SipParserListenerStub.cs" />
+    <Compile Include="Stubs\SipReceivedMessageProcessorStub.cs" />
+    <Compile Include="ThreadPool\SmartThreadPool.cs" />
+    <Compile Include="ThreadPool\SmartThreadPoolTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="NUnit\nunit-console-runner.dll" />
+    <None Include="NUnit\nunit.framework.dll" />
+    <None Include="NUnit\nunit.mocks.dll" />
+    <None Include="NUnit\nunit.util.dll" />
+    <None Include="NUnit\nunit.core.interfaces.dll" />
+    <None Include="NUnit\nunit.core.dll" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Compare-NET-Objects\Compare-NET-Objects.csproj">
+      <Project>{94F1F5F2-6BC4-464B-AC51-FBDB4FA3F3AD}</Project>
+      <Name>Compare-NET-Objects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hallo\Hallo.csproj">
+      <Project>{B812B01B-5E65-4A3F-A59F-D0F97F2E52A8}</Project>
+      <Name>Hallo</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

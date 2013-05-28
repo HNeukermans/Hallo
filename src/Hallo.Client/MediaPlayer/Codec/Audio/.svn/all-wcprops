@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/LumiSoft_Net/!svn/ver/46/trunk/Net/Media/Codec/Audio
+END
+AudioCodec.cs
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/LumiSoft_Net/!svn/ver/313/trunk/Net/Media/Codec/Audio/AudioCodec.cs
+END
+PCMA.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/LumiSoft_Net/!svn/ver/313/trunk/Net/Media/Codec/Audio/PCMA.cs
+END
+PCMU.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/LumiSoft_Net/!svn/ver/313/trunk/Net/Media/Codec/Audio/PCMU.cs
+END

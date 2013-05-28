@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B812B01B-5E65-4A3F-A59F-D0F97F2E52A8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Hallo</RootNamespace>
+    <AssemblyName>Hallo</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>True</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsDisjunctiveRequires>False</CodeContractsDisjunctiveRequires>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;CONTRACTS_FULL</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>True</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsDisjunctiveRequires>False</CodeContractsDisjunctiveRequires>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ninject">
+      <HintPath>..\Lib\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="SmartThreadPool">
+      <HintPath>..\Lib\SmartThreadPool.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Reactive.Core, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Client\ClientConfiguration.cs" />
+    <Compile Include="Component\TimerFactoryStub.cs" />
+    <Compile Include="Component\TimerFactoryStubBuilder.cs" />
+    <Compile Include="Component\TxTimerBuilder.cs" />
+    <Compile Include="Component\TxTimerStub.cs" />
+    <Compile Include="Component\TxTimerStubBuilder.cs" />
+    <Compile Include="ExceptionMessage.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessage.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ISipValidator.cs" />
+    <Compile Include="Parsers\SipAllowHeaderParser.cs" />
+    <Compile Include="Parsers\SipExpiresHeaderParser.cs" />
+    <Compile Include="Parsers\SipRecordRouteHeaderParser.cs" />
+    <Compile Include="Parsers\SipRouteHeaderParser.cs" />
+    <Compile Include="Parsers\SipSubjectHeaderParser.cs" />
+    <Compile Include="Parsers\SipUserAgentHeaderParser.cs" />
+    <Compile Include="Server\InMemoryAddressBindingService.cs" />
+    <Compile Include="Server\ISipAdressBindingService.cs" />
+    <Compile Include="Server\ISipRequestHandler.cs" />
+    <Compile Include="Server\SipServer.cs" />
+    <Compile Include="Server\SipServerConfiguration.cs" />
+    <Compile Include="Server\SipAddressBinding.cs" />
+    <Compile Include="Server\SipAddressBindingDiagnosticsInfo.cs" />
+    <Compile Include="Server\SipRegistrar.cs" />
+    <Compile Include="Server\SipRegistrarSettings.cs" />
+    <Compile Include="Server\SipServerListener.cs" />
+    <Compile Include="Sip\ConfigurationBase.cs" />
+    <Compile Include="Sip\Headers\HeaderForAttribute.cs" />
+    <Compile Include="Parsers\ISipMessageParser.cs" />
+    <Compile Include="Parsers\ISipParser.cs" />
+    <Compile Include="Parsers\ParserForAttribute.cs" />
+    <Compile Include="Parsers\SipCallIdHeaderParser.cs" />
+    <Compile Include="Parsers\SipContactHeaderParser.cs" />
+    <Compile Include="Parsers\SipContentLenghtHeaderParser.cs" />
+    <Compile Include="Parsers\SipContentTypeHeaderParser.cs" />
+    <Compile Include="Parsers\SipCSeqHeaderParser.cs" />
+    <Compile Include="Parsers\SipMaxForwardsHeaderParser.cs" />
+    <Compile Include="Parsers\SipParser.cs" />
+    <Compile Include="Parsers\SipStatusLineParser.cs" />
+    <Compile Include="Parsers\SipToHeaderParser.cs" />
+    <Compile Include="Parsers\SipFromHeaderParser.cs" />
+    <Compile Include="SipValidator.cs" />
+    <Compile Include="Sip\Headers\Extensions.cs" />
+    <Compile Include="Sip\Headers\SipAllowHeader.cs" />
+    <Compile Include="Sip\Headers\SipExpiresHeader.cs" />
+    <Compile Include="Sip\Headers\SipHeader.cs" />
+    <Compile Include="Sip\Headers\SipRecordRouteHeader.cs" />
+    <Compile Include="Sip\Headers\SipRouteHeader.cs" />
+    <Compile Include="Sip\Headers\SipRouteHeaderBase.cs" />
+    <Compile Include="Sip\Headers\SipSubjectHeader.cs" />
+    <Compile Include="Sip\Headers\SipUserAgentHeader.cs" />
+    <Compile Include="Sip\ISipContextSource.cs" />
+    <Compile Include="Sip\ISipParserListener.cs" />
+    <Compile Include="Sip\MessageReceivedEventArgs.cs" />
+    <Compile Include="Sip\ParseCompletedEventArgs.cs" />
+    <Compile Include="Sip\Settings.cs" />
+    <Compile Include="Sip\SipApplication.cs" />
+    <Compile Include="Sip\SipContext.cs" />
+    <Compile Include="Sip\SipContextProvider.cs" />
+    <Compile Include="Sip\SipContextReceivedEventArgs.cs" />
+    <Compile Include="Sip\SipFormatter.cs" />
+    <Compile Include="Sip\Stack\Dialogs\AbstractDialog.cs" />
+    <Compile Include="Sip\Stack\Dialogs\DialogState.cs" />
+    <Compile Include="Sip\Stack\Dialogs\ISipDialog.cs" />
+    <Compile Include="Sip\Stack\Dialogs\SipDialogTable.cs" />
+    <Compile Include="Sip\Stack\Dialogs\SipInviteClientDialog.cs" />
+    <Compile Include="Sip\Stack\Dialogs\SipInviteServerDialog.cs" />
+    <Compile Include="Sip\Stack\IResponseProcessor.cs" />
+    <Compile Include="Sip\Stack\ISipListener.cs" />
+    <Compile Include="Sip\Stack\ISipProvider.cs" />
+    <Compile Include="Sip\Stack\ITimer.cs" />
+    <Compile Include="Sip\Stack\ITimerFactory.cs" />
+    <Compile Include="Sip\Stack\SipAddress.cs" />
+    <Compile Include="Sip\Stack\SipAddressFactory.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteClient\AbstractCtxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteClient\CallingCtxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteClient\CompletedCtxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteClient\ProceedingCtxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteClient\SipInviteClientTransaction.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteClient\TerminatedCtxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteServer\AbstractStxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteServer\CompletedStxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteServer\ConfirmedStxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteServer\ProceedingStxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteServer\SipInviteServerTransaction.cs" />
+    <Compile Include="Sip\Stack\Transactions\InviteServer\TerminatedStxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\SipTransactionType.cs" />
+    <Compile Include="Sip\Stack\Transactions\StateResult.cs" />
+    <Compile Include="Sip\Stack\Transactions\SipTransactionStateName.cs" />
+    <Compile Include="Sip\Stack\Transactions\SipServerTransactionTable.cs" />
+    <Compile Include="Sip\Stack\Transactions\SipClientTransactionTable.cs" />
+    <Compile Include="Sip\Stack\SipProviderDiagnosticInfo.cs" />
+    <Compile Include="Sip\Stack\SipRequestEvent.cs" />
+    <Compile Include="Sip\Stack\TimerFactory.cs" />
+    <Compile Include="Sip\Stack\Transactions\AbstractServerTransaction.cs" />
+    <Compile Include="Sip\Stack\Transactions\AbstractClientTransaction.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteClient\AbstractCtxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteClient\CompletedCtxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\ISipClientTransaction.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteClient\ProceedingCtxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteClient\SipNonInviteClientTransaction.cs" />
+    <Compile Include="Sip\Stack\Transactions\ISipServerTransaction.cs" />
+    <Compile Include="Sip\Stack\Transactions\SipTransactionStateInfo.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteClient\TryingCtxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteServer\AbstractStxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteServer\CompletedStxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteServer\ProceedingStxState.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteServer\SipNonInviteServerTransaction.cs" />
+    <Compile Include="Sip\Stack\Transactions\NonInviteServer\TryingStxState.cs" />
+    <Compile Include="Sip\Stack\TxTimer.cs" />
+    <Compile Include="Sip\Datagram.cs" />
+    <Compile Include="Sip\SipException.cs" />
+    <Compile Include="Sip\SipParserContext.cs" />
+    <Compile Include="Sip\Stack\SipParserFactory.cs" />
+    <Compile Include="Sip\Stack\SipMessageFactory.cs" />
+    <Compile Include="Sip\SipMethods.cs" />
+    <Compile Include="Sip\Stack\SipProvider.cs" />
+    <Compile Include="Sip\SipResponseCodes.cs" />
+    <Compile Include="Sip\Stack\SipStack.cs" />
+    <Compile Include="Sip\Headers\SipContactHeader.cs" />
+    <Compile Include="Sip\Headers\SipContentTypeHeader.cs" />
+    <Compile Include="Parsers\SipParameterCollectionParser.cs" />
+    <Compile Include="Sip\Headers\SipParameterNames.cs" />
+    <Compile Include="Sip\Headers\SipViaHeader.cs" />
+    <Compile Include="Parsers\SipViaHeaderParser.cs" />
+    <Compile Include="Parsers\SipParseException.cs" />
+    <Compile Include="Parsers\IParseExceptionHandler.cs" />
+    <Compile Include="Parsers\SipParserBase.cs" />
+    <Compile Include="Parsers\SipRequestLineParser.cs" />
+    <Compile Include="Parsers\SipUriParser.cs" />
+    <Compile Include="Sip\Headers\SipFromHeader.cs" />
+    <Compile Include="Sip\Headers\SipHeaderBase.cs" />
+    <Compile Include="Sip\Headers\SipHeaderNames.cs" />
+    <Compile Include="Sip\Headers\SipMaxForwardsHeader.cs" />
+    <Compile Include="Sip\Headers\SipToHeader.cs" />
+    <Compile Include="Sip\Headers\SipCSeqHeader.cs" />
+    <Compile Include="Sip\Headers\SipCallIdHeader.cs" />
+    <Compile Include="Sip\Headers\SipContentLenghtHeader.cs" />
+    <Compile Include="Sip\IStringFormatable.cs" />
+    <Compile Include="Sip\Headers\SipHeaderCollection.cs" />
+    <Compile Include="Sip\Stack\SipHeaderFactory.cs" />
+    <Compile Include="Sip\Stack\SipListeningPoint.cs" />
+    <Compile Include="Sip\SipNameValue.cs" />
+    <Compile Include="Sip\SipParameterCollection.cs" />
+    <Compile Include="Sip\SipRequest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SipConstants.cs" />
+    <Compile Include="Sip\SipMessage.cs" />
+    <Compile Include="Sip\SipRequestLine.cs" />
+    <Compile Include="Sip\Headers\SipHeaderList.cs" />
+    <Compile Include="Sip\SipResponse.cs" />
+    <Compile Include="Sip\SipStatusLine.cs" />
+    <Compile Include="Sip\SipUri.cs" />
+    <Compile Include="Sip\Util\SipUtil.cs" />
+    <Compile Include="Util\BufferReader.cs" />
+    <Compile Include="Util\Check.cs" />
+    <Compile Include="Util\CodeContracts.cs" />
+    <Compile Include="Util\EncodingUtil.cs" />
+    <Compile Include="Util\ExcludeFromEquality.cs" />
+    <Compile Include="Util\LogUtil.cs" />
+    <Compile Include="Util\ObjectUtil.cs" />
+    <Compile Include="Util\StringReader.cs" />
+    <Compile Include="Util\TextUtil.cs" />
+    <Compile Include="ValidateMessageResult.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ExceptionMessage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessage.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TeamBuildConstants)' == '_TEAM_BUILD_ '">
+    <PostBuildEvent>copy  /Y "$(SolutionDir)$(ProjectName)\$(OutDir)" "C:\Users\Hannes\Dropbox\CodeGenerator\bin\Debug"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
