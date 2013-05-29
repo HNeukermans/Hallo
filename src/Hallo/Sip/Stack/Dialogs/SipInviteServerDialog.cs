@@ -17,7 +17,7 @@ namespace Hallo.Sip.Stack.Dialogs
         private SipResponse _firstResponse;
         private SipResponse _okResponse;
         private ITimer _retransmitOkTimer;
-        private ITimer _ackWaitTimeOutTimer;
+        private ITimer _endWaitForAckTimer;
 
         public SipInviteServerDialog(
             ISipInviteServerTransaction transaction, 
@@ -52,8 +52,11 @@ namespace Hallo.Sip.Stack.Dialogs
             //localtarget is not defined, because is has no use, (every user agent knows it local address)
 
             transaction.SetDialog(this);
+
+            _retransmitOkTimer = _timerFactory.CreateInviteCtxRetransmitTimer(OnReTransmit);
+            _endWaitForAckTimer = _timerFactory.CreateInviteCtxTimeOutTimer(OnWaitForAckTimeOut);
             
-            if(_logger.IsInfoEnabled) _logger.Info("Dialog created at server. State:'{0}'", _state);
+            if (_logger.IsInfoEnabled) _logger.Info("ServerDialog[Id={0}] created.", GetId());
         }
 
         private void ValidateRequest(SipRequest request)
@@ -64,12 +67,14 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public override void SetLastResponse(SipResponse response)
         {
+            if (_logger.IsDebugEnabled) _logger.Debug("ServerDialog[Id={0}]. SetLastResponse() invocation with argument Reponse[StatusCode:'{1}']", GetId(), response.StatusLine.StatusCode);
+
             Check.Require(response, "response");
             
             if (response.StatusLine.StatusCode == 100)
             {
                 if (_logger.IsDebugEnabled)
-                    _logger.Debug("StatusCode == 100. Ignoring 'TRYING' response");
+                    _logger.Debug("ServerDialog[Id={0}]. StatusCode == 100. Ignoring 'TRYING' response");
                 return;
             }
             
@@ -78,57 +83,78 @@ namespace Hallo.Sip.Stack.Dialogs
                 CheckFirstResponse(response);
                 _firstResponse = response;
                 _localTag = _firstResponse.To.Tag;
-                
-                if (!_dialogTable.TryAdd(GetId(), this))
-                {
-                    _logger.Warn("could not add dialog to table, because it already exists");
-                }
             }
 
             var lastResponseState = GetCorrespondingState(response.StatusLine.StatusCode);
 
+            /*check state transition*/
             if (lastResponseState > _state)
             {
-                _state = lastResponseState;
-            }
+                if (_logger.IsInfoEnabled)
+                    _logger.Info("ServerDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), _state,
+                                 lastResponseState);
 
-            if(response.StatusLine.StatusCode == 200)
-            {
-                _okResponse = response;
-                /*start retransmittimer*/
-                _retransmitOkTimer = _timerFactory.CreateInviteCtxRetransmitTimer(OnReTransmit);
-                _ackWaitTimeOutTimer = _timerFactory.CreateInviteCtxTimeOutTimer(OnWaitForAckTimeOut);
+                _state = lastResponseState;
+
+                if (_state == DialogState.Early)
+                {
+                    if (!_dialogTable.TryAdd(GetId(), this))
+                    {
+                        throw new SipCoreException("Could not add ServerDialog[Id={0}] to table, because it already exists.", GetId());
+                    }
+
+                    if (_logger.IsDebugEnabled) _logger.Debug("ServerDialog[Id={0}] added to table.", GetId());
+                }
+                else if(_state == DialogState.Confirmed)
+                {
+                    if (_logger.IsDebugEnabled)
+                        _logger.Debug("ServerDialog[Id={0}]. RETRANSMIT_OK & WAIT_FOR_ACK timers started.", GetId());
+
+                    _okResponse = response;
+                    /*start timers*/
+                    _retransmitOkTimer.Start();
+                    _endWaitForAckTimer.Start();
+                }
             }
         }
 
         public override void Terminate()
         {
             SipAbstractDialog removed;
+            
+            if (_logger.IsDebugEnabled) _logger.Debug("Trying to remove ServerDialog[Id={0}] from the table...", GetId());
+            
             if (!_dialogTable.TryRemove(GetId(), out removed))
             {
-                _logger.Warn("could not remove dialog with id: {0}", GetId());
+                _logger.Warn("Could not remove dialog with id: {0}", GetId());
+            }
+            else
+            {
+                if (_logger.IsDebugEnabled) _logger.Debug("ServerDialog[Id={0}] removed from table.", GetId());
             }
 
             _state = DialogState.Terminated;
 
             _retransmitOkTimer.Dispose();
-            _ackWaitTimeOutTimer.Dispose();
-
+            _endWaitForAckTimer.Dispose();
         }
 
         private void OnWaitForAckTimeOut()
         {
+            if (_logger.IsInfoEnabled) _logger.Info("ServerDialog[Id={0}], ACK has not been received after 64 * T1. Terminating dialog...", GetId());
+            
             /*ack not been received after 64 * T1 end dialog. TODO:terminate session*/
             Terminate();
         }
 
         private void OnReTransmit()
         {
+            if (_logger.IsDebugEnabled) _logger.Info("ServerDialog[Id={0}], Retransmitting OK.", GetId());
+            
             /*double timer*/
             _retransmitOkTimer.Interval = Math.Min(_retransmitOkTimer.Interval*2, SipConstants.T2);
             _messageSender.SendResponse(_okResponse);
         }
-
        
         public bool HasAckReceived { get; set; }
 

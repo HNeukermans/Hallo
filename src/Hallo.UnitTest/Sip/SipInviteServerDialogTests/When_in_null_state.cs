@@ -75,5 +75,29 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         {
             ServerDialog.LocalTag.Should().BeNull();
         }
+
+        [Test]
+        public void Expect_the_dialog_not_to_be_in_DialogTable()
+        {
+            DialogTable.ContainsKey(ServerDialog.GetId()).Should().BeFalse();
+        }
+
+        [Test]
+        public void Expect_the_dialog_to_contain_zero_dialogs()
+        {
+            DialogTable.Count.Should().Be(0);
+        }
+
+        [Test]
+        public void Expect_RetransitTimer_not_to_be_started()
+        {
+            RetransitOkTimer.IsStarted.Should().BeFalse();
+        }
+
+        [Test]
+        public void Expect_TimeOutTimer_not_to_be_started()
+        {
+            EndWaitForAckTimer.IsStarted.Should().BeFalse();
+        }
     }
 }

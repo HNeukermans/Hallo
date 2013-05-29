@@ -16,22 +16,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
 
         public When_in_early_state()
         {
-            var tf = new TimerFactoryStubBuilder()
-               .WithInviteCtxRetransmitTimerInterceptor(CreateRetransmitOkTimer)
-               .WithInviteCtxTimeOutTimerInterceptor(CreateTimeOutTimer).Build();
-            TimerFactory = tf;
-        }
-        
-        protected ITimer CreateRetransmitOkTimer(Action action)
-        {
-            RetransitOkTimer = new TxTimerStub(action, int.MaxValue, false, () => { });
-            return RetransitOkTimer;
-        }
-
-        protected ITimer CreateTimeOutTimer(Action action)
-        {
-            TimeOutTimer = new TxTimerStub(action, int.MaxValue, false, () => { });
-            return TimeOutTimer;
+            
         }
 
         protected override void When()
@@ -55,7 +40,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         }
 
         [Test]
-        public void Expect_the_LocalTag_to_be_ToHeader_Tag_of_the_response()
+        public void Expect_the_LocalTag_to_be_To_Tag_of_the_response()
         {
             ServerDialog.LocalTag.Should().Be(_toTag);
         }
@@ -75,7 +60,19 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         [Test]
         public void Expect_TimeOutTimer_not_to_be_started()
         {
-            TimeOutTimer.IsStarted.Should().BeFalse();
+            EndWaitForAckTimer.IsStarted.Should().BeFalse();
+        }
+
+        [Test]
+        public void Expect_the_dialog_to_be_in_the_DialogTable()
+        {
+            DialogTable.ContainsKey(ServerDialog.GetId()).Should().BeTrue();
+        }
+
+        [Test]
+        public void Expect_the_dialog_to_contain_1_dialog()
+        {
+            DialogTable.Count.Should().Be(1);
         }
 
     }

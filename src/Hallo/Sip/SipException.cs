@@ -32,9 +32,9 @@ namespace Hallo.Sip
 
     }
 
-    public class SipProviderException : Exception
+    public class SipCoreException : Exception
     {
-        public SipProviderException(string message, params string[] args)
+        public SipCoreException(string message, params string[] args)
             : base(string.Format(message))
         {
         }

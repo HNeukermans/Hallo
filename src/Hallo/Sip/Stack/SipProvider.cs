@@ -579,7 +579,7 @@ namespace Hallo.Sip
                 requestProcessor.ProcessRequest(requestEvent);
 
                 if(requestEvent.Response == null)
-                    throw new SipProviderException("Response to send can not be null. The ProcessRequest method is supposed to create a response message that is to be sent.");
+                    throw new SipCoreException("Response to send can not be null. The ProcessRequest method is supposed to create a response message that is to be sent.");
 
                 if (!requestEvent.IsSent)
                 {
@@ -592,9 +592,9 @@ namespace Hallo.Sip
                     if (_responseSentObserver != null) _responseSentObserver.OnNext(response);
                 }
             }
-            catch (SipProviderException providerException)
+            catch (SipCoreException coreException)
             {
-                throw providerException;
+                throw coreException;
             }
             catch (SipException sipException)
             {

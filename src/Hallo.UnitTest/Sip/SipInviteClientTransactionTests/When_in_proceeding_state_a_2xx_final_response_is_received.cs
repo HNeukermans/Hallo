@@ -28,6 +28,12 @@ namespace Hallo.UnitTest.Sip.SipInviteClientTransactionTests
         }
 
         [Test]
+        public void Expect_the_Ctx_to_transition_to_terminated_state()
+        {
+            Ctx.State.Should().Be(SipInviteClientTransaction.TerminatedState);
+        }
+
+        [Test]
         public void Expect_the_Ctx_to_be_removed()
         {
             TxTable.Count.Should().Be(0);

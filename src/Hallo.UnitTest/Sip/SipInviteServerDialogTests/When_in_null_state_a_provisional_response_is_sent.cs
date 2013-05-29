@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
 {
-    public class When_in_null_state_a_ringing_response_is_sent : SipInviteServerDialogSpecificationBase
+    public class When_in_null_state_a_provisional_response_is_sent : SipInviteServerDialogSpecificationBase
     {
         protected override void When()
         {

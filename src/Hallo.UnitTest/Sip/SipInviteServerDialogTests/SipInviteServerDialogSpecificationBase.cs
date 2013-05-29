@@ -40,7 +40,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
 
 
         protected TxTimerStub RetransitOkTimer { get; set; }
-        protected TxTimerStub TimeOutTimer { get; set; }
+        protected TxTimerStub EndWaitForAckTimer { get; set; }
         
 
         protected SipRequest CreateInviteRequest()
@@ -94,11 +94,27 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
             Listener = new Mock<ISipListener>();
             DialogTable = new SipDialogTable();
             ReceivedRequest = CreateInviteRequest();
-            var tfb = new TimerFactoryStubBuilder();
+            
             InviteStx = new Mock<ISipInviteServerTransaction>();
             InviteStx.Setup((tx) => tx.Request).Returns(ReceivedRequest);
-            TimerFactory = tfb.Build();
 
+            var tfb = new TimerFactoryStubBuilder()
+               .WithInviteCtxRetransmitTimerInterceptor(OnCreateRetransmitOkTimer)
+               .WithInviteCtxTimeOutTimerInterceptor(OnCreateTimeOutTimer);
+            
+            TimerFactory = tfb.Build();
+        }
+
+        protected virtual ITimer OnCreateRetransmitOkTimer(Action action)
+        {
+            RetransitOkTimer = new TxTimerStub(action, int.MaxValue, false, () => { });
+            return RetransitOkTimer;
+        }
+
+        protected virtual ITimer OnCreateTimeOutTimer(Action action)
+        {
+            EndWaitForAckTimer = new TxTimerStub(action, int.MaxValue, false, () => { });
+            return EndWaitForAckTimer;
         }
 
         protected Mock<ISipInviteServerTransaction> InviteStx { get; set; }
@@ -129,11 +145,17 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
 
             GivenOverride();
         }
-
-       
+        
         protected virtual void GivenOverride()
         {
 
+        }
+
+        protected SipResponse CreateBusyHereResponse()
+        {
+            var r = ReceivedRequest.CreateResponse(SipResponseCodes.x486_Busy_Here);
+            r.To.Tag = _toTag;
+            return r;
         }
     }
 }

@@ -187,7 +187,7 @@ namespace Hallo.Sip.Stack.Dialogs
 
         protected DialogState GetCorrespondingState(int statusCode)
         {
-            return (DialogState)Math.Max(3, statusCode / 100);
+            return (DialogState)Math.Min(3, statusCode / 100);
         }
 
         public abstract void Terminate();

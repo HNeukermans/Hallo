@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
 {
-    public class When_in_null_state_a_ok_response_is_sent : SipInviteServerDialogSpecificationBase
+    public class When_in_null_state_a_non_provisional_response_is_send : SipInviteServerDialogSpecificationBase
     {
         bool _thrown = false;
 
