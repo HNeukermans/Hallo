@@ -13,7 +13,6 @@ namespace Hallo.Sip.Stack.Dialogs
     {
         private ITimerFactory _timerFactory;
         private readonly SipDialogTable _dialogTable;
-        private readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         private SipResponse _firstResponse;
         private SipResponse _okResponse;
         private ITimer _retransmitOkTimer;
@@ -37,6 +36,8 @@ namespace Hallo.Sip.Stack.Dialogs
             Check.Require(transaction.Request, "transaction.Request");
             ValidateRequest(transaction.Request);
             
+            _logger = NLog.LogManager.GetCurrentClassLogger();
+
             _dialogTable = dialogTable;
             _state = DialogState.Null;
             _timerFactory = timerFactory;
@@ -171,4 +172,7 @@ namespace Hallo.Sip.Stack.Dialogs
 
         
     }
+
+
+   
 }

@@ -14,7 +14,6 @@ namespace Hallo.Sip.Stack.Dialogs
     public class SipInviteClientDialog : SipAbstractDialog, ISipDialog
     {
         private readonly SipDialogTable _dialogTable;
-        private readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly SipRequest _firstRequest;
         private SipResponse _firstResponse;
         private bool _isAckSent = false;
@@ -33,6 +32,8 @@ namespace Hallo.Sip.Stack.Dialogs
              Check.Require(transaction, "transaction");
              Check.Require(dialogTable, "dialogTable");
              Check.Require(transaction.Request, "transaction.Request");
+             
+             _logger = NLog.LogManager.GetCurrentClassLogger();
 
              _dialogTable = dialogTable;
              _state = DialogState.Null;
@@ -43,7 +44,7 @@ namespace Hallo.Sip.Stack.Dialogs
                  .Observe()
                  .Where(s => s.CurrentState == SipTransactionStateName.Terminated)
                  .Subscribe((s) => OnInviteTxTerminated());
-         }
+        }
 
         private void OnInviteTxTerminated()
         {

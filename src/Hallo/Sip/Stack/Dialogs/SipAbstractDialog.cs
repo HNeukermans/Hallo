@@ -6,11 +6,14 @@ using Hallo.Sip.Stack.Transactions;
 using Hallo.Sip.Stack.Transactions.NonInviteClient;
 using Hallo.Sip.Util;
 using Hallo.Util;
+using NLog;
 
 namespace Hallo.Sip.Stack.Dialogs
 {
     public abstract class SipAbstractDialog : ISipListener
     {
+        protected Logger _logger;
+
         protected readonly ISipListener _listener;
         protected readonly IPEndPoint _listeningPoint;
         protected List<SipResponse> _responses;
@@ -204,17 +207,27 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public void ProcessRequest(SipRequestEvent requestEvent)
         {
-            throw new NotImplementedException();
+            if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received as request[method={1}]", GetId(), requestEvent.Request.RequestLine.Method);
+            
+            /*forward TODO: check rfc*/
+            _listener.ProcessRequest(requestEvent);
         }
 
         public void ProcessResponse(SipResponseEvent responseEvent)
         {
-            throw new NotImplementedException();
+            if(_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received response[StatusCode={1}].", GetId(), responseEvent.Response.StatusLine.StatusCode);
+            
+            /*forward TODO: check rfc*/
+            _listener.ProcessResponse(responseEvent);
         }
 
         public void ProcessTimeOut(SipTimeOutEvent timeOutEvent)
         {
-            throw new NotImplementedException();
+            if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received a timeout.", GetId());
+            
+            /*forward TODO: check rfc*/
+            //terminate dialog ?
+            _listener.ProcessTimeOut(timeOutEvent);
         }
     }
 }
