@@ -191,7 +191,7 @@
     <Compile Include="Sip\Settings.cs" />
     <Compile Include="Sip\SipApplication.cs" />
     <Compile Include="Sip\SipContext.cs" />
-    <Compile Include="Sip\SipContextProvider.cs" />
+    <Compile Include="Sip\SipContextSource.cs" />
     <Compile Include="Sip\SipContextReceivedEventArgs.cs" />
     <Compile Include="Sip\SipFormatter.cs" />
     <Compile Include="Sip\Stack\Dialogs\SipAbstractDialog.cs" />
