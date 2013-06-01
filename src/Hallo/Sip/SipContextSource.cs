@@ -22,7 +22,7 @@ namespace Hallo.Sip
         private volatile int _bytesSent;
         private volatile int _packetsSent;
         private readonly object _locker = new object();
-
+        private DatagramSender _sender;
         private readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly SipContextFactory _contextFactory;
 
@@ -33,6 +33,8 @@ namespace Hallo.Sip
             get { return _packetsSent; }
         }
 
+       
+
         /// <summary>
         /// sends a messaege to the socket.
         /// </summary>
@@ -41,18 +43,21 @@ namespace Hallo.Sip
         /// <param name="ipEndPoint"></param>
         public void SendTo(byte[] bytes, IPEndPoint ipEndPoint)
         {
-            Check.Require(bytes, "bytes");
-            Check.Require(ipEndPoint, "ipEndPoint");
-
-            _logger.Trace("Sending message from: '{0}' --> '{1}'", ListeningPoint, ipEndPoint);
-
-            _socket.SendTo(bytes, ipEndPoint);
-
-            lock (_locker)
+            if(_sender.SendTo(bytes, ipEndPoint))
             {
-                _bytesSent += bytes.Length;
-                _packetsSent++;
+                lock (_locker)
+                {
+                    _bytesSent += bytes.Length;
+                    _packetsSent++;
+                }
             }
+
+            //Check.Require(bytes, "bytes");
+            //Check.Require(ipEndPoint, "ipEndPoint");
+
+            //_logger.Trace("Sending message from: '{0}' --> '{1}'", ListeningPoint, ipEndPoint);
+
+            //_socket.SendTo(bytes, ipEndPoint);
         }
 
         public int BytesSent
@@ -79,6 +84,8 @@ namespace Hallo.Sip
             _threadPool = threadPool;
             _contextFactory = new SipContextFactory(messageFactory, headerFactory);
             _logger.Trace("Constructor called.");
+
+            _sender = new DatagramSender(_ipEndPoint);
         }
 
         /// <summary>
