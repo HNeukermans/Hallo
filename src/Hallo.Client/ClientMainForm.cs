@@ -28,6 +28,8 @@ namespace Hallo.Client
 
         void MainForm_Load(object sender, EventArgs e)
         {
+            _lblPID.Text = string.Format("PID:{0}", Process.GetCurrentProcess().Id);
+
             Configuration = new ClientConfiguration();
             var localIp4Address = Dns.GetHostAddresses(string.Empty).FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
             Configuration.OutboundProxyIpEndPoint = localIp4Address + ":33333";
@@ -79,11 +81,12 @@ namespace Hallo.Client
                 MessageFactory = SipStack.CreateMessageFactory();
                 AddressFactory = SipStack.CreateAddressFactory();
                 
-
                 ExecuteActionHelper.ExecuteAction(delegate()
                 {
                     FormsManager.OpenForm(typeof(LogForm), null);
                 });
+
+                _lblIpAddress.Text = string.Format("IP:{0}", ipEndPoint.ToString());
             }
             else
             {
