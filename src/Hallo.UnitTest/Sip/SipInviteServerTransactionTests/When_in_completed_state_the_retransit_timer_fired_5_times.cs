@@ -45,7 +45,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerTransactionTests
         }
 
         [Test]
-        public void Expect_the_RetransitTimer_interval_to_be_T4()
+        public void Expect_the_RetransitTimer_interval_to_be_T2()
         {
             Stx.ReTransmitNonx200FinalResponseTimer.Interval.Should().Be(SipConstants.T2);
         }
