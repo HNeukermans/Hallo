@@ -39,6 +39,7 @@ namespace Hallo.Sip
         private IObserver<SipMessage> _responseSentObserver;
         private IObserver<SipMessage> _requestReceivedObserver;
         private IObserver<SipMessage> _responseReceivedObserver;
+        private SelfListener _selfListener;
 
         #region props
 
@@ -406,28 +407,10 @@ namespace Hallo.Sip
             if (_sipListener != _NullListener) throw new InvalidOperationException("A listener is already added.");
 
             _sipListener = sipListener;
+
+            //_selfListener = new SelfListener(_sipListener);
         }
        
-        private SipAbstractServerTransaction AddNewServerTx(SipRequest request)
-        {
-            if(request.RequestLine.Method == SipMethods.Invite)
-            {
-                return new SipInviteServerTransaction(
-                ServerTransactionTable,
-                this,
-                _sipListener,
-                request,
-                _stack.GetTimerFactory()); 
-            }
-
-            return new SipNonInviteServerTransaction(
-                ServerTransactionTable,
-                request, 
-                _sipListener,
-                this,
-                _stack.GetTimerFactory());
-        }
-        
         public SipProviderDiagnosticInfo GetDiagnosticsInfo()
         {
             var info = new SipProviderDiagnosticInfo();
@@ -482,7 +465,11 @@ namespace Hallo.Sip
             return Observable.Merge(rqo, rso, rro, rqro);
         }
         
-        internal static void EnsureRemoteEndPointInformationIsStoredInRequest(SipContext context)
+        /// <summary>
+        /// Only use this if NAT traversal is to be supported. Sets the Received + Rport parameters
+        /// </summary>
+        /// <param name="context"></param>
+        internal static void SupportFirewalTraversal(SipContext context)
         {
             Check.Require(context, "context");
             Check.Require(context.Request, "context.Request");
@@ -490,12 +477,14 @@ namespace Hallo.Sip
 
             var request = context.Request;
             var topMostVia = request.Vias.GetTopMost();
+            
+            //Support NAT firewal
             if (!topMostVia.SentBy.Address.Equals(context.RemoteEndPoint.Address))
             {
                 topMostVia.Received = context.RemoteEndPoint.Address;
             }
 
-            //rfc3581
+            //Support PAT firewall. Rfc3581 is not supported. TODO: remove.
             if (topMostVia.UseRport)
             {
                 topMostVia.Rport = context.RemoteEndPoint.Port;
@@ -511,6 +500,7 @@ namespace Hallo.Sip
             IResponseProcessor responseProcessor = _sipListener;
 
             var responseEvent = new SipResponseEvent(context);
+            
 
              //get dialog. if dialog found, the listener for the tx is the dialog.
             SipAbstractClientTransaction ctx;
@@ -547,21 +537,24 @@ namespace Hallo.Sip
 
             if (!result.IsValid) ThrowSipException(result);
 
-            //transport layer logic 
-            EnsureRemoteEndPointInformationIsStoredInRequest(context);
+            /*firewall traversal not supported.
+             *SupportFirewalTraversal(context);*/
 
             var requestEvent = new SipRequestEvent(context);
 
             IRequestProcessor requestProcessor = _sipListener;
 
-            //get dialog. if dialog found, the listener for the tx is the dialog.
+            //8.2.2.2: merged requests, not implemented
+            
             SipAbstractServerTransaction stx;
+
             if(_stxTable.TryGetValue(GetServerTransactionId(context.Request), out stx))
             {
                 requestProcessor = stx;
-
+                
                 if (stx.Type == SipTransactionType.InviteServer)
                 {
+                    //get dialog. if dialog found, the listener for the tx is the dialog.
                     SetDialog((SipInviteServerTransaction)stx);
                 }
             }
@@ -591,6 +584,8 @@ namespace Hallo.Sip
 
                     if (_responseSentObserver != null) _responseSentObserver.OnNext(response);
                 }
+
+                
             }
             catch (SipCoreException coreException)
             {
@@ -628,10 +623,24 @@ namespace Hallo.Sip
 
         private void SetDialog(SipInviteServerTransaction stx)
         {
+            if(stx.Request.To.Tag == null) return;
+
+            /* Based on the To tag, the UAS MAY either accept or reject the request.
+             * If the request has a tag in the To header field, 
+             * but the dialog identifier does not match any existing dialogs*/
+
             SipAbstractDialog inTableDialog;
             if (_dialogTable.TryGetValue(GetDialogId(stx.Request, true), out inTableDialog))
             {
                 stx.SetDialog((SipInviteServerDialog)inTableDialog);
+            }
+            else
+            {
+                /* If the UAS wishes to reject the request because it does not wish to
+                   recreate the dialog, it MUST respond to the request with a 481
+                   (Call/Transaction Does Not Exist) status code and pass that to the
+                   server transaction. 
+                */
             }
         }
 
@@ -711,6 +720,80 @@ namespace Hallo.Sip
             string remoteTag = isServer ? message.From.Tag : message.To.Tag;
 
             return message.CallId.Value + ":" + localTag + ":" + remoteTag;
+        }
+    }
+
+    public class DatagramSender
+    {
+        private readonly IPEndPoint _fromEndPoint;
+        private readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private Socket _socket = null;
+        private object _locker = new object();
+
+        public DatagramSender(IPEndPoint fromEndPoint)
+        {
+            _fromEndPoint = fromEndPoint;
+        }
+
+        /// <summary>
+        /// sends a message to the socket.
+        /// </summary>
+        /// <remarks>externalizing the socket would require to mock it.</remarks>
+        /// <param name="bytes"></param>
+        /// <param name="ipEndPoint"></param>
+        public bool SendTo(byte[] bytes, IPEndPoint ipEndPoint)
+        {
+            Check.Require(bytes, "bytes");
+            Check.Require(ipEndPoint, "ipEndPoint");
+
+            _logger.Trace("Sending message from: '{0}' --> '{1}'", _fromEndPoint, ipEndPoint);
+
+            lock (_locker)
+            {
+                try
+                {
+                    if (_socket == null)
+                        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                    _socket.SendTo(bytes, ipEndPoint);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsErrorEnabled) _logger.Error("Could not send message.", ex.Message);
+                    _socket = null;
+                    return false;
+                    //throw;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Models the SipProvider as a listener. Houses all the logic the UA Core needs to perform,
+    /// when the request moves upwards the processing chain starting from the tx.
+    /// </summary>
+    internal class SelfListener : ISipListener
+    {
+        private ISipListener _sipListener;
+
+        public SelfListener(ISipListener sipListener)
+        {
+            _sipListener = sipListener;
+        }
+
+        public void ProcessTimeOut(SipTimeOutEvent timeOutEvent)
+        {
+
+        }
+
+        public void ProcessRequest(SipRequestEvent requestEvent)
+        {
+
+        }
+
+        public void ProcessResponse(SipResponseEvent responseEvent)
+        {
+
         }
     }
 }
