@@ -97,6 +97,7 @@ namespace Hallo.Sip.Headers
             }
             set
             {
+                throw new NotSupportedException("Usage of Rport as described in Rfc 3581 is not supported.");
                 CodeContracts.RequiresIsTrue(value > 0, "rport");
                 this.Parameters.Set(SipParameterNames.RPort, value.ToString(CultureInfo.InvariantCulture));
             }
@@ -124,6 +125,7 @@ namespace Hallo.Sip.Headers
                 }
                 else
                 {
+                    throw new NotSupportedException("Usage of Rport as described in Rfc 3581 is not supported.");
                     this.Parameters.Set(SipParameterNames.RPort, string.Empty);
                 }
             }
