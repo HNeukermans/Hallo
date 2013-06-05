@@ -40,6 +40,9 @@ namespace Hallo.Sip
         private bool _enableThreadPoolPerformanceCounters;
         private SmartThreadPool _threadPool;
         private IPEndPoint _outBoundProxy;
+        private SipMessageFactory _messageFactory;
+        private SipHeaderFactory _headerFactory;
+        private SipAddressFactory _addressFactory;
 
         public int MaxUdpMessageSize 
         {
@@ -145,17 +148,17 @@ namespace Hallo.Sip
 
         public Stack.SipHeaderFactory CreateHeaderFactory()
         {
-            return new SipHeaderFactory();
+            return _headerFactory ?? (_headerFactory = new SipHeaderFactory());
         }
 
         public SipMessageFactory CreateMessageFactory()
         {
-            return new SipMessageFactory();
+            return _messageFactory ?? (_messageFactory = new SipMessageFactory());
         }
 
         public SipAddressFactory CreateAddressFactory()
         {
-            return new SipAddressFactory();
+            return _addressFactory ?? (_addressFactory = new SipAddressFactory());
         }
 
         public void SetTimerFactory(ITimerFactory timerFactory)
