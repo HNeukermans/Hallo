@@ -11,18 +11,18 @@
 
             internal override void Initialize(SipInviteServerTransaction transaction)
             {
-                throw new System.NotImplementedException();
+                
             }
 
             internal override StateResult ProcessRequest(SipInviteServerTransaction transaction, SipRequestEvent request)
             {
-                throw new System.NotImplementedException();
+                return new StateResult();
             }
 
             internal override StateResult HandleSendingResponse(SipInviteServerTransaction transaction,
                                                                 SipResponse response)
             {
-                throw new System.NotImplementedException();
+                return new StateResult();
             }
         }
     }
