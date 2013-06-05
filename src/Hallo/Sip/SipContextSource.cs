@@ -87,14 +87,7 @@ namespace Hallo.Sip
 
             _sender = new DatagramSender(_ipEndPoint);
         }
-
-        /// <summary>
-        /// Poor mans injection constructor. Used only for testing. 
-        /// </summary>
-        internal SipContextSource(IPEndPoint ipEndPoint):this(ipEndPoint,new SmartThreadPool(),new SipMessageFactory(), new SipHeaderFactory())
-        {
-        }
-
+        
         public void Start()
         {
             _logger.Trace("Starting udplistener. Trying to bind to IpEndPoint: {0}", _ipEndPoint);
