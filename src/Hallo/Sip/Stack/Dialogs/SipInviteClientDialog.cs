@@ -87,8 +87,15 @@ namespace Hallo.Sip.Stack.Dialogs
             get { return _isAckSent; }
         }
 
+
+        /// <summary>
+        /// TODO: needs to be locked!!!!
+        /// </summary>
+        /// <param name="response"></param>
         public override void SetLastResponse(SipResponse response)
         {
+            if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}]. Reponse[StatusCode:'{1}']", GetId(), response.StatusLine.StatusCode);
+
              Check.Require(response, "response");
 
              if (response.StatusLine.StatusCode == 100)
@@ -97,19 +104,19 @@ namespace Hallo.Sip.Stack.Dialogs
                      _logger.Debug("StatusCode == 100. Ignoring 'TRYING' response");
                  return;
              }
-             if (string.IsNullOrEmpty(response.To.Tag))
-             {
-                 if (_logger.IsDebugEnabled)
-                     _logger.Debug("To tag is null. Ignoring '{0}' response", response.StatusLine.FormatToString());
-                 return;
-             }
-
+             //if (string.IsNullOrEmpty(response.To.Tag))
+             //{
+             //    if (_logger.IsDebugEnabled)
+             //        _logger.Debug("To tag is null. Ignoring '{0}' response", response.StatusLine.FormatToString());
+             //    return;
+             //}
+            
+             //TODO: needs to be locked!!!!
              if (_firstResponse == null)
              {
                  CheckFirstResponse(response);
-
                  _firstResponse = response;
-
+                 
                  response.RecordRoutes.ToList().ForEach(rr =>
                  {
                     if (!rr.SipUri.IsLooseRouting)
@@ -132,18 +139,37 @@ namespace Hallo.Sip.Stack.Dialogs
                      _logger.Warn("could not add dialog to table, because it already exists");
                  }
              }
-
-
+            
              var lastResponseState = GetCorrespondingState(response.StatusLine.StatusCode);
 
              if (lastResponseState > _state)
              {
                  _state = lastResponseState;
 
-                 //if (_state == DialogState.Early)
-                 //{
+                 if (_logger.IsInfoEnabled)
+                     _logger.Info("ClientDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), _state,
+                                  lastResponseState);
 
-                 //}
+                 if (_state == DialogState.Early)
+                 {
+                     if (!_dialogTable.TryAdd(GetId(), this))
+                     {
+                         throw new SipCoreException("Could not add ClientDialog[Id={0}] to table, because it already exists.", GetId());
+                     }
+
+                     if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}] added to table.", GetId());
+                 }
+                 else if (_state == DialogState.Confirmed)
+                 {
+                     //TODO:check rfc what to do here. if ack has been sent, resend when ok comes back in.
+                     if (_logger.IsDebugEnabled)
+                         _logger.Debug("ClientDialog[Id={0}]. RETRANSMIT_OK & WAIT_FOR_ACK timers started.", GetId());
+
+                     //_okResponse = response;
+                     ///*start timers*/
+                     //_retransmitOkTimer.Start();
+                     //_endWaitForAckTimer.Start();
+                 }
              }
          }
 
@@ -158,13 +184,23 @@ namespace Hallo.Sip.Stack.Dialogs
             _state = DialogState.Terminated;
         }
 
-        protected void CheckFirstResponse(SipResponse response)
+        protected override void ProcessRequestOverride(DialogResult result, SipRequestEvent requestEvent)
         {
-             Check.Require(response, "response");
-             Check.IsTrue(response.CSeq.Command == SipMethods.Invite, "The response can not have a command other then 'INVITE'");
-             Check.IsTrue(response.StatusLine.StatusCode != 100, "The response can not be 'TRYING'");
-             Check.Require(response.From.Tag != null, "From must have a tag");
-             Check.Require(response.To.Tag != null, "To must have a tag");
+            
+        }
+
+        protected override void ProcessResponseOverride(DialogResult result, SipResponseEvent responseEvent)
+        {
+            if(responseEvent.Response.StatusLine.StatusCode / 100 == 2)
+            {
+                if(HasSentAck)
+                {
+                    /*it's a ok retransmit. Resend ack*/
+                    result.InformToUser = false;
+                    var acKRequest = CreateAck();
+                    SendAck(acKRequest);
+                }
+            }
         }
     }
 }

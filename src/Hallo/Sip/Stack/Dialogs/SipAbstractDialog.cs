@@ -208,18 +208,35 @@ namespace Hallo.Sip.Stack.Dialogs
         public void ProcessRequest(SipRequestEvent requestEvent)
         {
             if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received as request[method={1}]", GetId(), requestEvent.Request.RequestLine.Method);
-            
-            /*forward TODO: check rfc*/
-            _listener.ProcessRequest(requestEvent);
+            var result = new DialogResult();
+            result.InformToUser = true;
+            ProcessRequestOverride(result, requestEvent);
+
+            if(result.InformToUser)
+            {
+                /*forward TODO: check rfc*/
+                _listener.ProcessRequest(requestEvent);
+            }
         }
+
+        protected abstract void ProcessRequestOverride(DialogResult result, SipRequestEvent requestEvent);
 
         public void ProcessResponse(SipResponseEvent responseEvent)
         {
             if(_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received response[StatusCode={1}].", GetId(), responseEvent.Response.StatusLine.StatusCode);
-            
-            /*forward TODO: check rfc*/
-            _listener.ProcessResponse(responseEvent);
+
+            var r = new DialogResult();
+            r.InformToUser = true;
+            ProcessResponseOverride(r, responseEvent);
+
+            if (r.InformToUser)
+            {
+                /*forward TODO: check rfc*/
+                _listener.ProcessResponse(responseEvent);
+            }
         }
+
+        protected abstract void ProcessResponseOverride(DialogResult result, SipResponseEvent responseEvent);
 
         public void ProcessTimeOut(SipTimeOutEvent timeOutEvent)
         {
@@ -228,6 +245,17 @@ namespace Hallo.Sip.Stack.Dialogs
             /*forward TODO: check rfc*/
             //terminate dialog ?
             _listener.ProcessTimeOut(timeOutEvent);
+        }
+        
+        protected void CheckFirstResponse(SipResponse response)
+        {
+            Check.Require(response, "response");
+            Check.IsTrue(response.CSeq.Command == SipMethods.Invite, "The response can not have a command other then 'INVITE'");
+            Check.IsTrue(response.StatusLine.StatusCode != 100, "The response can not be 'TRYING'");
+            Check.IsTrue(response.StatusLine.StatusCode / 100 == 1, "The response must be provisonal");
+            Check.Require(response.From.Tag != null, "From must have a tag");
+            Check.Require(response.To.Tag != null, "To must have a tag");
+            Check.Require(response.Contacts.GetTopMost() != null, "The response must have a Contact header.");
         }
     }
 }

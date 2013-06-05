@@ -207,6 +207,7 @@
     <Compile Include="Sip\Stack\ITimerFactory.cs" />
     <Compile Include="Sip\Stack\SipAddress.cs" />
     <Compile Include="Sip\Stack\SipAddressFactory.cs" />
+    <Compile Include="Sip\Stack\Dialogs\DialogResult.cs" />
     <Compile Include="Sip\Stack\Transactions\InviteClient\AbstractCtxState.cs" />
     <Compile Include="Sip\Stack\Transactions\InviteClient\CallingCtxState.cs" />
     <Compile Include="Sip\Stack\Transactions\InviteClient\CompletedCtxState.cs" />

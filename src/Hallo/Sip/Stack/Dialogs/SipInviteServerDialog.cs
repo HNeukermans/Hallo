@@ -68,7 +68,7 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public override void SetLastResponse(SipResponse response)
         {
-            if (_logger.IsDebugEnabled) _logger.Debug("ServerDialog[Id={0}]. SetLastResponse() invocation with argument Reponse[StatusCode:'{1}']", GetId(), response.StatusLine.StatusCode);
+            if (_logger.IsDebugEnabled) _logger.Debug("ServerDialog[Id={0}]. Reponse[StatusCode:'{1}']", GetId(), response.StatusLine.StatusCode);
 
             Check.Require(response, "response");
             
@@ -140,6 +140,16 @@ namespace Hallo.Sip.Stack.Dialogs
             _endWaitForAckTimer.Dispose();
         }
 
+        protected override void ProcessRequestOverride(DialogResult result, SipRequestEvent requestEvent)
+        {
+           
+        }
+
+        protected override void ProcessResponseOverride(DialogResult result, SipResponseEvent responseEvent)
+        {
+            
+        }
+
         private void OnWaitForAckTimeOut()
         {
             if (_logger.IsInfoEnabled) _logger.Info("ServerDialog[Id={0}], ACK has not been received after 64 * T1. Terminating dialog...", GetId());
@@ -159,16 +169,7 @@ namespace Hallo.Sip.Stack.Dialogs
        
         public bool HasAckReceived { get; set; }
 
-        protected void CheckFirstResponse(SipResponse response)
-        {
-            Check.Require(response, "response");
-            Check.IsTrue(response.CSeq.Command == SipMethods.Invite, "The response can not have a command other then 'INVITE'");
-            Check.IsTrue(response.StatusLine.StatusCode != 100, "The response can not be 'TRYING'");
-            Check.IsTrue(response.StatusLine.StatusCode / 100 == 1, "The response must be provisonal");
-            Check.Require(response.From.Tag != null, "From must have a tag");
-            Check.Require(response.To.Tag != null, "To must have a tag");
-            Check.Require(response.Contacts.GetTopMost() != null, "The response must have a Contact header.");
-        }
+       
 
         
     }
