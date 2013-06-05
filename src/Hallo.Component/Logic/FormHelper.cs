@@ -11,9 +11,14 @@ namespace Hallo.Component.Logic
     {
         public static void ValidateIsNotEmpty(string value, string field)
         {
-            ValidateCondition(String.IsNullOrWhiteSpace(value), field);
+            ValidateCondition(!String.IsNullOrWhiteSpace(value), field);
         }
 
+        /// <summary>
+        /// throws a validation exception when the condition is false.
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="field"></param>
         public static void ValidateCondition(bool condition, string field)
         {
             if (!condition)

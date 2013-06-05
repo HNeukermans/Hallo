@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -30,7 +31,8 @@ namespace Hallo.Client.Forms
         CallerEstablished,
         CalleeEstablished,
         WaitForProvisional,
-        WaitForFinal
+        WaitForFinal,
+        WaitingForByeOK
     }
 
     
@@ -71,7 +73,7 @@ namespace Hallo.Client.Forms
             return _state.ToString().ToUpper();
         }
 
-        private void _btnInvite_Click(object sender, EventArgs e)
+        private void Invite()
         {
                 FormHelper.ValidateCondition(SipUtil.IsSipUri(_txtFromUri.Text), "From-uri");
 
@@ -118,9 +120,6 @@ namespace Hallo.Client.Forms
                 var transaction = SipProvider.CreateClientTransaction(request);
                 _clientDialog = SipProvider.CreateClientDialog(transaction);
                 transaction.SendRequest();
-
-                RefreshDialogForm(_clientDialog);
-                GoToState(PhoneState.WaitForProvisional);
         }
 
         private void RefreshDialogForm(SipAbstractDialog dialog)
@@ -147,12 +146,11 @@ namespace Hallo.Client.Forms
             }
         }
 
-        private void _btnSendAck_Click(object sender, EventArgs e)
+        private void SendAck()
         {
             var ackRequest = _clientDialog.CreateAck();
             var transaction = SipProvider.CreateClientTransaction(ackRequest);
             _clientDialog.SendRequest(transaction);
-            RefreshDialogForm(_clientDialog);
         }
         
         private void _btnCallerSendCancel_Click(object sender, EventArgs e)
@@ -170,47 +168,62 @@ namespace Hallo.Client.Forms
                                 {
                                     _txtState.Text = StateToLabel(_state);
 
-                                    if (_state == PhoneState.Idle)
+                                    if (_state == PhoneState.WaitForProvisional)
                                     {
-                                        Foreach(_grpbForm.Controls, (c) => c.Enabled = true);
+                                        //_btnPhone.Enabled = false;
                                     }
-                                    else
+                                    if (_state == PhoneState.Ringing)
                                     {
-                                        Foreach(_grpbForm.Controls, (c) => c.Enabled = false);
+                                        _btnPhone.Enabled = true;
+                                        _btnPhone.Text = "Answer";
+                                    }
+                                    if (_state == PhoneState.CallerEstablished)
+                                    {
+                                        _btnPhone.Enabled = true;
+                                        _btnPhone.Text = "End Call";
                                     }
 
-                                    if (_state == PhoneState.Idle)
-                                    {
-                                        Foreach(_grpbCalleeActions.Controls, (c) => c.Enabled = true);
-                                        Foreach(_grpbCallerActions.Controls, (c) => c.Enabled = true);
-                                    }
-                                    else if (_state == PhoneState.WaitForProvisional)
-                                    {
-                                        Foreach(_grpbCalleeActions.Controls, (c) => c.Enabled = false);
-                                        _btnInvite.Enabled = false;
-                                    }
-                                    else if (_state == PhoneState.WaitForFinal)
-                                    {
+                                    //if (_state == PhoneState.Idle)
+                                    //{
+                                    //    Foreach(_grpbForm.Controls, (c) => c.Enabled = true);
+                                    //}
+                                    //else
+                                    //{
+                                    //    Foreach(_grpbForm.Controls, (c) => c.Enabled = false);
+                                    //}
 
-                                    }
-                                    else if (_state == PhoneState.CallerEstablished)
-                                    {
-                                        _btnCallerSendBye.Enabled = true;
-                                    }
-                                    else if (_state == PhoneState.Ringing)
-                                    {
-                                        Foreach(_grpbCallerActions.Controls, (c) => c.Enabled = false);
-                                        _btnCalleeSendBye.Enabled = false;
-                                        _btnCalleeSendCancel.Enabled = _btnCalleeSendOk.Enabled = true;
-                                    }
-                                    else if (_state == PhoneState.WaitingForAck)
-                                    {
-                                        _btnCalleeSendCancel.Enabled = false;
-                                    }
-                                    else if (_state == PhoneState.CalleeEstablished)
-                                    {
-                                        _btnCalleeSendBye.Enabled = true;
-                                    }
+                                    //if (_state == PhoneState.Idle)
+                                    //{
+                                    //    Foreach(_grpbCalleeActions.Controls, (c) => c.Enabled = true);
+                                    //    Foreach(_grpbCallerActions.Controls, (c) => c.Enabled = true);
+                                    //}
+                                    //else if (_state == PhoneState.WaitForProvisional)
+                                    //{
+                                    //    Foreach(_grpbCalleeActions.Controls, (c) => c.Enabled = false);
+                                    //    _btnInvite.Enabled = false;
+                                    //}
+                                    //else if (_state == PhoneState.WaitForFinal)
+                                    //{
+
+                                    //}
+                                    //else if (_state == PhoneState.CallerEstablished)
+                                    //{
+                                    //    _btnCallerSendBye.Enabled = true;
+                                    //}
+                                    //else if (_state == PhoneState.Ringing)
+                                    //{
+                                    //    Foreach(_grpbCallerActions.Controls, (c) => c.Enabled = false);
+                                    //    _btnCalleeSendBye.Enabled = false;
+                                    //    _btnCalleeSendCancel.Enabled = _btnCalleeSendOk.Enabled = true;
+                                    //}
+                                    //else if (_state == PhoneState.WaitingForAck)
+                                    //{
+                                    //    _btnCalleeSendCancel.Enabled = false;
+                                    //}
+                                    //else if (_state == PhoneState.CalleeEstablished)
+                                    //{
+                                    //    _btnCalleeSendBye.Enabled = true;
+                                    //}
 
                                 });
 
@@ -221,9 +234,38 @@ namespace Hallo.Client.Forms
         private SipRequestEvent _pendingRequestEvent;
         private SipInviteServerTransaction _inviteTransaction;
         private SipResponse _ringingResponse;
+        private SipRequest _inviteRequest;
 
         public void ProcessRequest(SipRequestEvent requestEvent)
         {
+            Log("Received a request. RequestLine:'{0}'", requestEvent.Request.RequestLine.FormatToString());
+           
+            if (requestEvent.Request.RequestLine.Method == SipMethods.Invite)
+            {
+                Log("Received an INVITE request.");
+                if (_state == PhoneState.Idle)
+                {
+                    _inviteRequest = requestEvent.Request;
+                    Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(5)).ObserveOn(this).Subscribe((i) =>
+                    {
+                        Log("Sending a ringing response...");
+                        SendRinging();
+                        Log("Ringing response send.");
+                        if(i == 0)
+                        {
+                            GoToState(PhoneState.Ringing);
+                            RefreshDialogForm(_serverDialog);
+                        }
+                    });
+                }
+                else
+                {
+                    Log("Currently busy...");
+                    //send busy here
+                }
+            }
+
+
             if(_state == PhoneState.Idle)
             {
                 if (requestEvent.Request.RequestLine.Method == SipMethods.Invite)
@@ -233,7 +275,7 @@ namespace Hallo.Client.Forms
                     
                     this.OnUIThread(() =>
                                         {
-                                            //show the name of the caller
+                                            //show the name of the caller in the from textboxes.
                                              _txtFromAlias.Text = requestEvent.Request.From.DisplayInfo;
                                              _txtFromAlias.Text = requestEvent.Request.From.DisplayInfo;
                                              //clear all other from-to textboxes
@@ -273,15 +315,19 @@ namespace Hallo.Client.Forms
 
         public void ProcessResponse(SipResponseEvent responseEvent)
         {
+            Log("Received a response. Status:'{0}'", responseEvent.Response.StatusLine.FormatToString());
             var mod100 = responseEvent.Response.StatusLine.StatusCode / 100;
             if (mod100 == 1)
             {
+                Log("Received a provisional response. Waiting for a final response");
                 GoToState(PhoneState.WaitForFinal);
                 RefreshDialogForm(_clientDialog);
-               
             }
             else if (mod100 == 2)
             {
+                Log("Received a OK response. Sending Ack...");
+                SendAck();
+                Log("Ack send. Call established.");
                 GoToState(PhoneState.CallerEstablished);
                 RefreshDialogForm(_clientDialog);
             }
@@ -324,22 +370,19 @@ namespace Hallo.Client.Forms
             }
         }
 
-        private void _btnCalleeSendRinging_Click(object sender, EventArgs e)
+        private void SendRinging()
         {
             if (_ringingResponse == null)
             {
-                _ringingResponse = _pendingRequestEvent.Request.CreateResponse(SipResponseCodes.x180_Ringing);
+                _ringingResponse = _inviteRequest.CreateResponse(SipResponseCodes.x180_Ringing);
                 _ringingResponse.To.Tag = SipUtil.CreateTag();
                 var contactUri = AddressFactory.CreateUri("", MainForm.SipProvider.ListeningPoint.ToString());
                 _ringingResponse.Contacts.Add(HeaderFactory.CreateContactHeader(contactUri));
 
                 _inviteTransaction =
-                    (SipInviteServerTransaction) SipProvider.CreateServerTransaction(_pendingRequestEvent.Request);
+                    (SipInviteServerTransaction)SipProvider.CreateServerTransaction(_inviteRequest);
                 _serverDialog = SipProvider.CreateServerDialog(_inviteTransaction);
                 _inviteTransaction.SendResponse(_ringingResponse);
-                RefreshDialogForm(_serverDialog);
-                //signal the waiting thread
-                _waitHandle.Set();
             }
             else
             {
@@ -347,16 +390,16 @@ namespace Hallo.Client.Forms
             }
         }
 
-        private void _btnCalleeSendBye_Click(object sender, EventArgs e)
+        private void SendBye(SipAbstractDialog dialog)
         {
-            var byeRequest = _serverDialog.CreateRequest(SipMethods.Bye);
+            var byeRequest = dialog.CreateRequest(SipMethods.Bye);
             var ctx = SipProvider.CreateClientTransaction(byeRequest);
             _serverDialog.SendRequest(ctx);
 
             RefreshDialogForm(_serverDialog);
         }
 
-        private void _btnCalleeSendOk_Click(object sender, EventArgs e)
+        private void SendOk()
         {
             var okResponse = MessageFactory.CreateResponse(_pendingRequestEvent.Request, SipResponseCodes.x200_Ok);
             //TODO: okResponse.To.Tag = _serverDialog.LocalTag;
@@ -365,7 +408,47 @@ namespace Hallo.Client.Forms
             RefreshDialogForm(_serverDialog);
         }
 
+        private void _btnPhone_Click(object sender, EventArgs e)
+        {
+            if (_state == PhoneState.Idle || _state == PhoneState.WaitForProvisional)
+            {
+                Log("Sending INVITE...");
+                Invite();
+                Log("INVITE send. Waiting for provisional response");
+                RefreshDialogForm(_clientDialog);
+                GoToState(PhoneState.WaitForProvisional);
+            }
+            else if(_state == PhoneState.Ringing)
+            {
+                Log("Sending OK...");
+                SendOk();
+                Log("OK send. Waiting for ACK...");
+                RefreshDialogForm(_clientDialog);
+                GoToState(PhoneState.WaitingForAck);
+            }
+            else if (_state == PhoneState.CallerEstablished)
+            {
+                Log("Sending Bye...");
+                SendBye(_clientDialog);
+                Log("Bye send. Waiting for OK...");
+                RefreshDialogForm(_clientDialog);
+                GoToState(PhoneState.WaitingForByeOK);
+            }
+            else if (_state == PhoneState.CalleeEstablished)
+            {
+                Log("Sending Bye...");
+                SendBye(_serverDialog);
+                Log("Bye send. Waiting for OK...");
+                RefreshDialogForm(_serverDialog);
+                GoToState(PhoneState.WaitingForByeOK);
+            }
+        }
+
         
+        private void Log(string message, params object[] args)
+        {
+            _txtLog.Text = string.Format(message, args) + "\r\n";
+        }
     }
     //public void ProcessRequest(SipRequestEvent requestEvent)
     //{

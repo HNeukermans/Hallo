@@ -52,7 +52,7 @@
             // 
             this._pnlNavigation.Controls.Add(this.panel1);
             this._pnlNavigation.Location = new System.Drawing.Point(0, 25);
-            this._pnlNavigation.Size = new System.Drawing.Size(115, 461);
+            this._pnlNavigation.Size = new System.Drawing.Size(125, 461);
             this._pnlNavigation.Controls.SetChildIndex(this.panel1, 0);
             this._pnlNavigation.Controls.SetChildIndex(this._grbActions, 0);
             this._pnlNavigation.Controls.SetChildIndex(this._grbNavigation, 0);
@@ -63,7 +63,7 @@
             this._grbActions.Controls.Add(this._btnStartStop);
             this._grbActions.Dock = System.Windows.Forms.DockStyle.Top;
             this._grbActions.Location = new System.Drawing.Point(0, 37);
-            this._grbActions.Size = new System.Drawing.Size(115, 83);
+            this._grbActions.Size = new System.Drawing.Size(125, 83);
             // 
             // _grbNavigation
             // 
@@ -77,14 +77,14 @@
             this._grbNavigation.Controls.Add(this._btnDiagnostics);
             this._grbNavigation.Dock = System.Windows.Forms.DockStyle.Top;
             this._grbNavigation.Location = new System.Drawing.Point(0, 120);
-            this._grbNavigation.Size = new System.Drawing.Size(115, 232);
+            this._grbNavigation.Size = new System.Drawing.Size(125, 232);
             // 
             // _btnLog
             // 
             this._btnLog.Dock = System.Windows.Forms.DockStyle.Top;
             this._btnLog.Location = new System.Drawing.Point(3, 42);
             this._btnLog.Name = "_btnLog";
-            this._btnLog.Size = new System.Drawing.Size(109, 26);
+            this._btnLog.Size = new System.Drawing.Size(119, 26);
             this._btnLog.TabIndex = 8;
             this._btnLog.Text = "Log";
             this._btnLog.UseVisualStyleBackColor = true;
@@ -95,7 +95,7 @@
             this._btnDiagnostics.Dock = System.Windows.Forms.DockStyle.Top;
             this._btnDiagnostics.Location = new System.Drawing.Point(3, 16);
             this._btnDiagnostics.Name = "_btnDiagnostics";
-            this._btnDiagnostics.Size = new System.Drawing.Size(109, 26);
+            this._btnDiagnostics.Size = new System.Drawing.Size(119, 26);
             this._btnDiagnostics.TabIndex = 9;
             this._btnDiagnostics.Text = "Diagnostics";
             this._btnDiagnostics.UseVisualStyleBackColor = true;
@@ -106,7 +106,7 @@
             this._btnStartStop.Dock = System.Windows.Forms.DockStyle.Top;
             this._btnStartStop.Location = new System.Drawing.Point(3, 16);
             this._btnStartStop.Name = "_btnStartStop";
-            this._btnStartStop.Size = new System.Drawing.Size(109, 26);
+            this._btnStartStop.Size = new System.Drawing.Size(119, 26);
             this._btnStartStop.TabIndex = 7;
             this._btnStartStop.Text = "Start";
             this._btnStartStop.UseVisualStyleBackColor = true;
@@ -117,7 +117,7 @@
             this._btnConfigure.Dock = System.Windows.Forms.DockStyle.Top;
             this._btnConfigure.Location = new System.Drawing.Point(3, 42);
             this._btnConfigure.Name = "_btnConfigure";
-            this._btnConfigure.Size = new System.Drawing.Size(109, 26);
+            this._btnConfigure.Size = new System.Drawing.Size(119, 26);
             this._btnConfigure.TabIndex = 8;
             this._btnConfigure.Text = "Configure";
             this._btnConfigure.UseVisualStyleBackColor = true;
@@ -128,7 +128,7 @@
             this._btnSend.Dock = System.Windows.Forms.DockStyle.Top;
             this._btnSend.Location = new System.Drawing.Point(3, 68);
             this._btnSend.Name = "_btnSend";
-            this._btnSend.Size = new System.Drawing.Size(109, 26);
+            this._btnSend.Size = new System.Drawing.Size(119, 26);
             this._btnSend.TabIndex = 10;
             this._btnSend.Text = "Send";
             this._btnSend.UseVisualStyleBackColor = true;
@@ -139,7 +139,7 @@
             this._btnSendString.Dock = System.Windows.Forms.DockStyle.Top;
             this._btnSendString.Location = new System.Drawing.Point(3, 94);
             this._btnSendString.Name = "_btnSendString";
-            this._btnSendString.Size = new System.Drawing.Size(109, 26);
+            this._btnSendString.Size = new System.Drawing.Size(119, 26);
             this._btnSendString.TabIndex = 11;
             this._btnSendString.Text = "Send String";
             this._btnSendString.UseVisualStyleBackColor = true;
@@ -150,7 +150,7 @@
             this._btnTxDiagnostics.Dock = System.Windows.Forms.DockStyle.Top;
             this._btnTxDiagnostics.Location = new System.Drawing.Point(3, 120);
             this._btnTxDiagnostics.Name = "_btnTxDiagnostics";
-            this._btnTxDiagnostics.Size = new System.Drawing.Size(109, 26);
+            this._btnTxDiagnostics.Size = new System.Drawing.Size(119, 26);
             this._btnTxDiagnostics.TabIndex = 12;
             this._btnTxDiagnostics.Text = "Tx Diagnostics";
             this._btnTxDiagnostics.UseVisualStyleBackColor = true;
@@ -161,7 +161,7 @@
             this._btnRegister.Dock = System.Windows.Forms.DockStyle.Top;
             this._btnRegister.Location = new System.Drawing.Point(3, 146);
             this._btnRegister.Name = "_btnRegister";
-            this._btnRegister.Size = new System.Drawing.Size(109, 26);
+            this._btnRegister.Size = new System.Drawing.Size(119, 26);
             this._btnRegister.TabIndex = 13;
             this._btnRegister.Text = "Register";
             this._btnRegister.UseVisualStyleBackColor = true;
@@ -172,7 +172,7 @@
             this._btnDialog.Dock = System.Windows.Forms.DockStyle.Top;
             this._btnDialog.Location = new System.Drawing.Point(3, 172);
             this._btnDialog.Name = "_btnDialog";
-            this._btnDialog.Size = new System.Drawing.Size(109, 23);
+            this._btnDialog.Size = new System.Drawing.Size(119, 23);
             this._btnDialog.TabIndex = 14;
             this._btnDialog.Text = "Dialog";
             this._btnDialog.UseVisualStyleBackColor = true;
@@ -183,7 +183,7 @@
             this.@__btnPhone.Dock = System.Windows.Forms.DockStyle.Top;
             this.@__btnPhone.Location = new System.Drawing.Point(3, 195);
             this.@__btnPhone.Name = "__btnPhone";
-            this.@__btnPhone.Size = new System.Drawing.Size(109, 23);
+            this.@__btnPhone.Size = new System.Drawing.Size(119, 23);
             this.@__btnPhone.TabIndex = 15;
             this.@__btnPhone.Text = "Phone";
             this.@__btnPhone.UseVisualStyleBackColor = true;
@@ -196,24 +196,24 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(115, 37);
+            this.panel1.Size = new System.Drawing.Size(125, 37);
             this.panel1.TabIndex = 5;
             // 
             // _lblIpAddress
             // 
             this._lblIpAddress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this._lblIpAddress.AutoSize = true;
-            this._lblIpAddress.Location = new System.Drawing.Point(3, 20);
+            this._lblIpAddress.Location = new System.Drawing.Point(4, 20);
             this._lblIpAddress.Name = "_lblIpAddress";
-            this._lblIpAddress.Size = new System.Drawing.Size(54, 13);
+            this._lblIpAddress.Size = new System.Drawing.Size(17, 13);
             this._lblIpAddress.TabIndex = 0;
-            this._lblIpAddress.Text = "IpAddress";
+            this._lblIpAddress.Text = "IP";
             // 
             // _lblPID
             // 
             this._lblPID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this._lblPID.AutoSize = true;
-            this._lblPID.Location = new System.Drawing.Point(3, 6);
+            this._lblPID.Location = new System.Drawing.Point(4, 6);
             this._lblPID.Name = "_lblPID";
             this._lblPID.Size = new System.Drawing.Size(25, 13);
             this._lblPID.TabIndex = 1;

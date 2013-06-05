@@ -33,7 +33,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this._txtFromUri = new System.Windows.Forms.TextBox();
             this._chbUseTx = new System.Windows.Forms.CheckBox();
-            this._btnInvite = new System.Windows.Forms.Button();
             this._txtFromAlias = new System.Windows.Forms.TextBox();
             this._txtToAlias = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -42,15 +41,6 @@
             this._chbStubTimerFactory = new System.Windows.Forms.CheckBox();
             this._txtState = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this._btnCallerSendAck = new System.Windows.Forms.Button();
-            this._btnCallerSendCancel = new System.Windows.Forms.Button();
-            this._btnCallerSendBye = new System.Windows.Forms.Button();
-            this._grpbCallerActions = new System.Windows.Forms.GroupBox();
-            this._grpbCalleeActions = new System.Windows.Forms.GroupBox();
-            this._btnCalleeSendRinging = new System.Windows.Forms.Button();
-            this._btnCalleeSendOk = new System.Windows.Forms.Button();
-            this._btnCalleeSendBye = new System.Windows.Forms.Button();
-            this._btnCalleeSendCancel = new System.Windows.Forms.Button();
             this._grpbForm = new System.Windows.Forms.GroupBox();
             this._grpbDialogForm = new System.Windows.Forms.GroupBox();
             this._txtRouteSet = new System.Windows.Forms.TextBox();
@@ -71,8 +61,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this._grpbCallerActions.SuspendLayout();
-            this._grpbCalleeActions.SuspendLayout();
+            this._btnPhone = new System.Windows.Forms.Button();
+            this._txtLog = new System.Windows.Forms.TextBox();
             this._grpbDialogForm.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -121,16 +111,6 @@
             this._chbUseTx.Text = "Send Transactionally";
             this._chbUseTx.UseVisualStyleBackColor = true;
             this._chbUseTx.CheckedChanged += new System.EventHandler(this._chbUseTx_CheckedChanged);
-            // 
-            // _btnInvite
-            // 
-            this._btnInvite.Location = new System.Drawing.Point(15, 19);
-            this._btnInvite.Name = "_btnInvite";
-            this._btnInvite.Size = new System.Drawing.Size(100, 23);
-            this._btnInvite.TabIndex = 0;
-            this._btnInvite.Text = "Send Invite";
-            this._btnInvite.UseVisualStyleBackColor = true;
-            this._btnInvite.Click += new System.EventHandler(this._btnInvite_Click);
             // 
             // _txtFromAlias
             // 
@@ -195,7 +175,7 @@
             // 
             this._txtState.Location = new System.Drawing.Point(66, 14);
             this._txtState.Name = "_txtState";
-            this._txtState.Size = new System.Drawing.Size(104, 20);
+            this._txtState.Size = new System.Drawing.Size(253, 20);
             this._txtState.TabIndex = 12;
             // 
             // label5
@@ -206,100 +186,6 @@
             this.label5.Size = new System.Drawing.Size(45, 13);
             this.label5.TabIndex = 13;
             this.label5.Text = "STATE:";
-            // 
-            // _btnCallerSendAck
-            // 
-            this._btnCallerSendAck.Location = new System.Drawing.Point(15, 48);
-            this._btnCallerSendAck.Name = "_btnCallerSendAck";
-            this._btnCallerSendAck.Size = new System.Drawing.Size(100, 23);
-            this._btnCallerSendAck.TabIndex = 14;
-            this._btnCallerSendAck.Text = "Send Ack";
-            this._btnCallerSendAck.UseVisualStyleBackColor = true;
-            this._btnCallerSendAck.Click += new System.EventHandler(this._btnSendAck_Click);
-            // 
-            // _btnCallerSendCancel
-            // 
-            this._btnCallerSendCancel.Location = new System.Drawing.Point(15, 77);
-            this._btnCallerSendCancel.Name = "_btnCallerSendCancel";
-            this._btnCallerSendCancel.Size = new System.Drawing.Size(100, 23);
-            this._btnCallerSendCancel.TabIndex = 15;
-            this._btnCallerSendCancel.Text = "Send Cancel";
-            this._btnCallerSendCancel.UseVisualStyleBackColor = true;
-            this._btnCallerSendCancel.Click += new System.EventHandler(this._btnCallerSendCancel_Click);
-            // 
-            // _btnCallerSendBye
-            // 
-            this._btnCallerSendBye.Location = new System.Drawing.Point(15, 106);
-            this._btnCallerSendBye.Name = "_btnCallerSendBye";
-            this._btnCallerSendBye.Size = new System.Drawing.Size(100, 23);
-            this._btnCallerSendBye.TabIndex = 16;
-            this._btnCallerSendBye.Text = "Send Bye";
-            this._btnCallerSendBye.UseVisualStyleBackColor = true;
-            // 
-            // _grpbCallerActions
-            // 
-            this._grpbCallerActions.Controls.Add(this._btnInvite);
-            this._grpbCallerActions.Controls.Add(this._btnCallerSendAck);
-            this._grpbCallerActions.Controls.Add(this._btnCallerSendBye);
-            this._grpbCallerActions.Controls.Add(this._btnCallerSendCancel);
-            this._grpbCallerActions.Location = new System.Drawing.Point(18, 135);
-            this._grpbCallerActions.Name = "_grpbCallerActions";
-            this._grpbCallerActions.Size = new System.Drawing.Size(134, 149);
-            this._grpbCallerActions.TabIndex = 18;
-            this._grpbCallerActions.TabStop = false;
-            this._grpbCallerActions.Text = "Caller Actions";
-            // 
-            // _grpbCalleeActions
-            // 
-            this._grpbCalleeActions.Controls.Add(this._btnCalleeSendRinging);
-            this._grpbCalleeActions.Controls.Add(this._btnCalleeSendOk);
-            this._grpbCalleeActions.Controls.Add(this._btnCalleeSendBye);
-            this._grpbCalleeActions.Controls.Add(this._btnCalleeSendCancel);
-            this._grpbCalleeActions.Location = new System.Drawing.Point(163, 135);
-            this._grpbCalleeActions.Name = "_grpbCalleeActions";
-            this._grpbCalleeActions.Size = new System.Drawing.Size(135, 149);
-            this._grpbCalleeActions.TabIndex = 19;
-            this._grpbCalleeActions.TabStop = false;
-            this._grpbCalleeActions.Text = "Callee Actions";
-            // 
-            // _btnCalleeSendRinging
-            // 
-            this._btnCalleeSendRinging.Location = new System.Drawing.Point(15, 19);
-            this._btnCalleeSendRinging.Name = "_btnCalleeSendRinging";
-            this._btnCalleeSendRinging.Size = new System.Drawing.Size(100, 23);
-            this._btnCalleeSendRinging.TabIndex = 0;
-            this._btnCalleeSendRinging.Text = "Send Ringing";
-            this._btnCalleeSendRinging.UseVisualStyleBackColor = true;
-            this._btnCalleeSendRinging.Click += new System.EventHandler(this._btnCalleeSendRinging_Click);
-            // 
-            // _btnCalleeSendOk
-            // 
-            this._btnCalleeSendOk.Location = new System.Drawing.Point(15, 48);
-            this._btnCalleeSendOk.Name = "_btnCalleeSendOk";
-            this._btnCalleeSendOk.Size = new System.Drawing.Size(100, 23);
-            this._btnCalleeSendOk.TabIndex = 14;
-            this._btnCalleeSendOk.Text = "Send OK";
-            this._btnCalleeSendOk.UseVisualStyleBackColor = true;
-            this._btnCalleeSendOk.Click += new System.EventHandler(this._btnCalleeSendOk_Click);
-            // 
-            // _btnCalleeSendBye
-            // 
-            this._btnCalleeSendBye.Location = new System.Drawing.Point(15, 106);
-            this._btnCalleeSendBye.Name = "_btnCalleeSendBye";
-            this._btnCalleeSendBye.Size = new System.Drawing.Size(100, 23);
-            this._btnCalleeSendBye.TabIndex = 16;
-            this._btnCalleeSendBye.Text = "Send Bye";
-            this._btnCalleeSendBye.UseVisualStyleBackColor = true;
-            this._btnCalleeSendBye.Click += new System.EventHandler(this._btnCalleeSendBye_Click);
-            // 
-            // _btnCalleeSendCancel
-            // 
-            this._btnCalleeSendCancel.Location = new System.Drawing.Point(15, 77);
-            this._btnCalleeSendCancel.Name = "_btnCalleeSendCancel";
-            this._btnCalleeSendCancel.Size = new System.Drawing.Size(100, 23);
-            this._btnCalleeSendCancel.TabIndex = 15;
-            this._btnCalleeSendCancel.Text = "Send Cancel";
-            this._btnCalleeSendCancel.UseVisualStyleBackColor = true;
             // 
             // _grpbForm
             // 
@@ -330,7 +216,7 @@
             this._grpbDialogForm.Controls.Add(this.label8);
             this._grpbDialogForm.Controls.Add(this.label7);
             this._grpbDialogForm.Controls.Add(this.label6);
-            this._grpbDialogForm.Location = new System.Drawing.Point(304, 135);
+            this._grpbDialogForm.Location = new System.Drawing.Point(384, 135);
             this._grpbDialogForm.Name = "_grpbDialogForm";
             this._grpbDialogForm.Size = new System.Drawing.Size(324, 302);
             this._grpbDialogForm.TabIndex = 21;
@@ -484,15 +370,35 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "Call-Id:";
             // 
+            // _btnPhone
+            // 
+            this._btnPhone.Location = new System.Drawing.Point(21, 140);
+            this._btnPhone.Name = "_btnPhone";
+            this._btnPhone.Size = new System.Drawing.Size(357, 40);
+            this._btnPhone.TabIndex = 17;
+            this._btnPhone.Text = "Call";
+            this._btnPhone.UseVisualStyleBackColor = true;
+            this._btnPhone.Click += new System.EventHandler(this._btnPhone_Click);
+            // 
+            // _txtLog
+            // 
+            this._txtLog.AcceptsReturn = true;
+            this._txtLog.Location = new System.Drawing.Point(24, 186);
+            this._txtLog.Multiline = true;
+            this._txtLog.Name = "_txtLog";
+            this._txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this._txtLog.Size = new System.Drawing.Size(351, 251);
+            this._txtLog.TabIndex = 31;
+            // 
             // DialogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(720, 449);
+            this.Controls.Add(this._txtLog);
+            this.Controls.Add(this._btnPhone);
             this.Controls.Add(this._grpbDialogForm);
             this.Controls.Add(this._txtToUri);
-            this.Controls.Add(this._grpbCalleeActions);
-            this.Controls.Add(this._grpbCallerActions);
             this.Controls.Add(this.label5);
             this.Controls.Add(this._txtState);
             this.Controls.Add(this._chbStubTimerFactory);
@@ -508,8 +414,6 @@
             this.Controls.Add(this._grpbForm);
             this.Name = "DialogForm";
             this.Text = "Dialog";
-            this._grpbCallerActions.ResumeLayout(false);
-            this._grpbCalleeActions.ResumeLayout(false);
             this._grpbDialogForm.ResumeLayout(false);
             this._grpbDialogForm.PerformLayout();
             this.ResumeLayout(false);
@@ -519,7 +423,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button _btnInvite;
         private System.Windows.Forms.CheckBox _chbUseTx;
         private System.Windows.Forms.TextBox _txtFromUri;
         private System.Windows.Forms.Label label1;
@@ -533,15 +436,6 @@
         private System.Windows.Forms.CheckBox _chbStubTimerFactory;
         private System.Windows.Forms.TextBox _txtState;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button _btnCallerSendAck;
-        private System.Windows.Forms.Button _btnCallerSendCancel;
-        private System.Windows.Forms.Button _btnCallerSendBye;
-        private System.Windows.Forms.GroupBox _grpbCallerActions;
-        private System.Windows.Forms.GroupBox _grpbCalleeActions;
-        private System.Windows.Forms.Button _btnCalleeSendRinging;
-        private System.Windows.Forms.Button _btnCalleeSendOk;
-        private System.Windows.Forms.Button _btnCalleeSendBye;
-        private System.Windows.Forms.Button _btnCalleeSendCancel;
         private System.Windows.Forms.GroupBox _grpbForm;
         private System.Windows.Forms.GroupBox _grpbDialogForm;
         private System.Windows.Forms.TextBox _txtRouteSet;
@@ -562,5 +456,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button _btnPhone;
+        private System.Windows.Forms.TextBox _txtLog;
     }
 }
