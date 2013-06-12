@@ -58,7 +58,7 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
 
         private void OnTimeOut()
         {
-            ChangeState(SipInviteClientTransaction.TerminatedState);
+            //ChangeState(SipInviteClientTransaction.TerminatedState);
 
             Dispose();
 
@@ -67,7 +67,8 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
 
         private void OnCompletedEnded()
         {
-            ChangeState(SipInviteClientTransaction.TerminatedState);
+            //changing to TerminatedState ni the dispose method.
+            // ChangeState(SipInviteClientTransaction.TerminatedState);
             Dispose();
         }
 
@@ -84,12 +85,14 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
                 SipAbstractClientTransaction tx;
                 _table.TryRemove(this.GetId(), out tx);
 
-                //State = TerminatedState; is done outside of this method
+                //removed comment. but not sure. 03.06.2013
+                State = TerminatedState; //is done outside of this method?
             }
 
             if (_stateObserver != null)
             {
-                //_stateObserver.OnNext(CreateStateInfo(State.Name));
+                //removed comment. but not sure. 03.06.2013
+                _stateObserver.OnNext(CreateStateInfo(State.Name)); //is done outside of this method?
                 _stateObserver.OnCompleted();
             }
         }
@@ -129,6 +132,10 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
             if(result.Dispose)
             {
                 Dispose();
+            }
+            if (GetDialog() != null)
+            {
+                GetDialog().SetLastResponse(responseEvent.Response);
             }
         }
         

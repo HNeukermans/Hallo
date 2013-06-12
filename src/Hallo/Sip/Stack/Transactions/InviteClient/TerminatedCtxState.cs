@@ -16,11 +16,13 @@
 
             internal override void Retransmit(SipInviteClientTransaction transaction)
             {
-                
+                //a ringing response is received after, an ok. TODO: add logging
             }
 
             internal override StateResult HandleResponse(SipInviteClientTransaction ctx, SipResponse response)
             {
+                //a ringing response is received after, an ok. TODO: add logging.
+          
                 return new StateResult();
             }
         }
