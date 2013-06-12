@@ -27,7 +27,7 @@ namespace Hallo.UnitTest.Sip.UdpSipListenerTests
         {
             var stub = new SipReceivedMessageProcessorStub(OnRequestReceived, (s,e) => { });
 
-            var provider = new SipContextSource(_listenerEndPoint);
+            //var provider = new SipContextSource(_listenerEndPoint);
             provider.AddListener(null);
             provider.Start();
 

@@ -83,7 +83,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         }
 
         [Test]
-        public void Expect_the_dialog_to_contain_zero_dialogs()
+        public void Expect_the_dialogtable_to_contain_zero_dialogs()
         {
             DialogTable.Count.Should().Be(0);
         }

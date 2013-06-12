@@ -3,19 +3,16 @@ using Hallo.Component;
 using Hallo.Sip;
 using Hallo.Sip.Stack;
 using Hallo.Sip.Stack.Dialogs;
-using Hallo.Sip.Stack.Transactions.InviteServer;
+using Hallo.Sip.Stack.Transactions;
 using Hallo.Sip.Stack.Transactions.NonInviteServer;
 using Hallo.Sip.Util;
 using Hallo.UnitTest.Builders;
 using Hallo.UnitTest.Helpers;
-using Hallo.UnitTest.Sip.SipClientDialogTests;
-using Hallo.UnitTest.Stubs;
-using Hallo.Util;
 using Moq;
 
-namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
+namespace Hallo.UnitTest.Sip.SipInviteClientDialogTests
 {
-    public class SipInviteServerDialogSpecificationBase : Specification
+    public class SipInviteClientDialogSpecificationBase : Specification
     {
         protected ITimerFactory TimerFactory { get; set; }
         protected Mock<ISipMessageSender> Sender { get; set; }
@@ -37,11 +34,9 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         protected SipRequestEvent _requestEvent;
         protected SipResponse _response;
         protected ISipServerTransaction _inviteTransaction;
+        protected string _remoteUri;
+        protected SipUri _remoteTarget;
 
-
-        protected TxTimerStub RetransitOkTimer { get; set; }
-        protected TxTimerStub EndWaitForAckTimer { get; set; }
-        
 
         protected SipRequest CreateInviteRequest()
         {
@@ -57,13 +52,13 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
                 .WithCallId(
                     new SipCallIdHeaderBuilder().WithValue(_callId).Build())
                 .WithContacts(
-                new SipContactHeaderListBuilder()
-                .Add(new SipContactHeaderBuilder().WithSipUri(TestConstants.AliceContactUri).Build())
-                .Build())
+                    new SipContactHeaderListBuilder()
+                        .Add(new SipContactHeaderBuilder().WithSipUri(TestConstants.AliceContactUri).Build())
+                        .Build())
                 .WithRecordRoutes(
-                new SipRecordRouteHeaderListBuilder()
-                .Add(new SipRecordRouteHeaderBuilder().WithSipUri(TestConstants.AliceProxyUri).Build())
-                .Build())
+                    new SipRecordRouteHeaderListBuilder()
+                        .Add(new SipRecordRouteHeaderBuilder().WithSipUri(TestConstants.AliceProxyUri).Build())
+                        .Build())
                 .Build();
 
             return r;
@@ -71,19 +66,27 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
 
         protected SipResponse CreateRingingResponse()
         {
-            var r = ReceivedRequest.CreateResponse(SipResponseCodes.x180_Ringing);
+            var r = InvitingRequest.CreateResponse(SipResponseCodes.x180_Ringing);
             r.To.Tag = _toTag;
+            AddContactHeader(r);
             return r;
+        }
+
+        private void AddContactHeader(SipResponse response)
+        {
+            var contactHeader = new SipContactHeaderBuilder().WithSipUri(TestConstants.BobContactUri).Build();
+            response.Contacts.Add(contactHeader);
         }
 
         protected SipResponse CreateOkResponse()
         {
-            var r = ReceivedRequest.CreateResponse(SipResponseCodes.x200_Ok);
+            var r = InvitingRequest.CreateResponse(SipResponseCodes.x200_Ok);
             r.To.Tag = _toTag;
+            AddContactHeader(r);
             return r;
         }
 
-        public SipInviteServerDialogSpecificationBase()
+        public SipInviteClientDialogSpecificationBase()
         {
             _toTag = SipUtil.CreateTag();
             _fromTag = SipUtil.CreateTag();
@@ -93,59 +96,47 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
             Sender = new Mock<ISipMessageSender>();
             Listener = new Mock<ISipListener>();
             DialogTable = new SipDialogTable();
-            ReceivedRequest = CreateInviteRequest();
-            
-            InviteStx = new Mock<ISipServerTransaction>();
-            InviteStx.Setup((tx) => tx.Request).Returns(ReceivedRequest);
+            InvitingRequest = CreateInviteRequest();
 
-            var tfb = new TimerFactoryStubBuilder()
-               .WithInviteCtxRetransmitTimerInterceptor(OnCreateRetransmitOkTimer)
-               .WithInviteCtxTimeOutTimerInterceptor(OnCreateTimeOutTimer);
-            
+            InviteCtx = new Mock<ISipClientTransaction>();
+            InviteCtx.Setup((tx) => tx.Request).Returns(InvitingRequest);
+
+            var tfb = new TimerFactoryStubBuilder();
+           
             TimerFactory = tfb.Build();
         }
 
-        protected virtual ITimer OnCreateRetransmitOkTimer(Action action)
-        {
-            RetransitOkTimer = new TxTimerStub(action, int.MaxValue, false, () => { });
-            return RetransitOkTimer;
-        }
+        protected SipResponse ReceivedResponse { get; set; }
 
-        protected virtual ITimer OnCreateTimeOutTimer(Action action)
-        {
-            EndWaitForAckTimer = new TxTimerStub(action, int.MaxValue, false, () => { });
-            return EndWaitForAckTimer;
-        }
+        protected Mock<ISipClientTransaction> InviteCtx { get; set; }
 
-        protected Mock<ISipServerTransaction> InviteStx { get; set; }
+        protected SipRequest InvitingRequest { get; set; }
 
-        protected SipRequest ReceivedRequest { get; set; }
-        
         protected SipDialogTable DialogTable { get; set; }
 
-        protected SipInviteServerDialog ServerDialog { get; set; }
-        
-        protected override void  Given()
+        protected SipInviteClientDialog ClientDialog { get; set; }
+
+        protected override void Given()
         {
             //setup the Request property of the inc inviteserver
-            ReceivedRequest = CreateInviteRequest();
+            InvitingRequest = CreateInviteRequest();
             var tfb = new TimerFactoryStubBuilder();
-            InviteStx = new Mock<ISipServerTransaction>();
-            InviteStx.Setup((tx) => tx.Request).Returns(ReceivedRequest);
-            
+            InviteCtx = new Mock<ISipClientTransaction>();
+            InviteCtx.Setup((tx) => tx.Request).Returns(InvitingRequest);
+
             //create the dialog;
-            ServerDialog = new SipInviteServerDialog(InviteStx.Object,
-                                                   DialogTable,
-                                                   TimerFactory,
-                                                   new SipHeaderFactory(),
-                                                   new SipMessageFactory(), new SipAddressFactory(), 
-                                                   Sender.Object,
-                                                   Listener.Object,
-                                                   TestConstants.IpEndPoint1);
+            ClientDialog = new SipInviteClientDialog(InviteCtx.Object,
+                                                     DialogTable,
+                                                     new SipHeaderFactory(),
+                                                     new SipMessageFactory(), 
+                                                     new SipAddressFactory(),
+                                                     Sender.Object,
+                                                     Listener.Object,
+                                                     TestConstants.IpEndPoint1);
 
             GivenOverride();
         }
-        
+
         protected virtual void GivenOverride()
         {
 
@@ -153,9 +144,10 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
 
         protected SipResponse CreateBusyHereResponse()
         {
-            var r = ReceivedRequest.CreateResponse(SipResponseCodes.x486_Busy_Here);
+            var r = InvitingRequest.CreateResponse(SipResponseCodes.x486_Busy_Here);
             r.To.Tag = _toTag;
             return r;
         }
     }
+
 }

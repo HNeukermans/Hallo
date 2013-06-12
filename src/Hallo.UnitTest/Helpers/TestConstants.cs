@@ -19,8 +19,8 @@ namespace Hallo.UnitTest.Helpers
         public static string MyUserName = "Hannes-HP";
         public static SipUri AliceUri = new SipAddressFactory().CreateUri("alice", "atlanta.com");
         public static SipUri BobUri = new SipAddressFactory().CreateUri("bob", "biloxi.com");
-        public static SipUri AliceContactUri = new SipAddressFactory().CreateUri("alice", "u1.atlanta.com");
-        public static SipUri BobContactUri = new SipAddressFactory().CreateUri("bob", "u2.biloxi.com");
+        public static SipUri AliceContactUri = new SipAddressFactory().CreateUri("", "u1.atlanta.com");
+        public static SipUri BobContactUri = new SipAddressFactory().CreateUri("", "u2.biloxi.com");
         public static SipUri BobProxyUri;
         public static SipUri AliceProxyUri;
 
