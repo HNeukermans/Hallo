@@ -276,7 +276,7 @@ namespace Hallo.Sip
 
         public SipInviteServerDialog CreateServerDialog(ISipServerTransaction transaction)
         {
-            var inviteTx = transaction as ISipInviteServerTransaction;
+            var inviteTx = transaction as SipInviteServerTransaction;
             
             Check.Require(transaction, "transaction");
             Check.IsTrue(inviteTx != null, "The transaction must be of type 'SipInviteServerTransaction'");
@@ -284,8 +284,8 @@ namespace Hallo.Sip
             Check.Require(inviteTx.Request.From, "The From header can not be null");
             Check.NotNullOrEmpty(inviteTx.Request.From.Tag, "From tag");
 
-            return new SipInviteServerDialog(
-                (ISipInviteServerTransaction)transaction,
+            var dialog = new SipInviteServerDialog(
+                (ISipServerTransaction)transaction,
                 _dialogTable,
                 _stack.GetTimerFactory(), 
                 _stack.CreateHeaderFactory(),
@@ -294,6 +294,12 @@ namespace Hallo.Sip
                 this,
                 _sipListener,
                 _contextSource.ListeningPoint);
+
+            //setting the dialog is done out of the transaction.
+            //(otherwise you need to interface the SetDialog method, both on InviteClient & InviteServer transaction)
+            //thus creating again to separate interfaces or adding the method on existing interface
+            inviteTx.SetDialog(dialog);
+            return dialog;
         }
 
         public SipInviteClientDialog CreateClientDialog(ISipClientTransaction transaction)
@@ -306,7 +312,7 @@ namespace Hallo.Sip
             Check.Require(inviteTx.Request.From, "The From header can not be null");
             Check.NotNullOrEmpty(inviteTx.Request.From.Tag, "From tag");
 
-            return new SipInviteClientDialog(
+            var dialog = new SipInviteClientDialog(
                 inviteTx, 
                 _dialogTable,
                 _stack.CreateHeaderFactory(),
@@ -315,6 +321,10 @@ namespace Hallo.Sip
                 this,
                 _sipListener,
                 _contextSource.ListeningPoint);
+            
+            inviteTx.SetDialog(dialog);
+
+            return dialog;
         }
         
         #endregion
@@ -625,7 +635,7 @@ namespace Hallo.Sip
         {
             if(stx.Request.To.Tag == null) return;
 
-            /* Based on the To tag, the UAS MAY either accept or reject the request.
+            /* merged request: Based on the To tag, the UAS MAY either accept or reject the request.
              * If the request has a tag in the To header field, 
              * but the dialog identifier does not match any existing dialogs*/
 

@@ -33,7 +33,7 @@ namespace Hallo.Util
         /// <param name="value">Parameter value</param>
         /// <param name="parameterOrErrorMessage">Parameter name, or error description.</param>
         /// <exception cref="ArgumentNullException">value is null.</exception>
-        public static void Require(object value, string parameterOrErrorMessage)
+        public static void Require<T>(T value, string parameterOrErrorMessage) where T : class 
         {
             if (value != null)
                 return;
@@ -45,16 +45,9 @@ namespace Hallo.Util
 
         }
 
-        /// <summary>
-        /// Checks whether a parameter is null.
-        /// </summary>
-        /// <param name="minValue"></param>
-        /// <param name="value">Parameter value</param>
-        /// <param name="parameterOrErrorMessage">Parameter name, or error description.</param>
-        /// <exception cref="ArgumentException">value is null.</exception>
-        public static void Min(int minValue, object value, string parameterOrErrorMessage)
+        public static void GreaterThenOrEqual(int value, int minValue, string parameterOrErrorMessage)
         {
-            if (value != null)
+            if (value >= minValue)
                 return;
 
             if (parameterOrErrorMessage.IndexOf(' ') == -1)

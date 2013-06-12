@@ -150,6 +150,9 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public string GetId()
         {
+            bool missingTag = string.IsNullOrEmpty(LocalTag) || string.IsNullOrEmpty(RemoteTag);
+            if (missingTag) return string.Empty;
+            //in comment due to logging dificulties. if(_state == DialogState.Null) throw new SipCoreException("GetId Failed. The dialog can not be in Null state.");
             return CallId + ":" + LocalTag + ":" + RemoteTag;
         }
 
@@ -253,9 +256,9 @@ namespace Hallo.Sip.Stack.Dialogs
             Check.IsTrue(response.CSeq.Command == SipMethods.Invite, "The response can not have a command other then 'INVITE'");
             Check.IsTrue(response.StatusLine.StatusCode != 100, "The response can not be 'TRYING'");
             Check.IsTrue(response.StatusLine.StatusCode / 100 == 1, "The response must be provisonal");
-            Check.Require(response.From.Tag != null, "From must have a tag");
-            Check.Require(response.To.Tag != null, "To must have a tag");
-            Check.Require(response.Contacts.GetTopMost() != null, "The response must have a Contact header.");
+            Check.IsTrue(response.From.Tag != null, "From must have a tag");
+            Check.IsTrue(response.To.Tag != null, "To must have a tag");
+            Check.IsTrue(response.Contacts.GetTopMost() != null, "The response must have a Contact header.");
         }
     }
 }

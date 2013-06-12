@@ -17,9 +17,10 @@ namespace Hallo.Sip.Stack.Dialogs
         private readonly SipRequest _firstRequest;
         private SipResponse _firstResponse;
         private bool _isAckSent = false;
+        private object _lock = new object();
 
-         public SipInviteClientDialog(
-             SipInviteClientTransaction transaction, 
+        public SipInviteClientDialog(
+             ISipClientTransaction transaction, 
              SipDialogTable dialogTable, 
              SipHeaderFactory headerFactory,
              SipMessageFactory messageFactory,
@@ -39,22 +40,9 @@ namespace Hallo.Sip.Stack.Dialogs
              _state = DialogState.Null;
              _firstRequest = transaction.Request;
              _topMostVia = (SipViaHeader)transaction.Request.Vias.GetTopMost().Clone();
-             transaction.SetDialog(this);
-             transaction
-                 .Observe()
-                 .Where(s => s.CurrentState == SipTransactionStateName.Terminated)
-                 .Subscribe((s) => OnInviteTxTerminated());
-        }
-
-        private void OnInviteTxTerminated()
-        {
-            if(_state == DialogState.Null)
-            {
-                /*the tx has terminated and a provisional response hasn't been received yet.*/
-                Dispose();
-            }
-        }
-
+             
+         }
+        
         private void Dispose()
         {
             
@@ -104,51 +92,30 @@ namespace Hallo.Sip.Stack.Dialogs
                      _logger.Debug("StatusCode == 100. Ignoring 'TRYING' response");
                  return;
              }
-             //if (string.IsNullOrEmpty(response.To.Tag))
-             //{
-             //    if (_logger.IsDebugEnabled)
-             //        _logger.Debug("To tag is null. Ignoring '{0}' response", response.StatusLine.FormatToString());
-             //    return;
-             //}
-            
-             //TODO: needs to be locked!!!!
-             if (_firstResponse == null)
+
+             var newResponseState = GetCorrespondingState(response.StatusLine.StatusCode);
+             DialogState? previousState = null;
+             lock (_lock)
              {
-                 CheckFirstResponse(response);
-                 _firstResponse = response;
-                 
-                 response.RecordRoutes.ToList().ForEach(rr =>
+                 if (_firstResponse == null)
                  {
-                    if (!rr.SipUri.IsLooseRouting)
-                        throw new SipException("Strict routing is not supported. Use loose routing only.");
-                 });
-                
-                 _routeSet = response.RecordRoutes.ToList();
-                 _routeSet.Reverse();
-                 _remoteTarget = response.Contacts.GetTopMost().SipUri;
-                 _localSequenceNr = _firstRequest.CSeq.Sequence;
-                 /*_remoteSequenceNr remains empty */
-                 _callId = _firstRequest.CallId.Value;
-                 _localTag = _firstRequest.From.Tag;
-                 _remoteTag = response.To.Tag;
-                 _remoteUri = response.To.SipUri;
-                 _localUri = _firstRequest.From.SipUri;
-                
-                 if (!_dialogTable.TryAdd(GetId(), this))
+                     CheckFirstResponse(response);
+                     _firstResponse = response;
+                     SetDialogProps();
+                 }
+                 if (newResponseState > _state)
                  {
-                     _logger.Warn("could not add dialog to table, because it already exists");
+                     previousState = _state;
+                     _state = newResponseState;
                  }
              }
-            
-             var lastResponseState = GetCorrespondingState(response.StatusLine.StatusCode);
 
-             if (lastResponseState > _state)
+             /*use prevState as a flag for state transition*/
+             if (previousState.HasValue)
              {
-                 _state = lastResponseState;
-
                  if (_logger.IsInfoEnabled)
-                     _logger.Info("ClientDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), _state,
-                                  lastResponseState);
+                     _logger.Info("ClientDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), previousState,
+                                  _state);
 
                  if (_state == DialogState.Early)
                  {
@@ -159,19 +126,43 @@ namespace Hallo.Sip.Stack.Dialogs
 
                      if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}] added to table.", GetId());
                  }
-                 else if (_state == DialogState.Confirmed)
-                 {
-                     //TODO:check rfc what to do here. if ack has been sent, resend when ok comes back in.
-                     if (_logger.IsDebugEnabled)
-                         _logger.Debug("ClientDialog[Id={0}]. RETRANSMIT_OK & WAIT_FOR_ACK timers started.", GetId());
-
-                     //_okResponse = response;
-                     ///*start timers*/
-                     //_retransmitOkTimer.Start();
-                     //_endWaitForAckTimer.Start();
-                 }
              }
+            
+             //if (lastResponseState > _state)
+             //{
+             //    _state = lastResponseState;
+
+             //    if (_logger.IsInfoEnabled)
+             //        _logger.Info("ClientDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), _state,
+             //                     lastResponseState);
+
+             //    if (_state == DialogState.Early)
+             //    {
+             //    }
+             //    else if (_state == DialogState.Confirmed)
+             //    {
+             //        //_okResponse = response;
+             //        ///*start timers*/
+             //        //_retransmitOkTimer.Start();
+             //        //_endWaitForAckTimer.Start();
+             //    }
+             //}
          }
+
+        private void SetDialogProps()
+        {
+             _localSequenceNr = _firstRequest.CSeq.Sequence;
+            /*_remoteSequenceNr remains empty */
+            _callId = _firstRequest.CallId.Value;
+            _localTag = _firstRequest.From.Tag;
+            _remoteUri = _firstRequest.To.SipUri;
+            _localUri = _firstRequest.From.SipUri;
+
+            _remoteTag = _firstResponse.To.Tag;
+            _remoteTarget = _firstResponse.Contacts.GetTopMost().SipUri;
+            _routeSet = _firstResponse.RecordRoutes.ToList();//refuse looseroutin-less recordroutes
+            _routeSet.Reverse();
+        }
 
         public override void Terminate()
         {
@@ -195,10 +186,13 @@ namespace Hallo.Sip.Stack.Dialogs
             {
                 if(HasSentAck)
                 {
-                    /*it's a ok retransmit. Resend ack*/
+                    if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}]. Received retransmitted OK. Resending ACK...", GetId());
+
+                    /*it's an ok retransmit. Resend ack*/
                     result.InformToUser = false;
                     var acKRequest = CreateAck();
                     SendAck(acKRequest);
+                    if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}]. ACK sent.", GetId());
                 }
             }
         }

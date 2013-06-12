@@ -17,9 +17,10 @@ namespace Hallo.Sip.Stack.Dialogs
         private SipResponse _okResponse;
         private ITimer _retransmitOkTimer;
         private ITimer _endWaitForAckTimer;
+        private object _lock = new object();
 
         public SipInviteServerDialog(
-            ISipInviteServerTransaction transaction, 
+            ISipServerTransaction transaction, 
             SipDialogTable dialogTable,
             ITimerFactory timerFactory,
             SipHeaderFactory headerFactory,
@@ -52,8 +53,6 @@ namespace Hallo.Sip.Stack.Dialogs
             //(only ?) localtag is set on firstresponse
             //localtarget is not defined, because is has no use, (every user agent knows it local address)
 
-            transaction.SetDialog(this);
-
             _retransmitOkTimer = _timerFactory.CreateInviteCtxRetransmitTimer(OnReTransmit);
             _endWaitForAckTimer = _timerFactory.CreateInviteCtxTimeOutTimer(OnWaitForAckTimeOut);
             
@@ -78,24 +77,29 @@ namespace Hallo.Sip.Stack.Dialogs
                     _logger.Debug("ServerDialog[Id={0}]. StatusCode == 100. Ignoring 'TRYING' response");
                 return;
             }
-            
-            if (_firstResponse == null)
+
+            var newResponseState = GetCorrespondingState(response.StatusLine.StatusCode);
+            DialogState? previousState = null;
+            lock(_lock)
             {
-                CheckFirstResponse(response);
-                _firstResponse = response;
-                _localTag = _firstResponse.To.Tag;
+                if (_firstResponse == null)
+                {
+                    CheckFirstResponse(response);
+                    _firstResponse = response;
+                    _localTag = _firstResponse.To.Tag;
+                }
+                if(newResponseState > _state)
+                {
+                    previousState = _state;
+                    _state = newResponseState;
+                }
             }
 
-            var lastResponseState = GetCorrespondingState(response.StatusLine.StatusCode);
-
-            /*check state transition*/
-            if (lastResponseState > _state)
+            /*use prevState as a flag for state transition*/
+            if (previousState.HasValue)
             {
                 if (_logger.IsInfoEnabled)
-                    _logger.Info("ServerDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), _state,
-                                 lastResponseState);
-
-                _state = lastResponseState;
+                    _logger.Info("ServerDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), previousState, _state);
 
                 if (_state == DialogState.Early)
                 {

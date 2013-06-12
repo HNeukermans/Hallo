@@ -1,5 +1,6 @@
 ﻿using System;
 using Hallo.Sip.Stack.Dialogs;
+using Hallo.Sip.Stack.Transactions.NonInviteServer;
 using Hallo.Util;
 
 namespace Hallo.Sip.Stack.Transactions.InviteServer
@@ -157,7 +158,7 @@ namespace Hallo.Sip.Stack.Transactions.InviteServer
             get { return  SipTransactionType.InviteServer; }
         }
 
-        internal void SetDialog(SipInviteServerDialog dialog)
+        public void SetDialog(SipInviteServerDialog dialog)
         {
             _dialog = dialog;
         }
