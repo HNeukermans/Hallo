@@ -158,11 +158,11 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public SipRequest CreateRequest(string method)
         {
-            if (State < DialogState.Early) throw new InvalidOperationException("The dialog is unable to create an 'ACK' Request. To be able to create an 'ACK' request, the Tx can not be in 'Null' state.");
+            if (State < DialogState.Early) throw new InvalidOperationException("The dialog is unable to create the request. A dialog in 'NULL' state can not create requests.");
 
             Check.IsTrue(SipMethods.IsMethod(method), "method argument must be a SIP method");
 
-            var cseqHeader = _headerFactory.CreateSCeqHeader(method, _localSequenceNr++);
+            var cseqHeader = _headerFactory.CreateSCeqHeader(method, _localSequenceNr);
             var toAddress = _addressFactory.CreateAddress(null, _remoteUri);
             var toHeader = _headerFactory.CreateToHeader(toAddress, _remoteTag);
             var fromAddress = _addressFactory.CreateAddress(null, _localUri);
@@ -171,11 +171,10 @@ namespace Hallo.Sip.Stack.Dialogs
             var viaHeader = _headerFactory.CreateViaHeader(_listeningPoint, SipConstants.Udp, SipUtil.CreateBranch());
             var requestUri = _remoteUri.Clone();
 
-            //var viaHeader = _topMostVia; 
             var maxForwardsHeader = _headerFactory.CreateMaxForwardsHeader();
             var request = _messageFactory.CreateRequest(
                 requestUri,
-                SipMethods.Ack,
+                method,
                 callIdheader,
                 cseqHeader,
                 fromHeader,
@@ -198,12 +197,29 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public abstract void Terminate();
 
-        public void SendRequest(ISipClientTransaction tx)
-        {
-            tx.SendRequest();
+        public abstract void SendRequest(ISipClientTransaction transaction);
 
-            if(tx.Request.RequestLine.Method == SipMethods.Bye)
+        protected void SendRequest(ISipClientTransaction transaction, int sequenceNr)
+        {
+            Check.Require(transaction, "tx");
+            Check.Require(transaction.Request, "tx.Request");
+
+            if (transaction.Request.RequestLine.Method == SipMethods.Bye)
             {
+                if (_state != DialogState.Confirmed)
+                    throw new SipCoreException("'BYE' request can not be sent. Only dialogs in 'CONFIRMED' state can send 'BYE' requests.");
+            }
+            
+            var method = transaction.Request.RequestLine.Method;
+
+            transaction.Request.CSeq.Sequence = sequenceNr;
+
+            transaction.SendRequest();
+            
+            if (method == SipMethods.Bye)
+            {
+                if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] has send '{1}' request. Terminating dialog...", GetId(), method);
+
                 Terminate();
             }
         }
@@ -213,6 +229,23 @@ namespace Hallo.Sip.Stack.Dialogs
             if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received as request[method={1}]", GetId(), requestEvent.Request.RequestLine.Method);
             var result = new DialogResult();
             result.InformToUser = true;
+
+            var seqNr = requestEvent.Request.CSeq.Sequence;
+
+            /* If the remote sequence number is empty, it MUST be set to the value
+              of the sequence number in the CSeq header field value in the request.
+              If the remote sequence number was not empty, but the sequence number
+              of the request is lower than the remote sequence number, the request
+              is out of order and MUST be rejected with a 500 (Server Internal
+              Error) response. remoteSequenceNr = unset value = -1*/
+            
+            if (seqNr < _remoteSequenceNr)
+            {
+                throw new SipException(SipResponseCodes.x500_Server_Internal_Error);
+            }
+
+            _remoteSequenceNr = seqNr;
+
             ProcessRequestOverride(result, requestEvent);
 
             if(result.InformToUser)
@@ -227,6 +260,9 @@ namespace Hallo.Sip.Stack.Dialogs
         public void ProcessResponse(SipResponseEvent responseEvent)
         {
             if(_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received response[StatusCode={1}].", GetId(), responseEvent.Response.StatusLine.StatusCode);
+
+            /*moved invocation out of ctx, to here. ctx now invokes ProcessResponse*/
+            SetLastResponse(responseEvent.Response);
 
             var r = new DialogResult();
             r.InformToUser = true;
@@ -243,10 +279,12 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public void ProcessTimeOut(SipTimeOutEvent timeOutEvent)
         {
-            if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received a timeout.", GetId());
-            
-            /*forward TODO: check rfc*/
-            //terminate dialog ?
+            if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received a timeout. Forwarding to listener...", GetId());
+
+            /*A UAC SHOULD also terminate a dialog if
+               no response at all is received for the request (the client
+               transaction would inform the TU about the timeout.) (==> and not the dialog)*/
+
             _listener.ProcessTimeOut(timeOutEvent);
         }
         
