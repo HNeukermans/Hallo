@@ -138,8 +138,8 @@ namespace Hallo.Sip
 
                         var datagram = new Datagram(data, _ipEndPoint, (IPEndPoint) remoteEp);
 
-                        _threadPool.QueueWorkItem(()=> ProcessIncomingDatagram(datagram));
-
+                        _threadPool.QueueWorkItem(ProcessIncomingDatagram, datagram, OnProcessIncomingDatagramCompleted, CallToPostExecute.Always);
+                        
                     }
                 }
                 catch (SocketException se)
@@ -155,6 +155,8 @@ namespace Hallo.Sip
             }
         }
 
+        public Exception Exception { get; set; }
+
         private object ProcessIncomingDatagram(object argument)
         {
             var datagram = argument as Datagram;
@@ -168,9 +170,17 @@ namespace Hallo.Sip
             }
             catch (Exception err)
             {
-                _logger.ErrorException("Failed starting a new SipContext instance. Exception: ", err);
+                _logger.ErrorException(string.Format("Failed starting a new SipContext instance. Exception: {0}", err.Message), err);
+                throw;
             }
             return 1;
+        }
+
+        private void OnProcessIncomingDatagramCompleted(IWorkItemResult result)
+        {
+            Exception e;
+            result.GetResult(out e);
+            if (e != null) UnhandledException(this, new ExceptionEventArgs(){ Exception = e});
         }
 
         public void Stop()
@@ -179,7 +189,8 @@ namespace Hallo.Sip
             _thread.Join();
             _socket.Close();
         }
-
+        
+        public event EventHandler<ExceptionEventArgs> UnhandledException = delegate { };
         public event EventHandler<SipContextReceivedEventArgs> NewContextReceived = delegate { };
     }
 }
