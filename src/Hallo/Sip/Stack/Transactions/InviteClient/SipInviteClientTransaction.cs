@@ -126,16 +126,22 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
 
             if (result.InformToUser)
             {
+                /*put this before 'inform to user', bc user can be a dialog TODO: use Lock*/
+                if (GetDialog() != null)
+                {
+                    //if (GetDialog().State != DialogState.Null)
+                    //    throw new SipCoreException("Invalid Dialog state. Only dialogs in NULL state can be referenced by Tx." +
+                    //                               "In any other state a dialog is listener of the Tx");
+                    GetDialog().ProcessResponse(responseEvent);
+                    SetDialog(null);
+                }
+
                 responseEvent.ClientTransaction = this;
                 _listener.ProcessResponse(responseEvent);
             }
             if(result.Dispose)
             {
                 Dispose();
-            }
-            if (GetDialog() != null)
-            {
-                GetDialog().SetLastResponse(responseEvent.Response);
             }
         }
         
