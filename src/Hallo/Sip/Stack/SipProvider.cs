@@ -40,6 +40,7 @@ namespace Hallo.Sip
         private IObserver<SipMessage> _requestReceivedObserver;
         private IObserver<SipMessage> _responseReceivedObserver;
         private SelfListener _selfListener;
+        private IExceptionHandler _exceptionHandler;
 
         #region props
 
@@ -91,7 +92,8 @@ namespace Hallo.Sip
 
             _stack = stack;
             _contextSource = contextSource;
-            contextSource.NewContextReceived +=(s,e) => OnNewContextReceived(e.Context); 
+            contextSource.NewContextReceived +=(s,e) => OnNewContextReceived(e.Context);
+            contextSource.UnhandledException += (s, e) => OnContextSourceUnhandledException(e.Exception); 
             
             _ctxTable = new SipClientTransactionTable();
             _stxTable = new SipServerTransactionTable();
@@ -274,6 +276,18 @@ namespace Hallo.Sip
             return ((SipInviteServerTransaction) tx).GetDialog();
         }
 
+        /// <summary>
+        /// Gets the dialog for the transaction.
+        /// </summary>
+        /// <remarks>
+        /// This is done because tx's are externalized by the ISipServerTransaction which don't have a GetDialog() message.
+        /// </remarks>
+        public SipAbstractDialog GetDialog(ISipClientTransaction tx)
+        {
+            Check.IsTrue(tx is SipInviteClientTransaction, "Tx is not a SipInviteClientTransaction. Only SipInviteClientTransaction can have an associated dialog !");
+            return ((SipInviteClientTransaction)tx).GetDialog();
+        }
+
         public SipInviteServerDialog CreateServerDialog(ISipServerTransaction transaction)
         {
             var inviteTx = transaction as SipInviteServerTransaction;
@@ -417,8 +431,13 @@ namespace Hallo.Sip
             if (_sipListener != _NullListener) throw new InvalidOperationException("A listener is already added.");
 
             _sipListener = sipListener;
+        }
 
-            //_selfListener = new SelfListener(_sipListener);
+        public void AddExceptionHandler(IExceptionHandler handler)
+        {
+            Check.Require(handler, "handler");
+
+            _exceptionHandler = handler;
         }
        
         public SipProviderDiagnosticInfo GetDiagnosticsInfo()
@@ -536,6 +555,7 @@ namespace Hallo.Sip
             catch (Exception err)
             {
                 _logger.ErrorException("Response failed.", err);
+                throw;
             }
         }
 
@@ -581,6 +601,12 @@ namespace Hallo.Sip
             {
                 requestProcessor.ProcessRequest(requestEvent);
 
+                if (!ShouldHaveResponse(requestEvent.Request))
+                {
+                    _logger.Debug("Processed {0} request. The request does not require a response. Skipping automatic response sending.", requestEvent.Request.RequestLine.Method);
+                    return;
+                }
+
                 if(requestEvent.Response == null)
                     throw new SipCoreException("Response to send can not be null. The ProcessRequest method is supposed to create a response message that is to be sent.");
 
@@ -603,7 +629,8 @@ namespace Hallo.Sip
             }
             catch (SipException sipException)
             {
-                SendErrorResponse(sipException, requestEvent);
+                if(ShouldHaveResponse(requestEvent.Request))
+                    SendErrorResponse(sipException, requestEvent);
             }
             catch (Exception err)
             {
@@ -611,7 +638,8 @@ namespace Hallo.Sip
 
                 try
                 {
-                    SendErrorResponse(err, requestEvent);
+                    if (ShouldHaveResponse(requestEvent.Request))
+                        SendErrorResponse(err, requestEvent);
                 }
                 catch (Exception errr)
                 {
@@ -619,7 +647,12 @@ namespace Hallo.Sip
                 }
             }
         }
-        
+
+        private bool ShouldHaveResponse(SipRequest request)
+        {
+            return request.RequestLine.Method != SipMethods.Ack;
+        }
+
         #endregion
 
         private void SetDialog(SipInviteClientTransaction tx)
@@ -686,6 +719,15 @@ namespace Hallo.Sip
             }
         }
 
+        /// <summary>
+        /// processes unhandled exceptions caught by the SipContextSource
+        /// </summary>
+        private void OnContextSourceUnhandledException(Exception exception)
+        {
+            if(_exceptionHandler != null)
+                _exceptionHandler.Handle(exception);
+        }
+
         private void SendErrorResponse(Exception exception, SipRequestEvent requestEvent)
         {
             Check.Require(exception, "exception");
@@ -710,6 +752,7 @@ namespace Hallo.Sip
                 try
                 {
                     _contextSource.SendTo(SipFormatter.FormatMessage(response), ipEndPoint);
+                    if (_responseSentObserver != null) _responseSentObserver.OnNext(response);
                 }
                 catch (SocketException err)
                 {
@@ -720,6 +763,8 @@ namespace Hallo.Sip
             {
                 _logger.Warn("Response can not be sent. Via TopMost header missing.");
             }
+
+           
         }
         
         internal static string GetDialogId(SipMessage message, bool isServer)
