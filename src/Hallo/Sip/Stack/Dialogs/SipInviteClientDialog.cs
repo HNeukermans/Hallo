@@ -18,6 +18,7 @@ namespace Hallo.Sip.Stack.Dialogs
         private SipResponse _firstResponse;
         private bool _isAckSent = false;
         private object _lock = new object();
+        private int _lastOKSequenceNr;
 
         public SipInviteClientDialog(
              ISipClientTransaction transaction, 
@@ -43,18 +44,18 @@ namespace Hallo.Sip.Stack.Dialogs
              
          }
         
-        private void Dispose()
-        {
-            
-        }
-
+       
         public SipRequest CreateAck()
         {
+            if (_state != DialogState.Confirmed)
+            {
+                throw new SipCoreException("The dialog can not create 'ACK' requests. Only dialogs in 'CONFIRMED' state can create 'ACK' requests.");
+            }
             /*12.2.1.1. Generating the Request*/
-            /*The sequence number of the CSeq header field MUST be the same as the INVITE being acknowledged,
+            /*The sequence number of the CSeq header field MUST be the same as the OK being acknowledged,
              * but the CSeq method MUST be ACK. */
             var ackRequest = CreateRequest(SipMethods.Ack);
-            var cseqHeader = _headerFactory.CreateSCeqHeader(SipMethods.Ack, _firstRequest.CSeq.Sequence);
+            var cseqHeader = _headerFactory.CreateSCeqHeader(SipMethods.Ack, _lastOKSequenceNr);
             ackRequest.CSeq = cseqHeader;
 
             return ackRequest;
@@ -76,10 +77,48 @@ namespace Hallo.Sip.Stack.Dialogs
         }
 
 
-        /// <summary>
-        /// TODO: needs to be locked!!!!
-        /// </summary>
-        /// <param name="response"></param>
+        public override void SendRequest(ISipClientTransaction transaction)
+        {
+            Check.Require(transaction, "tx");
+            Check.Require(transaction.Request, "tx.Request");
+            
+            var method = transaction.Request.RequestLine.Method;
+
+            if (method == SipMethods.Ack)
+            {
+                 throw new SipCoreException("'ACK' requests can not be send statefull. All 'ACK' requests must be send statelessly. Use the SendAck method instead.");
+            }
+
+            if (method == SipMethods.Cancel)
+            {
+                if (_state != DialogState.Early)
+                    throw new SipCoreException("'CANCEL' request can not be sent. Only dialogs in 'EARLY' state can send 'CANCEL' requests.");
+            }
+
+            var seqNrToUse = 0;
+            /*CSeq are incremented in each direction, excepting ACK and CANCEL, whose numbers equal the requests being acknowledged or cancelled*/
+
+            if (method == SipMethods.Cancel)
+            {
+                seqNrToUse = _firstRequest.CSeq.Sequence;
+            }
+            else
+            {
+
+                lock (_lock) ++_localSequenceNr;
+                seqNrToUse = _localSequenceNr;
+            }
+            
+            SendRequest(transaction, seqNrToUse);
+
+            if (method == SipMethods.Cancel)
+            {
+                if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] has send '{1}' request. Terminating dialog...", GetId(), method);
+
+                Terminate();
+            }
+        }
+
         public override void SetLastResponse(SipResponse response)
         {
             if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}]. Reponse[StatusCode:'{1}']", GetId(), response.StatusLine.StatusCode);
@@ -93,10 +132,11 @@ namespace Hallo.Sip.Stack.Dialogs
                  return;
              }
 
-             var newResponseState = GetCorrespondingState(response.StatusLine.StatusCode);
-             DialogState? previousState = null;
+            bool terminate = false;
              lock (_lock)
              {
+                 var newResponseState = GetCorrespondingState(response.StatusLine.StatusCode);
+
                  if (_firstResponse == null)
                  {
                      CheckFirstResponse(response);
@@ -105,48 +145,33 @@ namespace Hallo.Sip.Stack.Dialogs
                  }
                  if (newResponseState > _state)
                  {
-                     previousState = _state;
+                     if (_logger.IsInfoEnabled)
+                         _logger.Info("ClientDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), _state, newResponseState);
+
                      _state = newResponseState;
-                 }
-             }
-
-             /*use prevState as a flag for state transition*/
-             if (previousState.HasValue)
-             {
-                 if (_logger.IsInfoEnabled)
-                     _logger.Info("ClientDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), previousState,
-                                  _state);
-
-                 if (_state == DialogState.Early)
-                 {
-                     if (!_dialogTable.TryAdd(GetId(), this))
+                     
+                     if (_state == DialogState.Early)
                      {
-                         throw new SipCoreException("Could not add ClientDialog[Id={0}] to table, because it already exists.", GetId());
-                     }
+                         if (!_dialogTable.TryAdd(GetId(), this))
+                         {
+                             throw new SipCoreException("Could not add ClientDialog[Id={0}] to table, because it already exists.", GetId());
+                         }
 
-                     if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}] added to table.", GetId());
+                         if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}] added to table.", GetId());
+                     }
+                     else if (_state == DialogState.Terminated)
+                     {
+                         terminate = true;
+                     }
                  }
              }
-            
-             //if (lastResponseState > _state)
-             //{
-             //    _state = lastResponseState;
 
-             //    if (_logger.IsInfoEnabled)
-             //        _logger.Info("ClientDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), _state,
-             //                     lastResponseState);
-
-             //    if (_state == DialogState.Early)
-             //    {
-             //    }
-             //    else if (_state == DialogState.Confirmed)
-             //    {
-             //        //_okResponse = response;
-             //        ///*start timers*/
-             //        //_retransmitOkTimer.Start();
-             //        //_endWaitForAckTimer.Start();
-             //    }
-             //}
+             if (terminate)
+             {
+                 //terminate outside of lock, to prevent from deadlock !! 
+                 //terminate is public method and uses a lock !!
+                 Terminate();
+             }
          }
 
         private void SetDialogProps()
@@ -166,13 +191,16 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public override void Terminate()
         {
-            SipAbstractDialog removed;
-            if(!_dialogTable.TryRemove(GetId(), out removed))
+            lock(_lock)
             {
-                _logger.Warn("could not remove dialog with id: {0}", GetId());
-            }
+                SipAbstractDialog removed;
+                if (!_dialogTable.TryRemove(GetId(), out removed))
+                {
+                    _logger.Warn("could not remove dialog with id: {0}", GetId());
+                }
 
-            _state = DialogState.Terminated;
+                _state = DialogState.Terminated;
+            }
         }
 
         protected override void ProcessRequestOverride(DialogResult result, SipRequestEvent requestEvent)
@@ -184,10 +212,12 @@ namespace Hallo.Sip.Stack.Dialogs
         {
             if(responseEvent.Response.StatusLine.StatusCode / 100 == 2)
             {
+                _lastOKSequenceNr = responseEvent.Response.CSeq.Sequence;
+
                 if(HasSentAck)
                 {
                     if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}]. Received retransmitted OK. Resending ACK...", GetId());
-
+                    
                     /*it's an ok retransmit. Resend ack*/
                     result.InformToUser = false;
                     var acKRequest = CreateAck();
