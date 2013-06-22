@@ -105,6 +105,7 @@
     <Compile Include="Builders\SipRecordRouteHeaderBuilder.cs" />
     <Compile Include="Builders\SipRecordRouteHeaderListBuilder.cs" />
     <Compile Include="Builders\SipResponseBuilder.cs" />
+    <Compile Include="Builders\SipResponseEventBuilder.cs" />
     <Compile Include="Builders\TimerFactoryMockBuilder.cs" />
     <Compile Include="Builders\TxTimerBuilder.cs" />
     <Compile Include="Helpers\SipMessageBodyHelper.cs" />
@@ -132,8 +133,14 @@
     <Compile Include="Sip\SipInviteClientDialogTests\When_a_ringing_response_is_received.cs" />
     <Compile Include="Sip\SipInviteClientDialogTests\When_a_ringing_response_is_received_twice.cs" />
     <Compile Include="Sip\SipContactsHeaderTests.cs" />
+    <Compile Include="Sip\SipInviteClientDialogTests\When_in_confirmed_ack_sent_state_an_x200_final_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientDialogTests\When_in_confirmed_state_a_bye_request_is_sent.cs" />
     <Compile Include="Sip\SipInviteClientDialogTests\When_in_early_state.cs" />
+    <Compile Include="Sip\SipInviteClientDialogTests\When_in_early_state_a_non_x200_final_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientDialogTests\When_in_early_state_a_x200_final_response_is_received.cs" />
     <Compile Include="Sip\SipInviteClientDialogTests\When_in_null_state.cs" />
+    <Compile Include="Sip\SipInviteClientDialogTests\When_in_null_state_a_ringing_response_is_received.cs" />
+    <Compile Include="Sip\SipInviteClientDialogTests\When_in_terminated_state.cs" />
     <Compile Include="Sip\SipInviteClientTransactionTests\TxSpecificationBase.cs" />
     <Compile Include="Sip\SipInviteClientTransactionTests\When_in_calling_state_a_non2xx_final_response_is_received.cs" />
     <Compile Include="Sip\SipInviteClientTransactionTests\When_in_calling_state_a_provisional_response_is_received.cs" />

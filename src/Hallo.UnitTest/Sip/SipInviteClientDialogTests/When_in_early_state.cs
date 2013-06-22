@@ -31,10 +31,10 @@ namespace Hallo.UnitTest.Sip.SipInviteClientDialogTests
         }
 
         [Test]
-        public void Expect_the_RemoteSequenceNr_to_be_the_Cseq_of_the_response()
+        public void Expect_the_RemoteSequenceNr_to_be_minus_one()
         {
             //the remote sequence number should be set to the value of the sequence number in the CSeq header field of the request
-            ClientDialog.RemoteSequenceNr.Should().Be(ReceivedResponse.CSeq.Sequence);
+            ClientDialog.RemoteSequenceNr.Should().Be(-1);
         }
 
         [Test]
@@ -53,13 +53,13 @@ namespace Hallo.UnitTest.Sip.SipInviteClientDialogTests
         }
 
         [Test]
-        public void Expect_LocalSequenceNr_to_be_not_empty()
+        public void Expect_LocalSequenceNr_to_be_cseq_sequence_of_the_request()
         {
-            ClientDialog.LocalSequenceNr.Should().NotBe(-1);
+            ClientDialog.LocalSequenceNr.Should().Be(InvitingRequest.CSeq.Sequence);
         }
 
         [Test]
-        public void Expect_the_localtag_to_be_tag_of_the_from_header()
+        public void Expect_the_localtag_to_be_tag_of_the_fromheader()
         {
             ClientDialog.LocalTag.Should().Be(InvitingRequest.From.Tag);
         }
@@ -77,9 +77,9 @@ namespace Hallo.UnitTest.Sip.SipInviteClientDialogTests
         }
        
         [Test]
-        public void Expect_the_RemoteUri_to_be_Uri_of_the_fromheader_of_the_response()
+        public void Expect_the_RemoteUri_to_be_uri_of_the_toheader_of_the_request()
         {
-            ClientDialog.RemoteUri.Should().Be(ReceivedResponse.From.SipUri);
+            ClientDialog.RemoteUri.Should().Be(InvitingRequest.To.SipUri);
         }
 
         [Test]
@@ -95,13 +95,13 @@ namespace Hallo.UnitTest.Sip.SipInviteClientDialogTests
         }
 
         [Test]
-        public void Expect_the_LocalUri_to_be_FromUri_of_the_request()
+        public void Expect_the_LocalUri_to_be_uri_of_the_fromheader_of_the_request()
         {
             ClientDialog.LocalUri.Should().Be(InvitingRequest.From.SipUri);
         }
 
         [Test]
-        public void Expect_the_RemoteTag_to_be_tag_from_the_ToHeader()
+        public void Expect_the_RemoteTag_to_be_tag_of_the_toheader()
         {
             ClientDialog.RemoteTag.Should().Be(ReceivedResponse.To.Tag);
         }

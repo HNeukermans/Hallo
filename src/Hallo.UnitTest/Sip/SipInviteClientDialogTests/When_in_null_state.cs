@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Hallo.Sip;
-using Hallo.Sip.Stack.Dialogs;
 using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sip.SipInviteClientDialogTests
@@ -74,10 +73,9 @@ namespace Hallo.UnitTest.Sip.SipInviteClientDialogTests
         }
 
         [Test]
-        [ExpectedException(typeof(SipCoreException))]
-        public void Expect_the_dialog_GetId_to_throw_an_exception()
+        public void Expect_the_dialog_GetId_to_be_empty()
         {
-            ClientDialog.GetId();
+            ClientDialog.GetId().Should().BeEmpty();
         }
 
 

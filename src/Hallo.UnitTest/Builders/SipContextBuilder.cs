@@ -8,6 +8,7 @@ namespace Hallo.UnitTest.Builders
     {
         private SipRequest _request;
         private IPEndPoint _remoteEndPoint;
+        private SipResponse _response;
 
         public SipContextBuilder()
         {
@@ -31,8 +32,15 @@ namespace Hallo.UnitTest.Builders
         {
             var c = new SipContext();
             c.Request = _request;
+            c.Response = _response;
             c.RemoteEndPoint = _remoteEndPoint;
             return c;
+        }
+
+        public SipContextBuilder WithResponse(SipResponse response)
+        {
+            _response = response;
+            return this;
         }
     }
 }
