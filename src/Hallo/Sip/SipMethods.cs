@@ -15,7 +15,7 @@ namespace Hallo.Sip
 
         public const string Bye = "BYE";
 
-        public const string Cancel = "Cancel";
+        public const string Cancel = "CANCEL";
 
         internal static bool IsMethod(string word)
         {
