@@ -11,11 +11,17 @@ namespace Hallo.Sip
         void Stop();
         void SendTo(byte[] bytes, IPEndPoint ipEndPoint);
         event EventHandler<SipContextReceivedEventArgs> NewContextReceived;
+        event EventHandler<ExceptionEventArgs> UnhandledException;
         IPEndPoint ListeningPoint { get; }
         ISTPPerformanceCountersReader PerformanceCountersReader { get; }
         int BytesReceived { get; }
         int PacketsReceived { get; }
         int BytesSent { get; }
         int PacketsSent { get; }
+    }
+
+    public interface IExceptionHandler
+    {
+        void Handle(Exception e);
     }
 }
