@@ -8,12 +8,14 @@ using Hallo.Client.Forms;
 using Hallo.Client.Logic;
 using Hallo.Component.Forms;
 using Hallo.Component.Logic;
+using Hallo.Component.Logic.Extensions;
+using Hallo.Component.Logic.Reactive;
 using Hallo.Sip;
 using Hallo.Sip.Util;
 
 namespace Hallo.Client
 {
-    public partial class ClientMainForm : CoreMainForm
+    public partial class ClientMainForm : CoreMainForm, IExceptionHandler
     {
         public ClientConfiguration Configuration { get; set; }
         private bool _isStarted;
@@ -74,6 +76,7 @@ namespace Hallo.Client
                 SipProvider = SipStack.CreateSipProvider(listeningPoint);
                 MainSipListener = new SipPipeLineListener(this);
                 SipProvider.AddSipListener(MainSipListener);
+                SipProvider.AddExceptionHandler(this);
                 SipStack.Start();
 
 
@@ -117,7 +120,7 @@ namespace Hallo.Client
 
         internal void HandleException(Exception ex)
         {
-            MessageBox.Show(ex.Message);
+            EventAggregator.Instance.Publish(new ExceptionEvent(ex));
         }
 
         private void _btnSendString_Click(object sender, EventArgs e)
@@ -159,7 +162,19 @@ namespace Hallo.Client
                 FormsManager.OpenForm(typeof(PhoneForm), null);
             });
         }
+        
+        public new void Handle(Exception e)
+        {
+            //create the from, or bring it to front
+            this.OnUIThread(()=>
+            {
+                ExecuteActionHelper.ExecuteAction(delegate()
+                {
+                    FormsManager.OpenForm(typeof (ErrorForm),null);
+                });
+            });
 
-       
+            EventAggregator.Instance.Publish(new ExceptionEvent(e));
+        }
     }
 }

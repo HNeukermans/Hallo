@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace Hallo.Component.Logic.Reactive
 {
     public class LogEvent

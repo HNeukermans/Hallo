@@ -136,6 +136,12 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Forms\ErrorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ErrorForm.Designer.cs">
+      <DependentUpon>ErrorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormWithKey.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,6 +170,7 @@
     <Compile Include="Logic\FormHelper.cs" />
     <Compile Include="Logic\ProcessLogic.cs" />
     <Compile Include="Logic\PropertyChangedBase.cs" />
+    <Compile Include="Logic\Reactive\ExceptionEvent.cs" />
     <Compile Include="Logic\TxRowInfo.cs" />
     <Compile Include="Logic\Reactive\EventAggregator.cs" />
     <Compile Include="Logic\EventMessage.cs" />
@@ -196,6 +203,9 @@
     <Compile Include="UsageHistoryControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <EmbeddedResource Include="Forms\ErrorForm.resx">
+      <DependentUpon>ErrorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>
