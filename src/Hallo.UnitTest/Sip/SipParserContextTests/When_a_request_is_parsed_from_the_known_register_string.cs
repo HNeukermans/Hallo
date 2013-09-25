@@ -4,6 +4,7 @@ using System.Net;
 using FluentAssertions;
 using Hallo.Parsers;
 using Hallo.Sip;
+using Hallo.UnitTest.Builders;
 using Hallo.UnitTest.Helpers;
 using NUnit.Framework;
 
@@ -28,8 +29,7 @@ namespace Hallo.UnitTest.Sip
         protected override void When()
         {
             var bytes = SipFormatter.FormatToBytes(_knownRegisterRequestString);
-            _parserContext.Parse(bytes);
-            //waitHandle.WaitOne();
+            _sipRequest = _parser.Parse(new DatagramPacketBuilder().WithDataBytes(bytes).Build()) as SipRequest;
         }
 
         [Test]

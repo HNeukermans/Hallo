@@ -7,7 +7,7 @@ using Hallo.Sip.Stack.Transactions.NonInviteServer;
 
 namespace Hallo.Sip.Stack
 {
-    public interface ISipListener : IRequestProcessor, IResponseProcessor
+    public interface ISipListener : ISipRequestProcessor, ISipResponseProcessor
     {
         void ProcessTimeOut(SipTimeOutEvent timeOutEvent);
         

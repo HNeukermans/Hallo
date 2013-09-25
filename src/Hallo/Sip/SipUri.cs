@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using Hallo.Parsers;
 using Hallo.Sip.Headers;
+using Hallo.Sip.Util;
 using Hallo.Util;
 
 namespace Hallo.Sip
@@ -35,6 +37,25 @@ namespace Hallo.Sip
             {
                 _port = value;
             }
+        }
+
+        /// <summary>
+        /// returns the host and port as an IPEndPoint
+        /// </summary>
+        /// <returns></returns>
+        public IPEndPoint GetHostAndPort()
+        {
+            if(!SipUtil.IsIPAddress(Host)) throw new InvalidOperationException("Failed to convert Host to IpEndPoint. Host must be a numeric Ip address.");
+            return new IPEndPoint(IPAddress.Parse(Host), Port);
+        }
+
+        /// <summary>
+        /// returns true if the host is named. Returns false if the host is a numeric IpAddress.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasNamedHost()
+        {
+            return !SipUtil.IsIPAddress(Host);
         }
         
         public string FormatToString()

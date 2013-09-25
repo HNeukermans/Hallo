@@ -52,7 +52,7 @@ namespace Hallo.Parsers
             _reader.Consume('\r', '\n');
 
             if (!_reader.Contains('\n'))
-                throw new SipParseException("Invalid firstline.");
+                throw new ParseException("Invalid firstline.");
 
             var firstLine = _reader.ReadFoldedLine(); 
             
@@ -69,7 +69,7 @@ namespace Hallo.Parsers
             }
             else
             {
-                throw new SipParseException(ExceptionMessage.InvalidFirstLineFormat);
+                throw new ParseException(ExceptionMessage.InvalidFirstLineFormat);
             }
 
             _parserMethod = GetHeaderName;
@@ -101,7 +101,7 @@ namespace Hallo.Parsers
 
             _headerName = _reader.ReadUntil(':');
             if (_headerName == null)
-                throw new SipParseException(ExceptionMessage.InvalidHeaderName);
+                throw new ParseException(ExceptionMessage.InvalidHeaderName);
 
             _reader.Consume(); // eat colon
             _parserMethod = GetHeaderValue;
@@ -116,7 +116,7 @@ namespace Hallo.Parsers
             
             string value = _reader.ReadFoldedLine();
             if (value == null)
-                throw new SipParseException(ExceptionMessage.InvalidFormat);
+                throw new ParseException(ExceptionMessage.InvalidFormat);
 
             _headerValue += value;
             
@@ -125,7 +125,7 @@ namespace Hallo.Parsers
             if (System.String.Compare(_headerName, SipHeaderNames.ContentLength, System.StringComparison.OrdinalIgnoreCase) == 0)
             {
                 if (!int.TryParse(value, out _bodyBytesLeft))
-                    throw new SipParseException("Content length is not a number.");
+                    throw new ParseException("Content length is not a number.");
             }
 
             _listener.OnHeader(_headerName, _headerValue);
@@ -179,7 +179,7 @@ namespace Hallo.Parsers
                 return false;
             }
 
-            throw new SipParseException(ExceptionMessage.InvalidBodyLenght);
+            throw new ParseException(ExceptionMessage.InvalidBodyLenght);
         }
 
         /// <summary>
@@ -190,4 +190,6 @@ namespace Hallo.Parsers
     }
 
     
+
+
 }

@@ -4,7 +4,7 @@ using Hallo.Util;
 namespace Hallo.Parsers
 {
     [ParserFor(SipHeaderNames.CallId)]
-    public class SipCallIdHeaderParser : SipParser<SipCallIdHeader>
+    public class SipCallIdHeaderParser : AbstractParser<SipCallIdHeader>
     {
         public override SipCallIdHeader Parse(StringReader r)
         {

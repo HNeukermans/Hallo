@@ -48,11 +48,11 @@
             this._dgvErrors.Size = new System.Drawing.Size(682, 150);
             this._dgvErrors.TabIndex = 0;
             this._dgvErrors.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._dgvErrors_CellContentDoubleClick);
-            this._dgvErrors.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this._dgvErrors_RowsAdded);
             // 
             // TimeColumn
             // 
             this.TimeColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.TimeColumn.DataPropertyName = "DateTime";
             this.TimeColumn.HeaderText = "Time";
             this.TimeColumn.Name = "TimeColumn";
             this.TimeColumn.Width = 55;
@@ -70,6 +70,7 @@
             this.StackTraceColumn.HeaderText = "StackTrace";
             this.StackTraceColumn.Name = "StackTraceColumn";
             this.StackTraceColumn.Text = "Link";
+            this.StackTraceColumn.UseColumnTextForLinkValue = true;
             this.StackTraceColumn.Width = 69;
             // 
             // ErrorForm

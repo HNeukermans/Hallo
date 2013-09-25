@@ -9,13 +9,13 @@ using Hallo.Util;
 
 namespace Hallo.Parsers
 {
-    public class SipRequestLineParser : SipParser<SipRequestLine>
+    public class SipRequestLineParser : AbstractParser<SipRequestLine>
     {        
         public override SipRequestLine Parse(StringReader r)
         {
             string[] splitted = r.OriginalString.Split(' ');
 
-            if (splitted.Length != 3) throw new SipParseException(ExceptionMessage.InvalidRequestLineFormat);
+            if (splitted.Length != 3) throw new ParseException(ExceptionMessage.InvalidRequestLineFormat);
 
             SipRequestLine result = new SipRequestLine();
             result.Method = splitted[0];

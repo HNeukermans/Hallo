@@ -35,7 +35,6 @@ namespace Hallo.Sip
         private int _maxUdpMessageSize = 1400;
         private int _maxWorkerThreads = SmartThreadPool.DefaultMaxWorkerThreads;
         private int _minWorkerThreads = SmartThreadPool.DefaultMinWorkerThreads;
-        private bool _useSymmetricRouting = false;
         private SipProvider _sipProvider;
         private bool _enableThreadPoolPerformanceCounters;
         private SmartThreadPool _threadPool;
@@ -49,8 +48,8 @@ namespace Hallo.Sip
             get { return _maxUdpMessageSize; }
             set 
             {
-                //Contract.Requires(value > 0);
-               //Contract.Requires(value <= MAX_DATAGRAM_SIZE);
+                Check.GreaterThenOrEqual(value, 0, "MaxUdpMessageSize");
+                Check.IsTrue(value <= MAX_DATAGRAM_SIZE, "MaxUdpMessageSize can not be greater then 'MAX_DATAGRAM_SIZE'");
 
                 _maxUdpMessageSize = value; 
             }
@@ -64,9 +63,7 @@ namespace Hallo.Sip
             }
             set
             {
-                //Contract.Requires(value > 0);
-                //Contract.Requires(value <= 10);
-
+                Check.GreaterThenOrEqual(value, 0, "MaxWorkerThreads");
                 _maxWorkerThreads = value;
             }
         }
@@ -79,9 +76,7 @@ namespace Hallo.Sip
             }
             set
             {
-                //Contract.Requires(value > 0);
-                //Contract.Requires(value <= 10);
-
+                Check.GreaterThenOrEqual(value, 0, "MinWorkerThreads");
                 _minWorkerThreads = value;
             }
         }
@@ -95,7 +90,6 @@ namespace Hallo.Sip
             set
             {
                 Check.Require(value, "OutBoundProxy");
-
                 _outBoundProxy = value;
             }
         } 

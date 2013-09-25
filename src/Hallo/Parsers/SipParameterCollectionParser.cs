@@ -8,7 +8,7 @@ using Hallo.Sip;
 
 namespace Hallo.Parsers
 {
-    public class SipParameterCollectionParser : SipParser<SipParameterCollection>
+    public class SipParameterCollectionParser : AbstractParser<SipParameterCollection>
     {
         public SipParameterCollectionParser() : base() { }
 
@@ -29,14 +29,14 @@ namespace Hallo.Parsers
                     
                     if (string.IsNullOrWhiteSpace(paramString))
                     {
-                        throw new SipParseException("Parameter can not be found. A parameter is expected after ';'. OriginalString: '" + r.OriginalString + "' !");
+                        throw new ParseException("Parameter can not be found. A parameter is expected after ';'. OriginalString: '" + r.OriginalString + "' !");
                     }
                     
                     string[] name_value = paramString.Split(new char[] { '=' }, 2);
                         
                     if(name_value[0].StartsWith(" "))
                     {
-                        throw new SipParseException(string.Format("Unexpected token:' '. A parameter can not begin with a ' '. Parameter :'" + name_value + "' !"));
+                        throw new ParseException(string.Format("Unexpected token:' '. A parameter can not begin with a ' '. Parameter :'" + name_value + "' !"));
                     }
 
                     name_value[0] = name_value[0].TrimEnd();
@@ -55,7 +55,7 @@ namespace Hallo.Parsers
                 // Unknown data
                 else
                 {
-                    throw new SipParseException("Parameter prefix ';' can not be found. Each parameter must be prefixed. OriginalString: '" + r.OriginalString + "' !");
+                    throw new ParseException("Parameter prefix ';' can not be found. Each parameter must be prefixed. OriginalString: '" + r.OriginalString + "' !");
                 }
             }
 

@@ -53,7 +53,7 @@ namespace Hallo.UnitTest.Sip
                 {
                     new SipCSeqHeaderParser().Parse(s);
                 }
-                catch (SipParseException e)
+                catch (ParseException e)
                 {
                     exceptions++;
                 }
@@ -63,7 +63,7 @@ namespace Hallo.UnitTest.Sip
         }
 
         [Test]
-        [ExpectedException(typeof(SipParseException))]
+        [ExpectedException(typeof(ParseException))]
         public void Parse_ContainsNonNumericSequence_ExpectThrowException()
         {
             String[] strings = 

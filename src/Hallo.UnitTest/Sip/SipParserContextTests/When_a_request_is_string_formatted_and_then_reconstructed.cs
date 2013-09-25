@@ -25,8 +25,7 @@ namespace Hallo.UnitTest.Sip
         {
             _originalRequest = new SipRequestBuilder().Build();
             var bytes = SipFormatter.FormatMessage(_originalRequest);
-            _parserContext.Parse(bytes);
-            waitHandle.WaitOne();
+            _sipMessage = _parser.Parse(new DatagramPacketBuilder().WithDataBytes(bytes).Build()) as SipRequest;
         }
 
         [Test]
@@ -38,21 +37,21 @@ namespace Hallo.UnitTest.Sip
         }
 
         [Test]
-        public void Expect_the_reconstructed_vias_to_be_equal_to_the_original()
+        public void Expect_the_reconstructed_viaheaders_to_be_equal_to_the_original()
         {
             var c = ObjectComparer.Create();
             c.Compare(_originalRequest.Vias, _sipMessage.Vias).Should().BeTrue();
         }
 
         [Test]
-        public void Expect_the_reconstructed_from_to_be_equal_to_the_original()
+        public void Expect_the_reconstructed_fromheader_to_be_equal_to_the_original()
         {
             var c = ObjectComparer.Create();
             c.Compare(_originalRequest.From, _sipMessage.From).Should().BeTrue();
         }
 
         [Test]
-        public void Expect_the_reconstructed_to_to_be_equal_to_the_original()
+        public void Expect_the_reconstructed_toheader_to_be_equal_to_the_original()
         {
             var c = ObjectComparer.Create();
             c.Compare(_originalRequest.To, _sipMessage.To).Should().BeTrue();

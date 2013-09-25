@@ -37,6 +37,8 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
 
             Check.IsTrue(request.RequestLine.Method == SipMethods.Invite, "Method other then 'INVITE' is not allowed");
 
+            _logger = NLog.LogManager.GetCurrentClassLogger();
+
             _headerFactory = headerFactory;
             _messageFactory = messageFactory;
 
@@ -117,6 +119,12 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
 
         public override void ProcessResponse(SipResponseEvent responseEvent)
         {
+            if (_logger.IsDebugEnabled) _logger.Debug("InviteCtx[Id={0}]. Processing reponse[StatusCode:'{1}']", GetId(), responseEvent.Response.StatusLine.StatusCode);
+
+            if (_logger.IsDebugEnabled) _logger.Debug("InviteCtx[Id={0}]. State '{1}' is handling response...", GetId(), State.Name);
+            
+
+            responseEvent.ClientTransaction = this;
             StateResult result;
             lock (_lock)
             {
@@ -124,34 +132,45 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
                 result = State.HandleResponse(this, responseEvent.Response);
             }
 
+            if (_logger.IsDebugEnabled) _logger.Debug("InviteCtx[Id={0}]. Response handled by state. CurrentState:'{1}', InformToUser:'{2}', Dispose:'{3}'", GetId(), State.Name, result.InformToUser, result.Dispose);
+            
             if (result.InformToUser)
             {
                 /*put this before 'inform to user', bc user can be a dialog TODO: use Lock*/
                 if (GetDialog() != null)
                 {
+                    if (_logger.IsDebugEnabled) _logger.Debug("Tx is holding a dialog. Invoking ProcessResponse on Dialog.");
+            
                     //if (GetDialog().State != DialogState.Null)
                     //    throw new SipCoreException("Invalid Dialog state. Only dialogs in NULL state can be referenced by Tx." +
                     //                               "In any other state a dialog is listener of the Tx");
                     GetDialog().ProcessResponse(responseEvent);
-                    SetDialog(null);
                 }
 
-                responseEvent.ClientTransaction = this;
+                if (_logger.IsDebugEnabled) _logger.Debug("Passing response to listener: '{0}'", _listener.GetType().Name);
+            
                 _listener.ProcessResponse(responseEvent);
             }
             if(result.Dispose)
             {
+                if (_logger.IsDebugEnabled) _logger.Debug("InviteCtx[Id={0}]. Disposing...", GetId());
+            
                 Dispose();
+
+                if (_logger.IsDebugEnabled) _logger.Debug("InviteCtx[Id={0}]. Disposed.", GetId());
+            
             }
         }
         
         internal void ChangeState(AbstractCtxState newstate)
         {
+            if (_logger.IsDebugEnabled) _logger.Debug("InviteCtx[Id={0}]. State transition: '{1}'-->'{2}'", GetId(), State != null ? State.Name.ToString() : "", newstate.Name);
+
             /*attention: no locking. Is already called thread safely via call to AdaptToResponse*/
             State = newstate;
             newstate.Initialize(this);
 
-            if(_stateObserver != null) _stateObserver.OnNext(CreateStateInfo(newstate.Name));
+           if(_stateObserver != null) _stateObserver.OnNext(CreateStateInfo(newstate.Name));
         }
         
         internal void SendAck()

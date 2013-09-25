@@ -10,9 +10,4 @@ namespace Hallo.Sip
     {
         public SipContext Context { get; set; }
     }
-
-    public class ExceptionEventArgs : EventArgs
-    {
-        public Exception Exception { get; set; }
-    }
 }

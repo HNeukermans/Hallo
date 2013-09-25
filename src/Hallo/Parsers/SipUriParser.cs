@@ -7,7 +7,7 @@ using Hallo.Util;
 
 namespace Hallo.Parsers
 {
-    public class SipUriParser : SipParser<SipUri>
+    public class SipUriParser : AbstractParser<SipUri>
     {
         public SipUriParser() : base() { }
 
@@ -21,7 +21,7 @@ namespace Hallo.Parsers
 
             if (scheme != "sip")
             {
-                throw new SipParseException(ExceptionMessage.InvalidFormat);
+                throw new ParseException(ExceptionMessage.InvalidFormat);
             }
 
             // Get username

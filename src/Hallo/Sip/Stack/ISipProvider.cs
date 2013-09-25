@@ -1,18 +1,15 @@
 using System.Collections.Concurrent;
+using Hallo.Sdk;
 using Hallo.Sip.Stack;
+using Hallo.Sip.Stack.Dialogs;
 using Hallo.Sip.Stack.Transactions;
+using Hallo.Sip.Stack.Transactions.InviteServer;
+using Hallo.Sip.Stack.Transactions.NonInviteServer;
 
 namespace Hallo.Sip
 {
-    public interface ISipProvider : ISipMessageSender//, IRequestSender, IResponseSender
+    public interface ISipProvider : ISipMessageSender
     {
-        //SipListeningPoint ListeningPoint { get; }
-        
-        //ISipClientTransaction CreateClientTransaction(SipRequest request);
-        //void CreateNewClientTransaction();
-        //void AddSipListener(ISipListener sipListener);
-        //SipProviderDiagnosticInfo GetDiagnosticsInfo();
-
         /// <summary>
         /// the listener that gets notified when new messages are received by the tranports
         /// </summary>
@@ -20,24 +17,32 @@ namespace Hallo.Sip
         /// had to make this member public for unit testing purposes.
         /// </remarks>
         ISipListener SipListener { get; }
-    }
 
-    public interface ISipMessageSender
-    {
+        SipListeningPoint ListeningPoint { get; }
+        
         /// <summary>
-        /// sends a response to the underlying transport
         /// </summary>
-        new void SendResponse(SipResponse response);
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// had to make this member public for unit testing purposes.
+        /// </remarks>
+        ISipServerTransaction CreateServerTransaction(SipRequest request);
+
 
         /// <summary>
-        /// sends a request to the underlying transport
         /// </summary>
-        new void SendRequest(SipRequest request);
-    }
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// had to make this member public for unit testing purposes.
+        /// </remarks>
+        SipInviteServerDialog CreateServerDialog(ISipServerTransaction transaction);
 
-    //internal interface ISupportClientTransaction
-    //{
-    //    void SendRequest(SipRequest request);
-    //    SipTransactionTable Transactions { get; }
-    //}
+        void AddSipListener(ISipListener listener);
+        void Start();
+        ISipClientTransaction CreateClientTransaction(SipRequest invite);
+        SipInviteClientDialog CreateClientDialog(ISipClientTransaction transaction);
+    }
+    
 }

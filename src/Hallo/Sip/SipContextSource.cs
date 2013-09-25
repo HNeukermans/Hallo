@@ -17,6 +17,8 @@ namespace Hallo.Sip
         private readonly IPEndPoint _ipEndPoint;
         private bool _isRunning;
         private readonly SmartThreadPool _threadPool;
+        private readonly SipMessageFactory _messageFactory;
+        private readonly SipHeaderFactory _headerFactory;
         private Socket _socket;
         private Thread _thread;
         private volatile int _bytesSent;
@@ -36,7 +38,7 @@ namespace Hallo.Sip
        
 
         /// <summary>
-        /// sends a messaege to the socket.
+        /// sends a message to the socket.
         /// </summary>
         /// <remarks>externalizing the socket would require to mock it.</remarks>
         /// <param name="bytes"></param>
@@ -82,7 +84,8 @@ namespace Hallo.Sip
 
             _ipEndPoint = ipEndPoint;
             _threadPool = threadPool;
-            _contextFactory = new SipContextFactory(messageFactory, headerFactory);
+            _messageFactory = messageFactory;
+            _headerFactory = headerFactory;
             _logger.Trace("Constructor called.");
 
             _sender = new DatagramSender(_ipEndPoint);
@@ -163,17 +166,61 @@ namespace Hallo.Sip
 
             _logger.Trace("Processing incoming datagram ...");
 
+            _logger.Trace("Parsing datagram ...");
+            SipMessage message;
             try
             {
-                var c = _contextFactory.CreateContext(datagram);
-                NewContextReceived(this, new SipContextReceivedEventArgs(){ Context = c });
+                message = new SipParser2(_messageFactory, _headerFactory).Parse(datagram);
+                _logger.Trace("Datagram parsed.");
             }
             catch (Exception err)
             {
-                _logger.ErrorException(string.Format("Failed starting a new SipContext instance. Exception: {0}", err.Message), err);
-                throw;
+                _logger.ErrorException(string.Format("Failed parsing datagram. Exception: {0}", err.Message), err);
+                UnhandledException(this, new ExceptionEventArgs() { Exception = err });
+                return 0;
             }
+
+            var c = CreateSipContext(message, datagram);
+            
+            try
+            {
+                NewContextReceived(this, new SipContextReceivedEventArgs() { Context = c });
+            }
+            catch (Exception err)
+            {
+                _logger.ErrorException(string.Format("Unhandled exception occured. Exception: {0}", err.Message), err);
+                UnhandledException(this, new ExceptionEventArgs() {Exception = err});
+            }
+
             return 1;
+        }
+
+        private SipContext CreateSipContext(SipMessage message, Datagram datagram)
+        {
+            var request = message as SipRequest;
+            var response = message as SipResponse;
+            
+            if (request != null)
+            {
+                _logger.Debug("Request Received '" + request.RequestLine.Method + " " + request.RequestLine.Uri.FormatToString() + "' from " +
+                              datagram.RemoteEndPoint);
+            }
+            else
+            {
+                _logger.Debug("Response Received '" + response.StatusLine.StatusCode + " " + response.StatusLine.ReasonPhrase + "' from " +
+                             datagram.RemoteEndPoint);
+            }
+               
+            var c = new SipContext();
+
+            _logger.Trace("Parse on parser context completed.");
+
+            c.Request = request;
+            c.Response = response;
+            c.RemoteEndPoint = datagram.RemoteEndPoint;
+            c.LocalEndPoint = datagram.LocalEndPoint;
+
+            return c;
         }
 
         private void OnProcessIncomingDatagramCompleted(IWorkItemResult result)

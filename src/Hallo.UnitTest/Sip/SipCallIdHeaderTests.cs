@@ -54,7 +54,7 @@ namespace Hallo.UnitTest.Sip
                     {
                         new SipCallIdHeaderParser().Parse(s);
                     }
-                    catch (SipParseException e)
+                    catch (ParseException e)
                     {
                         exceptions++;
                     }

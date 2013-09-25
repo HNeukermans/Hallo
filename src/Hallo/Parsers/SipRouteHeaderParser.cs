@@ -8,7 +8,7 @@ using Hallo.Util;
 namespace Hallo.Parsers
 {
     [ParserFor(SipHeaderNames.Route)]
-    public class SipRouteHeaderParser : SipParser<SipRouteHeader>
+    public class SipRouteHeaderParser : AbstractParser<SipRouteHeader>
     {
         public SipRouteHeaderParser()
             : base()

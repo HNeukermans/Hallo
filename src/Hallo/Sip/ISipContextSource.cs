@@ -19,9 +19,4 @@ namespace Hallo.Sip
         int BytesSent { get; }
         int PacketsSent { get; }
     }
-
-    public interface IExceptionHandler
-    {
-        void Handle(Exception e);
-    }
 }

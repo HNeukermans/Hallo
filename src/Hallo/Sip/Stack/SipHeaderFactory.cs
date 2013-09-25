@@ -17,8 +17,8 @@ namespace Hallo.Sip.Stack
     {
         private readonly Logger _logger =  NLog.LogManager.GetCurrentClassLogger();
 
-        private readonly Dictionary<string, ISipParser<SipHeaderBase>> _parsers =
-            new Dictionary<string, ISipParser<SipHeaderBase>>(StringComparer.CurrentCultureIgnoreCase);
+        private readonly Dictionary<string, IParser<SipHeaderBase>> _parsers =
+            new Dictionary<string, IParser<SipHeaderBase>>(StringComparer.CurrentCultureIgnoreCase);
 
         private readonly Dictionary<string, Type> _headers =
             new Dictionary<string, Type>(StringComparer.CurrentCultureIgnoreCase);
@@ -58,7 +58,7 @@ namespace Hallo.Sip.Stack
 
             foreach (Type type in parserForTypes)
             {
-                var instance = (ISipParser<SipHeaderBase>)Activator.CreateInstance(type);
+                var instance = (IParser<SipHeaderBase>)Activator.CreateInstance(type);
                 var name = type.GetCustomAttributes(true).OfType<ParserForAttribute>().First().HeaderName;
                 _parsers.Add(name, instance);
             }
@@ -142,7 +142,7 @@ namespace Hallo.Sip.Stack
 
             if(!_parsers.ContainsKey(name))
             {
-                throw new SipParseException(string.Format(ExceptionMessage.CouldNotFindHeaderParserFormatString, name));
+                throw new ParseException(string.Format(ExceptionMessage.CouldNotFindHeaderParserFormatString, name));
             }
            
             return _parsers[name].Parse(value);

@@ -8,10 +8,6 @@ using Hallo.Util;
 
 namespace Hallo.Sip
 {
-    //better name : SipSocket : wraps an udpsocket. listens for incoming udp and handles all parsing
-    //SipContextProvider
-
-
     public class Datagram
     {
         private readonly IPEndPoint _remoteEP = null;

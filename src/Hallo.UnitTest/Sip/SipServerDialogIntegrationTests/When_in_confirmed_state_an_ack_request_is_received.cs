@@ -38,13 +38,15 @@ namespace Hallo.UnitTest.Sip.SipServerDialogTests
         [Test]
         public void Expect_the_dialog_not_to_be_null()
         {
-            _provider.GetDialog(_inviteTransaction).Should().NotBeNull();
+            Assert.Fail();
+           // _provider.GetDialog(_inviteTransaction).Should().NotBeNull();
         }
 
         [Test]
         public void Expect_the_dialog_to_transition_to_Confirmed_state()
         {
-            _provider.GetDialog(_inviteTransaction).State.Equals(DialogState.Confirmed);
+            Assert.Fail();
+            //_provider.GetDialog(_inviteTransaction).State.Equals(DialogState.Confirmed);
         }
     }
 }

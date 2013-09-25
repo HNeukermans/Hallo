@@ -28,7 +28,7 @@ namespace Hallo.UnitTest.Sip.SipServerDialogTests
             if(_requestEvent.Request.RequestLine.Method == SipMethods.Invite)
             {
                 _inviteTransaction = _provider.CreateServerTransaction(_requestEvent.Request);
-                var dialog = _provider.CreateServerDialog(_inviteTransaction);
+                _dialog = _provider.CreateServerDialog(_inviteTransaction);
                 var response = CreateRingingResponse();
                 _inviteTransaction.SendResponse(response);
             }
@@ -37,13 +37,13 @@ namespace Hallo.UnitTest.Sip.SipServerDialogTests
         [Test]
         public void Expect_the_dialog_not_to_be_null()
         {
-            _provider.GetDialog(_inviteTransaction).Should().NotBeNull();
+            _dialog.Should().NotBeNull();
         }
 
         [Test]
         public void Expect_the_dialog_to_transition_to_Early_state()
         {
-            _provider.GetDialog(_inviteTransaction).State.Equals(DialogState.Early);
+            _dialog.State.Equals(DialogState.Early);
         }
     }
 }

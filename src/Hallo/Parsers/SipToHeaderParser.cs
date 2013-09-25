@@ -8,8 +8,9 @@ using Hallo.Sip;
 
 namespace Hallo.Parsers
 {
+    // [ParserFor(SipHeaderNames.From)] TODO
     [ParserFor(SipHeaderNames.To)]
-    public class SipToHeaderParser : SipParser<SipToHeader>
+    public class SipToHeaderParser : AbstractParser<SipToHeader>
     {
         public SipToHeaderParser() : base()
         {

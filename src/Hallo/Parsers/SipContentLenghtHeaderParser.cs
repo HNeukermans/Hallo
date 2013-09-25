@@ -9,7 +9,7 @@ using Hallo.Util;
 namespace Hallo.Parsers
 {
     [ParserFor(SipHeaderNames.ContentLength)]
-    public class SipContentLenghtHeaderParser : SipParser<SipContentLengthHeader>
+    public class SipContentLenghtHeaderParser : AbstractParser<SipContentLengthHeader>
     {
         public override SipContentLengthHeader Parse(StringReader r)
         {

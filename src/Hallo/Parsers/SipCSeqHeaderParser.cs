@@ -9,7 +9,7 @@ using Hallo.Util;
 namespace Hallo.Parsers
 {
     [ParserFor(SipHeaderNames.CSeq)]
-    public class SipCSeqHeaderParser : SipParser<SipCSeqHeader>
+    public class SipCSeqHeaderParser : AbstractParser<SipCSeqHeader>
     {
         public override SipCSeqHeader Parse(StringReader r)
         {

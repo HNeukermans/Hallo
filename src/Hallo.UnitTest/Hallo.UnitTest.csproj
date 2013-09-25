@@ -123,7 +123,10 @@
     <Compile Include="Helpers\TestConstants.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sdp\ParserTests\SdpOriginParserTests.cs" />
+    <Compile Include="Sdp\SoftPhoneTests\When_an_invite_is_received.cs" />
     <Compile Include="Sip\SipAllowHeaderTests.cs" />
+    <Compile Include="Sip\SipHeaderFactoryTests\When_the_CreateHeader_is_invoked_with_Base.cs" />
     <Compile Include="Sip\SipInviteClientDialogTests\SipDialogSpecificationBase.cs" />
     <Compile Include="Sip\SipInviteClientDialogTests\SipInviteClientDialogSpecificationBase.cs" />
     <Compile Include="Sip\SipInviteClientDialogTests\StubSipListener.cs" />
@@ -201,7 +204,7 @@
     <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_trying_state_a_provisional_response_is_received.cs" />
     <Compile Include="Sip\SipNonInviteClientTransactionTests\When_in_trying_state_a_timeout_has_occured.cs" />
     <Compile Include="Sip\SipNonInviteClientTransactionTests\When_the_Ctx_SendRequest_is_invoked.cs" />
-    <Compile Include="Sip\SipHeaderFactoryTests\When_the_CreateHeader_is_invoked_with_Base.cs" />
+    <Compile Include="Sdp\SoftPhoneTests\SoftPhoneTest.cs" />
     <Compile Include="Sip\SipHeaderFactoryTests\When_the_CreateHeader_is_invoked_with_from.cs" />
     <Compile Include="Sip\SipHeaderFactoryTests\When_the_CreateHeader_is_invoked_with_from_MixedCase.cs" />
     <Compile Include="Sip\SipHeaderFactoryTests\When_the_CreateHeader_is_invoked_with_unknown.cs" />
@@ -227,15 +230,15 @@
     <Compile Include="Sip\SipParserContextTests\rfc_7_3_1\When_spaces_separate_headername_from_value.cs" />
     <Compile Include="Sip\SipParserContextTests\SipParserContextTestBase.cs" />
     <Compile Include="Sip\SipParserContextTests\When_a_request_is_parsed_from_the_known_register_string.cs" />
-    <Compile Include="Sip\SipParserTests\SipParserTestBase.cs" />
-    <Compile Include="Sip\SipParserTests\When_a_request_with_2_via_headers_is_parsed.cs" />
-    <Compile Include="Sip\SipParserTests\When_a_request_with_a_body_is_parsed.cs" />
-    <Compile Include="Sip\SipParserTests\When_a_request_is_parsed.cs" />
+    <Compile Include="Sip\SipLexerTests\SipParserTestBase.cs" />
+    <Compile Include="Sip\SipLexerTests\When_a_request_with_2_via_headers_is_lexed.cs" />
+    <Compile Include="Sip\SipLexerTests\When_a_request_with_a_body_is_lexed.cs" />
+    <Compile Include="Sip\SipLexerTests\When_a_request_is_lexed.cs" />
     <Compile Include="Sip\SipContentLenghtHeaderTests.cs" />
     <Compile Include="Sip\SipCallIdHeaderTests.cs" />
     <Compile Include="Sip\SipCSeqHeaderTests.cs" />
     <None Include="Sip\SipMessageParserTest.cs" />
-    <Compile Include="Sip\SipParserTests\SipRequestParserTests.cs" />
+    <Compile Include="Sip\SipLexerTests\SipRequestLexerTests.cs" />
     <Compile Include="Sip\SipRecordRouteHeaderTests.cs" />
     <Compile Include="Sip\SipServerDialogIntegrationTests\SipDialogSpecificationBase.cs" />
     <Compile Include="Sip\SipServerDialogIntegrationTests\When_a_dialog_is_created.cs" />
@@ -259,6 +262,7 @@
     <Compile Include="Sip\SipParserContextTests\When_a_response_is_formatted_and_then_parsed.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Stubs\FakeContextSource.cs" />
+    <Compile Include="Stubs\FakeNetwork.cs" />
     <Compile Include="Stubs\ResponseSenderStub.cs" />
     <Compile Include="Stubs\TimerFactoryStub.cs" />
     <Compile Include="Stubs\RequestSenderStub.cs" />
@@ -283,6 +287,7 @@
       <Name>Hallo</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

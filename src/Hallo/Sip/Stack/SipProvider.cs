@@ -25,10 +25,9 @@ namespace Hallo.Sip
 {
     public class SipProvider : ISipProvider
     {
-        private static readonly ISipListener _NullListener = new NullListener();
         private readonly ISipContextSource _contextSource;
         private readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        private ISipListener _sipListener = _NullListener;
+        private ISipListener _sipListener = new NullListener();
         private readonly SipStack _stack;
         private volatile bool _isRunning;
 
@@ -39,7 +38,6 @@ namespace Hallo.Sip
         private IObserver<SipMessage> _responseSentObserver;
         private IObserver<SipMessage> _requestReceivedObserver;
         private IObserver<SipMessage> _responseReceivedObserver;
-        private SelfListener _selfListener;
         private IExceptionHandler _exceptionHandler;
 
         #region props
@@ -142,6 +140,7 @@ namespace Hallo.Sip
             {
                 via.Branch = SipUtil.CreateBranch();
             }
+
             var bytes = SipFormatter.FormatMessage(request);
 
             SipUri sipUri = GetDestinationUri(request);
@@ -197,12 +196,20 @@ namespace Hallo.Sip
                 throw new ArgumentException("Can not create a transaction for the 'ACK' request");
             }
 
+            ISipListener txListener = _sipListener;
+            
+            SipAbstractDialog dialog;
+            if (_dialogTable.TryGetValue(GetDialogId(request, true), out dialog))
+            {
+                txListener = dialog;
+            }
+
             if(request.RequestLine.Method == SipMethods.Invite)
             {
                 tx = new SipInviteClientTransaction(
                     ClientTransactionTable,
                     this,
-                    _sipListener,
+                    txListener,
                     request, 
                     _stack.GetTimerFactory(),
                     _stack.CreateHeaderFactory(),
@@ -213,7 +220,7 @@ namespace Hallo.Sip
                 tx = new SipNonInviteClientTransaction(
                     ClientTransactionTable,
                     this,
-                    _sipListener,
+                    txListener,
                     request, 
                     _stack.GetTimerFactory());
             }
@@ -239,7 +246,6 @@ namespace Hallo.Sip
             if (_dialogTable.TryGetValue(GetDialogId(request, true), out dialog))
             {
                 txListener = dialog;
-                //stx.SetDialog((SipInviteServerDialog)inTableDialog);
             }
 
             if (request.RequestLine.Method == SipMethods.Invite)
@@ -263,31 +269,7 @@ namespace Hallo.Sip
 
             return tx;
         }
-
-        /// <summary>
-        /// Gets the dialog for the transaction.
-        /// </summary>
-        /// <remarks>
-        /// This is done because tx's are externalized by the ISipServerTransaction which don't have a GetDialog() message.
-        /// </remarks>
-        public SipAbstractDialog GetDialog(ISipServerTransaction tx)
-        {
-            Check.IsTrue(tx is SipInviteServerTransaction, "Tx is not a SipInviteServerTransaction. Only SipInviteServerTransaction can have an associated dialog !");
-            return ((SipInviteServerTransaction) tx).GetDialog();
-        }
-
-        /// <summary>
-        /// Gets the dialog for the transaction.
-        /// </summary>
-        /// <remarks>
-        /// This is done because tx's are externalized by the ISipServerTransaction which don't have a GetDialog() message.
-        /// </remarks>
-        public SipAbstractDialog GetDialog(ISipClientTransaction tx)
-        {
-            Check.IsTrue(tx is SipInviteClientTransaction, "Tx is not a SipInviteClientTransaction. Only SipInviteClientTransaction can have an associated dialog !");
-            return ((SipInviteClientTransaction)tx).GetDialog();
-        }
-
+       
         public SipInviteServerDialog CreateServerDialog(ISipServerTransaction transaction)
         {
             var inviteTx = transaction as SipInviteServerTransaction;
@@ -299,7 +281,7 @@ namespace Hallo.Sip
             Check.NotNullOrEmpty(inviteTx.Request.From.Tag, "From tag");
 
             var dialog = new SipInviteServerDialog(
-                (ISipServerTransaction)transaction,
+                transaction,
                 _dialogTable,
                 _stack.GetTimerFactory(), 
                 _stack.CreateHeaderFactory(),
@@ -311,7 +293,7 @@ namespace Hallo.Sip
 
             //setting the dialog is done out of the transaction.
             //(otherwise you need to interface the SetDialog method, both on InviteClient & InviteServer transaction)
-            //thus creating again to separate interfaces or adding the method on existing interface
+            //thus creating again two separate interfaces or adding the method on existing interface thereby poluting.
             inviteTx.SetDialog(dialog);
             return dialog;
         }
@@ -379,7 +361,7 @@ namespace Hallo.Sip
                 return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port);
             }
 
-            throw new NotSupportedException(ExceptionMessage.NonNumericIpAddressIsNotSupported);
+            throw new NotSupportedException(ExceptionMessage.NamedHostsAreNotSupported);
         }
 
         private SipUri GetDestinationUri(SipRequest request)
@@ -428,7 +410,7 @@ namespace Hallo.Sip
         {
             Check.Require(sipListener, "sipListener");
 
-            if (_sipListener != _NullListener) throw new InvalidOperationException("A listener is already added.");
+            if (_sipListener.GetType() != typeof(NullListener)) throw new InvalidOperationException("A listener is already added.");
 
             _sipListener = sipListener;
         }
@@ -526,31 +508,68 @@ namespace Hallo.Sip
         {
             if (_responseReceivedObserver != null) _responseReceivedObserver.OnNext(context.Response);
 
-            IResponseProcessor responseProcessor = _sipListener;
+            ISipResponseProcessor sipResponseProcessor = _sipListener;
 
             var responseEvent = new SipResponseEvent(context);
             
-
              //get dialog. if dialog found, the listener for the tx is the dialog.
             SipAbstractClientTransaction ctx;
+
+            if (_logger.IsDebugEnabled) _logger.Debug("Searching the table for a matching tx..");
+            
             if(_ctxTable.TryGetValue(GetClientTransactionId(responseEvent.Response), out ctx))
             {
-                responseProcessor = ctx;
+                if (_logger.IsTraceEnabled) _logger.Trace("Found a matching tx. Setting it as the responseProcessor.");
+
+                sipResponseProcessor = ctx;
+
+                if (_logger.IsDebugEnabled) _logger.Debug("Setting the Dialog on responseEvent.");
+
+                SipAbstractDialog found;
+                /*dialog can come from cxt or table*/
+                if(IsDialogInitiatingRequest(ctx.Request))
+                {
+                    if (_logger.IsDebugEnabled) _logger.Debug("Received a response, for a clientransaction. Getting dialog of the Ctx.");
+                    found = ((SipInviteClientTransaction) ctx).GetDialog();
+                }
+                else
+                {
+                    if (_logger.IsDebugEnabled) _logger.Debug("Searching the table for a matching dialog...");
+                    if(_dialogTable.TryGetValue(GetDialogId(responseEvent.Response, true), out found))
+                    {
+                        if (_logger.IsDebugEnabled) _logger.Debug("Found a matching dialog.");
+                    }
+                    //stx.SetDialog((SipInviteServerDialog)inTableDialog);
+                }
+                responseEvent.Dialog = found;
+
+                if (_logger.IsDebugEnabled) _logger.Debug("Dialog on responseEvent set. Dialog is null:{0}", responseEvent.Dialog == null);
             }
             else
             {
+                if (_logger.IsDebugEnabled) _logger.Debug("Could not find a matching tx..");
+
+                if (_logger.IsDebugEnabled) _logger.Debug("Searching the table for a matching dialog...");
+
                 /*try dialog as processor*/
                 SipAbstractDialog dialog;
                 if (_dialogTable.TryGetValue(GetDialogId(responseEvent.Response, false), out dialog))
                 {
-                    responseProcessor = dialog;
+                    if (_logger.IsTraceEnabled) _logger.Trace("Found a matching dialog. Setting it as the responseProcessor.");
+                    
+                    sipResponseProcessor = dialog;
+                    responseEvent.Dialog = dialog;
                     //stx.SetDialog((SipInviteServerDialog)inTableDialog);
+                }
+                else
+                {
+                    if (_logger.IsTraceEnabled) _logger.Trace("Could not find a matching dialog. Using the SipProvider's SipListener as the responseProcessor.");
                 }
             }
 
             try
             {
-                responseProcessor.ProcessResponse(responseEvent);
+                sipResponseProcessor.ProcessResponse(responseEvent);
             }
             catch (Exception err)
             {
@@ -563,47 +582,82 @@ namespace Hallo.Sip
         {
             if (_requestReceivedObserver != null) _requestReceivedObserver.OnNext(context.Request);
 
+            if (_logger.IsDebugEnabled) _logger.Debug("Validating the request...");
+
             var result = new SipValidator().ValidateMessage(context.Request);
+            
+            if (!result.IsValid)
+            {
+                if (_logger.IsDebugEnabled) _logger.Debug("The received request is not valid. Throwing a sip exception.");
+                
+                ThrowSipException(result);
+            }
 
-            if (!result.IsValid) ThrowSipException(result);
+            if (_logger.IsDebugEnabled) _logger.Debug("Request valid.");
 
-            /*firewall traversal not supported.
-             *SupportFirewalTraversal(context);*/
+            /*firewall traversal not supported. SupportFirewalTraversal(context);*/
 
             var requestEvent = new SipRequestEvent(context);
 
-            IRequestProcessor requestProcessor = _sipListener;
+            ISipRequestProcessor sipRequestProcessor = _sipListener;
 
             //8.2.2.2: merged requests, not implemented
             
             SipAbstractServerTransaction stx;
 
+            if (_logger.IsDebugEnabled) _logger.Debug("Searching the table for a matching tx..");
+
             if(_stxTable.TryGetValue(GetServerTransactionId(context.Request), out stx))
             {
-                requestProcessor = stx;
+                if (_logger.IsTraceEnabled) _logger.Trace("Found a matching tx. Setting it as the requestprocessor.");
+
+                sipRequestProcessor = stx;
                 
-                if (stx.Type == SipTransactionType.InviteServer)
-                {
-                    //get dialog. if dialog found, the listener for the tx is the dialog.
-                    SetDialog((SipInviteServerTransaction)stx);
-                }
+                //if (IsDialogInitiatingRequest(stx.Request))
+                //{
+                    //if (_logger.IsDebugEnabled) _logger.Debug("The received request is an 'INVITE' request. Try setting the dialog on tx...");
+
+                    //set the dialog, so it can initiate
+                    SipAbstractDialog found;
+                    TrySetDialogOnTx((SipInviteServerTransaction)stx, out found);
+                    
+                    requestEvent.Dialog = found;
+                    
+                //}
             }
             else
             {
+                if (_logger.IsDebugEnabled) _logger.Debug("Could not find a matching tx..");
+
+                if (_logger.IsDebugEnabled) _logger.Debug("Searching the table for a matching dialog...");
+            
                 SipAbstractDialog dialog;
                 if (_dialogTable.TryGetValue(GetDialogId(context.Request, true), out dialog))
                 {
-                    requestProcessor = dialog;
+                    if (_logger.IsTraceEnabled) _logger.Trace("Found a matching dialog. Setting it as the requestprocessor.");
+
+                    sipRequestProcessor = dialog;
+                    requestEvent.Dialog = dialog;
+                }
+                else
+                {
+                    if (_logger.IsTraceEnabled) _logger.Trace("Could not find a matching dialog. Using the SipProvider's SipListener as the requestprocessor.");
                 }
             }
             
             try
             {
-                requestProcessor.ProcessRequest(requestEvent);
+                sipRequestProcessor.ProcessRequest(requestEvent);
+
+                if (requestEvent.IsSent)
+                {
+                    if (_logger.IsDebugEnabled) _logger.Debug("Processed '{0}' request. The response has already been sent. Skipping automatic response sending.", requestEvent.Request.RequestLine.Method);
+                    return;
+                }
 
                 if (!ShouldHaveResponse(requestEvent.Request))
                 {
-                    _logger.Debug("Processed {0} request. The request does not require a response. Skipping automatic response sending.", requestEvent.Request.RequestLine.Method);
+                    if(_logger.IsDebugEnabled) _logger.Debug("Processed '{0}' request. The request does not require a response. Skipping automatic response sending.", requestEvent.Request.RequestLine.Method);
                     return;
                 }
 
@@ -620,8 +674,6 @@ namespace Hallo.Sip
 
                     if (_responseSentObserver != null) _responseSentObserver.OnNext(response);
                 }
-
-                
             }
             catch (SipCoreException coreException)
             {
@@ -648,42 +700,47 @@ namespace Hallo.Sip
             }
         }
 
+        private bool IsDialogInitiatingRequest(SipRequest message)
+        {
+            return message.RequestLine.Method == SipMethods.Invite;
+        }
+
         private bool ShouldHaveResponse(SipRequest request)
         {
             return request.RequestLine.Method != SipMethods.Ack;
         }
 
         #endregion
-
-        private void SetDialog(SipInviteClientTransaction tx)
+        
+        private bool TrySetDialogOnTx(SipInviteServerTransaction stx, out SipAbstractDialog dialog)
         {
-            SipAbstractDialog inTableDialog;
-            if (_dialogTable.TryGetValue(GetDialogId(tx.Request, true), out inTableDialog))
-            {
-                tx.SetDialog(inTableDialog);
-            }
-        }
+            dialog = null;
 
-        private void SetDialog(SipInviteServerTransaction stx)
-        {
-            if(stx.Request.To.Tag == null) return;
+            if(stx.Request.To.Tag == null) return false;
 
             /* merged request: Based on the To tag, the UAS MAY either accept or reject the request.
              * If the request has a tag in the To header field, 
              * but the dialog identifier does not match any existing dialogs*/
 
+            if(_logger.IsDebugEnabled)_logger.Debug("Searching the table for a matching dialog...");
+            
             SipAbstractDialog inTableDialog;
             if (_dialogTable.TryGetValue(GetDialogId(stx.Request, true), out inTableDialog))
             {
-                stx.SetDialog((SipInviteServerDialog)inTableDialog);
+                if (_logger.IsDebugEnabled) _logger.Debug("Found a matching dialog. Setting it on tx.");
+                //stx.SetDialog((SipInviteServerDialog)inTableDialog);
+                dialog = inTableDialog;
+                return true;
             }
             else
             {
+                if (_logger.IsDebugEnabled) _logger.Debug("Could not find a matching dialog.");
                 /* If the UAS wishes to reject the request because it does not wish to
                    recreate the dialog, it MUST respond to the request with a 481
                    (Call/Transaction Does Not Exist) status code and pass that to the
                    server transaction. 
                 */
+                return false;
             }
         }
 
@@ -778,77 +835,5 @@ namespace Hallo.Sip
         }
     }
 
-    public class DatagramSender
-    {
-        private readonly IPEndPoint _fromEndPoint;
-        private readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        private Socket _socket = null;
-        private object _locker = new object();
-
-        public DatagramSender(IPEndPoint fromEndPoint)
-        {
-            _fromEndPoint = fromEndPoint;
-        }
-
-        /// <summary>
-        /// sends a message to the socket.
-        /// </summary>
-        /// <remarks>externalizing the socket would require to mock it.</remarks>
-        /// <param name="bytes"></param>
-        /// <param name="ipEndPoint"></param>
-        public bool SendTo(byte[] bytes, IPEndPoint ipEndPoint)
-        {
-            Check.Require(bytes, "bytes");
-            Check.Require(ipEndPoint, "ipEndPoint");
-
-            _logger.Trace("Sending message from: '{0}' --> '{1}'", _fromEndPoint, ipEndPoint);
-
-            lock (_locker)
-            {
-                try
-                {
-                    if (_socket == null)
-                        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                    _socket.SendTo(bytes, ipEndPoint);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger.IsErrorEnabled) _logger.Error("Could not send message.", ex.Message);
-                    _socket = null;
-                    return false;
-                    //throw;
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Models the SipProvider as a listener. Houses all the logic the UA Core needs to perform,
-    /// when the request moves upwards the processing chain starting from the tx.
-    /// </summary>
-    internal class SelfListener : ISipListener
-    {
-        private ISipListener _sipListener;
-
-        public SelfListener(ISipListener sipListener)
-        {
-            _sipListener = sipListener;
-        }
-
-        public void ProcessTimeOut(SipTimeOutEvent timeOutEvent)
-        {
-
-        }
-
-        public void ProcessRequest(SipRequestEvent requestEvent)
-        {
-
-        }
-
-        public void ProcessResponse(SipResponseEvent responseEvent)
-        {
-
-        }
-    }
+    
 }

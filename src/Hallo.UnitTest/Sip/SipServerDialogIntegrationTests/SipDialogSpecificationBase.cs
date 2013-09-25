@@ -12,6 +12,7 @@ using Hallo.UnitTest.Builders;
 using Hallo.UnitTest.Sip.SipClientDialogTests;
 using Hallo.UnitTest.Stubs;
 using Hallo.Util;
+using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sip.SipServerDialogTests
 {
@@ -123,13 +124,14 @@ namespace Hallo.UnitTest.Sip.SipServerDialogTests
 
         protected void GoFromEarlyToConfirmedState()
         {
-            Check.IsTrue(_provider.GetDialog(_inviteTransaction).State == DialogState.Early, "The dialog is not in Early state.");
+            Assert.Fail();
+            //Check.IsTrue(_provider.GetDialog(_inviteTransaction).State == DialogState.Early, "The dialog is not in Early state.");
 
             /*go to confirmed state*/
             var okResponse = _inviteTransaction.Request.CreateResponse(SipResponseCodes.x200_Ok);
             _inviteTransaction.SendResponse(okResponse);
 
-            Check.IsTrue(_provider.GetDialog(_inviteTransaction).State == DialogState.Confirmed, "The dialog is not in Confirmed state.");
+            //Check.IsTrue(_provider.GetDialog(_inviteTransaction).State == DialogState.Confirmed, "The dialog is not in Confirmed state.");
 
         }
 
@@ -142,8 +144,8 @@ namespace Hallo.UnitTest.Sip.SipServerDialogTests
             _dialog = _provider.CreateServerDialog(_inviteTransaction);
             var response = CreateRingingResponse();
             _inviteTransaction.SendResponse(response);
-
-            Check.IsTrue(_provider.GetDialog(_inviteTransaction).State == DialogState.Early, "The dialog is not in Early state.");
+            Assert.Fail();
+            //Check.IsTrue(_provider.GetDialog(_inviteTransaction).State == DialogState.Early, "The dialog is not in Early state.");
         }
     }
 }

@@ -20,8 +20,7 @@ namespace Hallo.UnitTest.Sip
         {
             _originalResponse = new SipRequestBuilder().Build().CreateResponse(SipResponseCodes.x200_Ok);
             var bytes = SipFormatter.FormatMessage(_originalResponse);
-            _parserContext.Parse(bytes);
-            waitHandle.WaitOne();
+            _sipResponse = _parser.Parse(new DatagramPacketBuilder().WithDataBytes(bytes).Build()) as SipResponse;
         }
         
         [Test]

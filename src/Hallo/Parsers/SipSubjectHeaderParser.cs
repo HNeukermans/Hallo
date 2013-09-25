@@ -8,7 +8,7 @@ using Hallo.Util;
 namespace Hallo.Parsers
 {
     [ParserFor(SipHeaderNames.Subject)]
-    public class SipSubjectHeaderParser : SipParser<SipSubjectHeader>
+    public class SipSubjectHeaderParser : AbstractParser<SipSubjectHeader>
     {
         public override SipSubjectHeader Parse(StringReader r)
         {

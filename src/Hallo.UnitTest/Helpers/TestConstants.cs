@@ -21,6 +21,8 @@ namespace Hallo.UnitTest.Helpers
         public static SipUri BobUri = new SipAddressFactory().CreateUri("bob", "biloxi.com");
         public static SipUri AliceContactUri = new SipAddressFactory().CreateUri("", "u1.atlanta.com");
         public static SipUri BobContactUri = new SipAddressFactory().CreateUri("", "u2.biloxi.com");
+        public static SipUri EndPoint1Uri = new SipAddressFactory().CreateUri("", "192.168.0.1");
+        public static SipUri EndPoint2Uri = new SipAddressFactory().CreateUri("", "192.168.0.2");
         public static SipUri BobProxyUri;
         public static SipUri AliceProxyUri;
 

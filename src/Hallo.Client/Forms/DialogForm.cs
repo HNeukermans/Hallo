@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -299,6 +300,7 @@ namespace Hallo.Client.Forms
             {
                 if (requestEvent.Request.RequestLine.Method == SipMethods.Ack)
                 {
+                    Log("Received an ACK request. Going to 'CALLERESTABLISHED' state");
                     GoToState(PhoneState.CallerEstablished);
                 }
             }
@@ -306,8 +308,20 @@ namespace Hallo.Client.Forms
             {
                 if (requestEvent.Request.RequestLine.Method == SipMethods.Bye)
                 {
-                    //TODO: send OK
-                   GoToState(PhoneState.Idle);
+                    Debugger.Break();
+                    Log("Received an BYE request.");
+                    Log("Sending a OK response...");
+                    /*send ok*/
+                    var okResponse = requestEvent.Request.CreateResponse(SipResponseCodes.x200_Ok);
+                    var serverTransaction = SipProvider.CreateServerTransaction(requestEvent.Request);
+                    serverTransaction.SendResponse(okResponse);
+                    Log("OK response send.");
+                    if (requestEvent.Dialog != null)
+                    {
+                        requestEvent.Dialog.Terminate();
+                        Log("Terminating dialog.");
+                    }
+                    GoToState(PhoneState.Idle);
                 }
             }
         }
@@ -320,9 +334,8 @@ namespace Hallo.Client.Forms
             if (div100 == 1)
             {
                 Log("Received a provisional response. Waiting for a final response");
-                GoToState(PhoneState.WaitForFinal);
-                var dialog = SipProvider.GetDialog(responseEvent.ClientTransaction);
-                RefreshDialogForm(dialog);
+                GoToState(PhoneState.WaitForFinal);;
+                RefreshDialogForm(responseEvent.Dialog);
             }
             else if (div100 == 2)
             {
@@ -330,16 +343,18 @@ namespace Hallo.Client.Forms
                 SendAck(_dialog as SipInviteClientDialog);
                 Log("Ack send. Call established.");
                 GoToState(PhoneState.CallerEstablished);
-                var dialog = SipProvider.GetDialog(responseEvent.ClientTransaction);
-                RefreshDialogForm(dialog);
+                RefreshDialogForm(responseEvent.Dialog);
             }
             else if (div100 > 2)
             {
                 Log("Received a final response other then OK. Terminating dialog...");
-                var dialog = SipProvider.GetDialog(responseEvent.ClientTransaction);
-                dialog.Terminate();
-                GoToState(PhoneState.Idle);
-                Log("Dialog terminated. Phone in idle state");
+                if (responseEvent.Dialog != null)
+                {
+                    responseEvent.Dialog.Terminate();
+                    GoToState(PhoneState.Idle);
+                    Log("Dialog terminated. Phone in idle state");
+                }
+                
             }
         }
 
@@ -410,10 +425,9 @@ namespace Hallo.Client.Forms
         private void SendOk()
         {
             var okResponse = MessageFactory.CreateResponse(_pendingRequestEvent.Request, SipResponseCodes.x200_Ok);
-            //TODO: okResponse.To.Tag = _serverDialog.LocalTag;
+            okResponse.To.Tag = _dialog.LocalTag;
             _inviteTransaction.SendResponse(okResponse);
-            _dialog = SipProvider.GetDialog(_inviteTransaction);
-            //TODO: make method public _inviteTransaction.GetDialog();
+
         }
 
         private void _btnPhone_Click(object sender, EventArgs e)

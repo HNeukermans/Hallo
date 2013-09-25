@@ -49,7 +49,7 @@ namespace Hallo.UnitTest.Sip
                 {
                     new SipStatusLineParser().Parse(s);
                 }
-                catch (SipParseException e)
+                catch (ParseException e)
                 {
                     exceptions++;
                 }

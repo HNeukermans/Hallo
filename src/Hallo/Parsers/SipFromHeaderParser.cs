@@ -7,8 +7,9 @@ using Hallo.Util;
 
 namespace Hallo.Parsers
 {
+    //[ParserFor(SipHeaderNames.To)]
     [ParserFor(SipHeaderNames.From)]
-    public class SipFromHeaderParser : SipParser<SipFromHeader>
+    public class SipFromHeaderParser : AbstractParser<SipFromHeader>
     {
         public override SipFromHeader Parse(StringReader r)
         {
@@ -21,8 +22,11 @@ namespace Hallo.Parsers
                 header.DisplayInfo = r.ReadWord();
                 r.ReadToFirstChar();
 
-                IfNullOrEmptyThrowParseExceptionInvalidFormat(header.DisplayInfo);
-                IfFalseThrowParseException(header.DisplayInfo.Length <= 50, string.Format(ExceptionMessage.HeaderFieldCanNotBeLongerThen,"DisplayInfo", SipHeaderNames.From, 50));
+                //IfNullOrEmptyThrowParseExceptionInvalidFormat(header.DisplayInfo); not required!!
+                if (string.IsNullOrEmpty(header.DisplayInfo))
+                {
+                    IfFalseThrowParseException(header.DisplayInfo.Length <= 50, string.Format(ExceptionMessage.HeaderFieldCanNotBeLongerThen, "DisplayInfo", SipHeaderNames.From, 50));
+                }
             }
 
             Action action = () =>

@@ -7,7 +7,7 @@ namespace Hallo.Parsers
 {
     public interface IParseExceptionHandler
     {
-        void HandleException(SipParseException exception);
+        void HandleException(ParseException exception);
 
     }
 }

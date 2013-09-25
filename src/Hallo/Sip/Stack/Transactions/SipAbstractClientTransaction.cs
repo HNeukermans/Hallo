@@ -6,11 +6,14 @@ using System.Reactive.Linq;
 using System.Text;
 using Hallo.Sip.Stack.Transactions.NonInviteServer;
 using Hallo.Util;
+using NLog;
 
 namespace Hallo.Sip.Stack.Transactions
 {
-    public abstract class SipAbstractClientTransaction : ISipClientTransaction, IDisposable, IResponseProcessor
+    public abstract class SipAbstractClientTransaction : ISipClientTransaction, IDisposable, ISipResponseProcessor
     {
+        protected Logger _logger;
+
         protected readonly SipClientTransactionTable _table;
         protected readonly ISipMessageSender _messageSender;
         protected readonly ISipListener _listener;

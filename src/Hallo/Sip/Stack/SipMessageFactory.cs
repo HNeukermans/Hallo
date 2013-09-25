@@ -29,14 +29,14 @@ namespace Hallo.Sip
 
         public SipRequest CreateRequest(SipUri requestUri, string method, SipCallIdHeader callId, SipCSeqHeader cSeq, SipFromHeader from, SipToHeader to, SipViaHeader viaHeader, SipMaxForwardsHeader maxForwards) 
         {
-            //Contract.Requires<ArgumentNullException>(requestUri != null);
-            //Contract.Requires(method != null);
-            //Contract.Requires(callId != null);
-            //Contract.Requires(cSeq != null);
-            //Contract.Requires(from != null);
-            //Contract.Requires(to != null);
-            //Contract.Requires(viaHeader != null);
-            //Contract.Requires(maxForwards != null);
+            Check.Require(requestUri, "requestUri");
+             Check.Require(method, "method");
+             Check.Require(callId, "callId");
+             Check.Require(cSeq, "cseq");
+             Check.Require(from, "from");
+             Check.Require(to , "to");
+             Check.Require( viaHeader,"viaHeader");
+             Check.Require(maxForwards,  "maxforwards");
 
             var message = new SipRequest();
             message.RequestLine.Method = method;

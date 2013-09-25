@@ -5,7 +5,7 @@ using Hallo.Util;
 namespace Hallo.Parsers
 {
     [ParserFor(SipHeaderNames.RecordRoute)]
-    public class SipRecordRouteHeaderParser : SipParser<SipRecordRouteHeader>
+    public class SipRecordRouteHeaderParser : AbstractParser<SipRecordRouteHeader>
     {
         public SipRecordRouteHeaderParser()
             : base()

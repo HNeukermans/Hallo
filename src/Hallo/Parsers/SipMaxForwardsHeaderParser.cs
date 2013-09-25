@@ -5,7 +5,7 @@ using Hallo.Util;
 namespace Hallo.Parsers
 {
     [ParserFor(SipHeaderNames.MaxForwards)]
-    public class SipMaxForwardsHeaderParser: SipParser<SipMaxForwardsHeader>
+    public class SipMaxForwardsHeaderParser: AbstractParser<SipMaxForwardsHeader>
     {
         public override SipMaxForwardsHeader Parse(StringReader r)
         {

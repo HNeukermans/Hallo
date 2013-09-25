@@ -29,7 +29,7 @@ namespace Hallo.UnitTest.Sip
             {
                 _headerFactory.CreateHeader("unknown", "");
             }
-            catch (SipParseException e)
+            catch (ParseException e)
             {
                 _exceptionIsThrown = true;
             }

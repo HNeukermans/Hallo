@@ -98,9 +98,6 @@
     <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ninject">
-      <HintPath>..\Lib\Ninject.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
@@ -109,7 +106,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Reactive.Core, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\System.Reactive.Core.dll</HintPath>
@@ -122,13 +118,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\System.Reactive.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\ClientConfiguration.cs" />
@@ -149,9 +140,42 @@
     <Compile Include="Parsers\SipRouteHeaderParser.cs" />
     <Compile Include="Parsers\SipSubjectHeaderParser.cs" />
     <Compile Include="Parsers\SipUserAgentHeaderParser.cs" />
+    <Compile Include="Sdk\Commands\Command.cs" />
+    <Compile Include="Sdk\Commands\ICommand.cs" />
+    <Compile Include="Sdk\Commands\IdleSendCommand.cs" />
+    <Compile Include="Sdk\Commands\EmptyCommand.cs" />
+    <Compile Include="Sdk\ICommandFactory.cs" />
+    <Compile Include="Sdk\Commands\InitialInviteSendCommand.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\ISoftPhoneState.cs" />
+    <Compile Include="Sdk\CallState.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\IdleState.cs" />
+    <Compile Include="Sdk\IInternalSoftPhone.cs" />
+    <Compile Include="Sdk\IPhoneCall.cs" />
+    <Compile Include="Sdk\IPhoneLine.cs" />
+    <Compile Include="Sdk\ISoftPhone.cs" />
+    <Compile Include="Sdk\PhoneCall.cs" />
+    <Compile Include="Sdk\PhoneCallDirection.cs" />
+    <Compile Include="Sdk\PhoneLine.cs" />
+    <Compile Include="Sdk\PhoneLineState.cs" />
+    <Compile Include="Sdk\SipAccount.cs" />
+    <Compile Include="Sdk\SoftPhone.cs" />
+    <Compile Include="Sdk\SoftPhoneFactory.cs" />
+    <Compile Include="Sdk\SoftPhoneSate.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\RingingState.cs" />
+    <Compile Include="Sdk\CommandFactory.cs" />
+    <Compile Include="Sdk\VoipEventArgs.cs" />
+    <Compile Include="Sdp\Parsers\ParserForAttribute.cs" />
+    <Compile Include="Sdp\Parsers\SdpOriginParser.cs" />
+    <Compile Include="Sdp\Parsers\SdpParser.cs" />
+    <Compile Include="Sdp\SdpAttribute.cs" />
+    <Compile Include="Sdp\SdpConnection.cs" />
+    <Compile Include="Sdp\SdpLexer.cs" />
+    <Compile Include="Sdp\SdpMediaDescription.cs" />
+    <Compile Include="Sdp\SdpOrigin.cs" />
     <Compile Include="Server\InMemoryAddressBindingService.cs" />
     <Compile Include="Server\ISipAdressBindingService.cs" />
     <Compile Include="Server\ISipRequestHandler.cs" />
+    <Compile Include="Server\NullListener.cs" />
     <Compile Include="Server\SipServer.cs" />
     <Compile Include="Server\SipServerConfiguration.cs" />
     <Compile Include="Server\SipAddressBinding.cs" />
@@ -160,6 +184,7 @@
     <Compile Include="Server\SipRegistrarSettings.cs" />
     <Compile Include="Server\SipServerListener.cs" />
     <Compile Include="Sip\ConfigurationBase.cs" />
+    <Compile Include="Sip\ExceptionEventArgs.cs" />
     <Compile Include="Sip\Headers\HeaderForAttribute.cs" />
     <Compile Include="Parsers\ISipMessageParser.cs" />
     <Compile Include="Parsers\ISipParser.cs" />
@@ -184,30 +209,38 @@
     <Compile Include="Sip\Headers\SipRouteHeaderBase.cs" />
     <Compile Include="Sip\Headers\SipSubjectHeader.cs" />
     <Compile Include="Sip\Headers\SipUserAgentHeader.cs" />
+    <Compile Include="Sip\IExceptionHandler.cs" />
     <Compile Include="Sip\ISipContextSource.cs" />
     <Compile Include="Sip\ISipParserListener.cs" />
-    <Compile Include="Sip\MessageReceivedEventArgs.cs" />
     <Compile Include="Sip\ParseCompletedEventArgs.cs" />
     <Compile Include="Sip\Settings.cs" />
-    <Compile Include="Sip\SipApplication.cs" />
     <Compile Include="Sip\SipContext.cs" />
+    <Compile Include="Sip\SipContextFactory.cs" />
     <Compile Include="Sip\SipContextSource.cs" />
     <Compile Include="Sip\SipContextReceivedEventArgs.cs" />
+    <Compile Include="Sip\SipCoreException.cs" />
     <Compile Include="Sip\SipFormatter.cs" />
+    <Compile Include="Sip\SipLexer.cs" />
+    <Compile Include="Sip\SipParser2.cs" />
+    <Compile Include="Sip\Stack\DatagramSender.cs" />
     <Compile Include="Sip\Stack\Dialogs\SipAbstractDialog.cs" />
     <Compile Include="Sip\Stack\Dialogs\DialogState.cs" />
     <Compile Include="Sip\Stack\Dialogs\ISipDialog.cs" />
     <Compile Include="Sip\Stack\Dialogs\SipDialogTable.cs" />
     <Compile Include="Sip\Stack\Dialogs\SipInviteClientDialog.cs" />
     <Compile Include="Sip\Stack\Dialogs\SipInviteServerDialog.cs" />
-    <Compile Include="Sip\Stack\IResponseProcessor.cs" />
     <Compile Include="Sip\Stack\ISipListener.cs" />
+    <Compile Include="Sip\Stack\ISipMessageSender.cs" />
     <Compile Include="Sip\Stack\ISipProvider.cs" />
     <Compile Include="Sip\Stack\ITimer.cs" />
     <Compile Include="Sip\Stack\ITimerFactory.cs" />
     <Compile Include="Sip\Stack\SipAddress.cs" />
     <Compile Include="Sip\Stack\SipAddressFactory.cs" />
     <Compile Include="Sip\Stack\Dialogs\DialogResult.cs" />
+    <Compile Include="Sip\Stack\SipClientTxTimeOutEvent.cs" />
+    <Compile Include="Sip\Stack\SipResponseEvent.cs" />
+    <Compile Include="Sip\Stack\SipServerTxTimeOutEvent.cs" />
+    <Compile Include="Sip\Stack\SipTimeOutEvent.cs" />
     <Compile Include="Sip\Stack\Transactions\InviteClient\AbstractCtxState.cs" />
     <Compile Include="Sip\Stack\Transactions\InviteClient\CallingCtxState.cs" />
     <Compile Include="Sip\Stack\Transactions\InviteClient\CompletedCtxState.cs" />
@@ -220,6 +253,8 @@
     <Compile Include="Sip\Stack\Transactions\InviteServer\ProceedingStxState.cs" />
     <Compile Include="Sip\Stack\Transactions\InviteServer\SipInviteServerTransaction.cs" />
     <Compile Include="Sip\Stack\Transactions\InviteServer\TerminatedStxState.cs" />
+    <Compile Include="Sip\Stack\ISipRequestProcessor.cs" />
+    <Compile Include="Sip\Stack\ISipResponseProcessor.cs" />
     <Compile Include="Sip\Stack\Transactions\SipTransactionType.cs" />
     <Compile Include="Sip\Stack\Transactions\StateResult.cs" />
     <Compile Include="Sip\Stack\Transactions\SipTransactionStateName.cs" />
@@ -247,7 +282,6 @@
     <Compile Include="Sip\Datagram.cs" />
     <Compile Include="Sip\SipException.cs" />
     <Compile Include="Sip\SipParserContext.cs" />
-    <Compile Include="Sip\Stack\SipParserFactory.cs" />
     <Compile Include="Sip\Stack\SipMessageFactory.cs" />
     <Compile Include="Sip\SipMethods.cs" />
     <Compile Include="Sip\Stack\SipProvider.cs" />
@@ -259,9 +293,9 @@
     <Compile Include="Sip\Headers\SipParameterNames.cs" />
     <Compile Include="Sip\Headers\SipViaHeader.cs" />
     <Compile Include="Parsers\SipViaHeaderParser.cs" />
-    <Compile Include="Parsers\SipParseException.cs" />
+    <Compile Include="Parsers\ParseException.cs" />
     <Compile Include="Parsers\IParseExceptionHandler.cs" />
-    <Compile Include="Parsers\SipParserBase.cs" />
+    <Compile Include="Parsers\AbstractParser.cs" />
     <Compile Include="Parsers\SipRequestLineParser.cs" />
     <Compile Include="Parsers\SipUriParser.cs" />
     <Compile Include="Sip\Headers\SipFromHeader.cs" />
@@ -287,7 +321,7 @@
     <Compile Include="Sip\SipResponse.cs" />
     <Compile Include="Sip\SipStatusLine.cs" />
     <Compile Include="Sip\SipUri.cs" />
-    <Compile Include="Sip\Util\SipUtil.cs" />
+    <Compile Include="Util\SipUtil.cs" />
     <Compile Include="Util\BufferReader.cs" />
     <Compile Include="Util\Check.cs" />
     <Compile Include="Util\CodeContracts.cs" />
@@ -307,6 +341,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Threading;
+using Hallo.Parsers;
 using Hallo.Sip;
 using Hallo.Sip.Stack;
 
@@ -9,23 +10,14 @@ namespace Hallo.UnitTest.Sip
     public class SipParserContextTestBase : Specification
     {
         protected readonly ManualResetEvent waitHandle = new ManualResetEvent(false);
-        protected SipParserContext _parserContext;
+        protected SipParser2 _parser;
         protected SipRequest _sipRequest;
         protected SipResponse _sipResponse;
 
         protected override void Given()
         {
-            _parserContext = new SipParserContext(new SipMessageFactory(), new SipHeaderFactory());
-            _parserContext.ParseCompleted += new EventHandler<ParseCompletedEventArgs>(_parserContext_ParseCompleted);
+            _parser = new SipParser2(new SipMessageFactory(), new SipHeaderFactory());
         }
-
-        private void _parserContext_ParseCompleted(object sender, ParseCompletedEventArgs e)
-        {
-            waitHandle.Set();
-            _sipRequest = e.Message as SipRequest;
-            _sipResponse = e.Message as SipResponse;
-        }
-
         
     }
 }

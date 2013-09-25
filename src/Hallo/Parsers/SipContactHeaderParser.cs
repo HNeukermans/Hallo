@@ -5,7 +5,7 @@ using Hallo.Util;
 namespace Hallo.Parsers
 {
     [ParserFor(SipHeaderNames.Contact)]
-    public class SipContactHeaderParser : SipParser<SipContactHeader>
+    public class SipContactHeaderParser : AbstractParser<SipContactHeader>
     {        
         public override SipContactHeader Parse(StringReader r)
         {

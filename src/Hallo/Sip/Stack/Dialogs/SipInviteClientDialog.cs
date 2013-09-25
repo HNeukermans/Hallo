@@ -7,7 +7,6 @@ using Hallo.Sip.Stack.Transactions.InviteClient;
 using Hallo.Sip.Util;
 using Hallo.Util;
 using NLog;
-using Ninject.Activation;
 
 namespace Hallo.Sip.Stack.Dialogs
 {

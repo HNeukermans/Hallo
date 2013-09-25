@@ -153,6 +153,9 @@
   <data name="InvalidRequestLineFormat" xml:space="preserve">
     <value>InvalidRequestLineFormat</value>
   </data>
+  <data name="InvalidSdpOriginLineFormat" xml:space="preserve">
+    <value>InvalidSdpOriginLineFormat</value>
+  </data>
   <data name="InvalidSipVersion" xml:space="preserve">
     <value>InvalidSipVersion</value>
   </data>
@@ -162,8 +165,8 @@
   <data name="InvalidTransport" xml:space="preserve">
     <value>Invalid Transport</value>
   </data>
-  <data name="NonNumericIpAddressIsNotSupported" xml:space="preserve">
-    <value>NonNumericIpAddressIsNotSupported</value>
+  <data name="NamedHostsAreNotSupported" xml:space="preserve">
+    <value>NamedHostsAreNotSupported</value>
   </data>
   <data name="NullString" xml:space="preserve">
     <value>NullString</value>

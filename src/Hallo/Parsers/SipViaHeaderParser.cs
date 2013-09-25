@@ -11,7 +11,7 @@ using System.Net;
 namespace Hallo.Parsers
 {
     [ParserFor(SipHeaderNames.Via)]
-    public class SipViaHeaderParser : SipParser<SipViaHeader>
+    public class SipViaHeaderParser : AbstractParser<SipViaHeader>
     {
         public SipViaHeaderParser()
             : base()
@@ -39,7 +39,7 @@ namespace Hallo.Parsers
             version += "/" + word.Trim();
 
             if (!version.Equals(SipConstants.SipTwoZeroString, StringComparison.InvariantCultureIgnoreCase))
-                throw new SipParseException(ExceptionMessage.InvalidFormat);
+                throw new ParseException(ExceptionMessage.InvalidFormat);
 
             word = r.ReadWord();
 
@@ -53,7 +53,7 @@ namespace Hallo.Parsers
 
             if (word == null)
             {
-                throw new SipParseException(ExceptionMessage.InvalidFormat);
+                throw new ParseException(ExceptionMessage.InvalidFormat);
             }
 
             word = word.Trim();
@@ -71,7 +71,7 @@ namespace Hallo.Parsers
             }
             catch (Exception e)
             {
-                throw new SipParseException(ExceptionMessage.InvalidFormat, e);
+                throw new ParseException(ExceptionMessage.InvalidFormat, e);
             }
 
             #endregion
@@ -82,7 +82,7 @@ namespace Hallo.Parsers
 
             if (header.Parameters[SipParameterNames.Branch] == null)
             {
-                throw new SipParseException(ExceptionMessage.BranchParameterCanNotBeNull);
+                throw new ParseException(ExceptionMessage.BranchParameterCanNotBeNull);
             }
 
             return header;

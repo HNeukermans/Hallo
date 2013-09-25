@@ -30,7 +30,7 @@ namespace Hallo.UnitTest.Sip
         }
 
         [Test]
-        [ExpectedException(typeof(SipParseException))]
+        [ExpectedException(typeof(ParseException))]
         public void Parse_DoesNotStartWithLAQOUT_ExpectThrowException()
         {
             String[] strings = 

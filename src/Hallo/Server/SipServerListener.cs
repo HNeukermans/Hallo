@@ -6,24 +6,6 @@ using Hallo.Sip.Stack;
 
 namespace Hallo.Server
 {
-    public class NullListener : ISipListener
-    {
-        public void ProcessRequest(SipRequestEvent requestEvent)
-        {
-            
-        }
-
-        public void ProcessResponse(SipResponseEvent responseEvent)
-        {
-            
-        }
-
-        public void ProcessTimeOut(SipTimeOutEvent timeOutEvent)
-        {
-            
-        }
-    }
-
     public class SipServerListener : ISipListener
     {
         List<ISipRequestHandler> _requestHandlers = new List<ISipRequestHandler>();

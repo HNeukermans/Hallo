@@ -172,9 +172,8 @@ namespace Hallo.Client
                 {
                     FormsManager.OpenForm(typeof (ErrorForm),null);
                 });
+                EventAggregator.Instance.Publish(new ExceptionEvent(e));
             });
-
-            EventAggregator.Instance.Publish(new ExceptionEvent(e));
         }
     }
 }

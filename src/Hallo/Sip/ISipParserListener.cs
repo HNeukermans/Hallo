@@ -12,7 +12,6 @@ namespace Hallo.Parsers
     {
         void OnRequest(Hallo.Sip.SipRequestLine requestLine);
         void OnResponse(SipStatusLine statusLine);
-
         void OnComplete();
         void OnHeader(string name, string value);
         void OnBodyBytes(byte[] buffer);

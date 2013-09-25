@@ -7,7 +7,7 @@ using Hallo.Util;
 
 namespace Hallo.Parsers
 {
-    public class SipStatusLineParser : SipParser<SipStatusLine>
+    public class SipStatusLineParser : AbstractParser<SipStatusLine>
     {
         public override SipStatusLine Parse(StringReader r)
         {

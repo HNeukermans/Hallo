@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Hewlett-Packard 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] /*allow internal interfaces to be mocked.*/
 [assembly: InternalsVisibleTo("Hallo.UnitTest")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
