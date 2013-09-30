@@ -11,25 +11,29 @@ namespace Hallo.Sdk.SoftPhoneStates
         private IInternalSoftPhone _softPhone;
         private readonly bool _isOutgoingCall;
 
-        public RingingState(IInternalSoftPhone SoftPhone, bool isOutgoingCall)
+        public RingingState()
+        {           
+        }
+                           
+        public SoftPhoneState StateName
         {
-            _softPhone = SoftPhone;
-            _isOutgoingCall = isOutgoingCall;
-            _softPhone.RaiseIncomingCall();
+            get { return SoftPhoneState.Ringing; }
         }
 
-
-        public void Initialize()
+        public void Initialize(IInternalSoftPhone softPhone)
         {
-            if(!_isOutgoingCall) _softPhone.RingingTimer.Start();
+            if (!softPhone.PendingInvite.IsIncomingCall)
+            {
+                softPhone.RingingTimer.Start();
+            }
         }
 
-        public ICommand ProcessRequest(SipRequestEvent requestEvent)
+        public void ProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)
         {
-            return new EmptyCommand();
+            
         }
 
-        public void ProcessResponse(SipResponseEvent responseEvent)
+        public void ProcessResponse(IInternalSoftPhone softPhone, SipResponseEvent responseEvent)
         {
             var statusCode = responseEvent.Response.StatusLine.StatusCode;
 
@@ -37,12 +41,6 @@ namespace Hallo.Sdk.SoftPhoneStates
             {
                 //softPhone.ChangeState(new WaitAckState());
             }
-        }
-
-
-        public SoftPhoneState StateName
-        {
-            get { return SoftPhoneState.Ringing; }
         }
     }
 

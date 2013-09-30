@@ -142,7 +142,6 @@
     <Compile Include="Parsers\SipUserAgentHeaderParser.cs" />
     <Compile Include="Sdk\Commands\Command.cs" />
     <Compile Include="Sdk\Commands\ICommand.cs" />
-    <Compile Include="Sdk\Commands\IdleSendCommand.cs" />
     <Compile Include="Sdk\Commands\EmptyCommand.cs" />
     <Compile Include="Sdk\ICommandFactory.cs" />
     <Compile Include="Sdk\Commands\InitialInviteSendCommand.cs" />

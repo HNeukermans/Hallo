@@ -7,7 +7,7 @@ namespace Hallo.Sdk
 {
     internal interface ICommandFactory
     {
-        ICommand CreateIdleSendCommand(SipResponse ringingResponse, ISoftPhoneState transitionTo,  SipRequestEvent requestEvent);
+        ICommand CreateIdleStateSendRingingCommand(SipResponse ringingResponse, ISoftPhoneState transitionTo,  SipRequestEvent requestEvent);
         IInternalSoftPhone SoftPhone { get; set; }
         ICommand CreateInitialInviteRequestSendCommand(SipRequest request);
     }

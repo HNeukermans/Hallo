@@ -6,6 +6,7 @@ using Hallo.Sip;
 using Hallo.Sip.Stack;
 using Hallo.Sip.Util;
 using Hallo.Util;
+using Hallo.Sip.Stack.Transactions.InviteClient;
 
 namespace Hallo.Sdk
 {
@@ -17,6 +18,9 @@ namespace Hallo.Sdk
         private readonly SipAddressFactory _addressFactory;
         private readonly ICommandFactory _commandFactory;
 
+        private RingingState _ringingState = new RingingState();
+        private IdleState _idleState = new IdleState();
+        
         //the registered phoneline
         private IPhoneLine _phoneLine;
         private bool _isRunning;
@@ -24,21 +28,22 @@ namespace Hallo.Sdk
         //the started phonecall
         private IPhoneCall _pendingPhoneCall;
         private int _counter;
+        private ISoftPhoneStateProvider _stateProvider;
 
         public ISoftPhoneState InternalState { get; private set; }
+        public ISoftPhoneStateProvider StateProvider { get { return _stateProvider; } }
 
-        internal SoftPhone(ISipProvider provider, SipMessageFactory messageFactory, SipHeaderFactory headerFactory, 
-            SipAddressFactory addressFactory, ICommandFactory commandFactory)
+        internal SoftPhone(ISipProvider provider, SipMessageFactory messageFactory, SipHeaderFactory headerFactory,
+            SipAddressFactory addressFactory, ISoftPhoneStateProvider stateProvider)
         {
             _provider = provider;
             _messageFactory = messageFactory;
             _headerFactory = headerFactory;
             _addressFactory = addressFactory;
-            _commandFactory = commandFactory;
-            commandFactory.SoftPhone = this;
+            _stateProvider = stateProvider;
 
-            InternalState = new IdleState(this);
-            InternalState.Initialize();
+            InternalState = _stateProvider.GetIdle();
+            InternalState.Initialize(this);
         }
 
         public IPhoneLine CreatePhoneLine(SipAccount account)
@@ -79,9 +84,7 @@ namespace Hallo.Sdk
             
             _pendingPhoneCall = phoneCall;
 
-            var sendCommand = idleState.StartCall(phoneCall.GetToUri());
-
-            sendCommand.Execute();
+            StartCall(phoneCall.GetToUri());
         }
 
         public event EventHandler<VoipEventArgs<IPhoneCall>> IncomingCall;
@@ -96,9 +99,7 @@ namespace Hallo.Sdk
             //    throw new SipException(SipResponseCodes.x486_Busy_Here);
             //}
 
-            var command = InternalState.ProcessRequest(requestEvent);
-
-            command.Execute();
+            InternalState.ProcessRequest(this, requestEvent);
         }
 
         /// <summary>
@@ -164,6 +165,41 @@ namespace Hallo.Sdk
             get { throw new NotImplementedException(); }
         }
 
+        public void StartCall(SipUri calleeUri)
+        {
+            var thisUri = AddressFactory.CreateUri(string.Empty, SipProvider.ListeningPoint.ToString());
+
+            var requestUri = calleeUri;
+            var toAddress = AddressFactory.CreateAddress(string.Empty, calleeUri);
+            var fromAddress = AddressFactory.CreateAddress(string.Empty, thisUri);
+            var toHeader = HeaderFactory.CreateToHeader(toAddress);
+            var fromHeader = HeaderFactory.CreateFromHeader(fromAddress, SipUtil.CreateTag());
+            var cseqHeader = HeaderFactory.CreateSCeqHeader(SipMethods.Invite, MessageCounter++);
+            var callIdheader = HeaderFactory.CreateCallIdHeader(SipUtil.CreateCallId());
+            var viaHeader = HeaderFactory.CreateViaHeader(SipProvider.ListeningPoint.Address,
+                                                          SipProvider.ListeningPoint.Port, SipConstants.Udp,
+                                                          SipUtil.CreateBranch());
+            var maxForwardsHeader = HeaderFactory.CreateMaxForwardsHeader(1);
+            var request = MessageFactory.CreateRequest(
+                requestUri,
+                SipMethods.Invite,
+                callIdheader,
+                cseqHeader,
+                fromHeader,
+                toHeader,
+                viaHeader,
+                maxForwardsHeader);
+
+            /*add contactheader*/
+            var contactUri = AddressFactory.CreateUri(thisUri.User, viaHeader.SentBy.ToString());
+            var contactHeader = HeaderFactory.CreateContactHeader(contactUri);
+            request.Contacts.Add(contactHeader);
+
+            var clientTransaction = SipProvider.CreateClientTransaction(request);
+            var dialog = SipProvider.CreateClientDialog(clientTransaction as SipInviteClientTransaction);
+            clientTransaction.SendRequest();
+            ChangeState(_stateProvider.GetRinging());
+        }
        
         public InviteInfo PendingInvite { get; set; }
     
@@ -176,9 +212,9 @@ namespace Hallo.Sdk
 
         public void ChangeState(ISoftPhoneState state)
         {
-            Check.IsTrue(!state.GetType().Equals(InternalState.GetType()), string.Format("Can not change state to '{0}'. The phone is already in '{0}' state",  this.InternalState.GetType().Name));
+            Check.IsTrue(!state.Equals(InternalState), string.Format("Can not change state to '{0}'. The phone is already in '{0}' state",  this.InternalState.StateName));
 
-            state.Initialize();
+            state.Initialize(this);
             InternalState = state;
             StateChanged(this, new VoipEventArgs<SoftPhoneState>(InternalState.StateName));
         }
@@ -202,7 +238,7 @@ namespace Hallo.Sdk
         }
 
         public event EventHandler<VoipEventArgs<SoftPhoneState>> StateChanged = delegate {};
-        
+       
         public int MessageCounter { get; set; }
    
         public IPhoneLine RegisteredPhoneLine 
@@ -215,15 +251,43 @@ namespace Hallo.Sdk
             get { return InternalState.StateName; }
         }
         
-        public void RaiseIncomingCall()
+        public void RaiseIncomingCall(SipUri from)
         {
-            _pendingPhoneCall = new PhoneCall(this, true, new Command(OnPhoneCallAnswered));
+            _pendingPhoneCall = new PhoneCall(this, true, from, new Command(OnPhoneCallAnswered), new Command(OnPhoneCallRejected));
             IncomingCall(this, new VoipEventArgs<IPhoneCall>(_pendingPhoneCall));
         }
 
         private void OnPhoneCallAnswered()
         {
 
+        }
+
+        private void OnPhoneCallRejected() 
+        { 
+
+        }      
+    }
+
+    internal interface ISoftPhoneStateProvider 
+    {
+        ISoftPhoneState GetRinging();
+        ISoftPhoneState GetIdle();       
+    }
+
+    internal class SoftPhoneStateProvider : ISoftPhoneStateProvider
+    {
+        public readonly ISoftPhoneState _ringing = new RingingState();
+        public readonly ISoftPhoneState _idle = new IdleState();
+
+
+        public ISoftPhoneState GetRinging() 
+        {
+            return _ringing;  
+        }
+
+        public ISoftPhoneState GetIdle()
+        {
+            return _idle;
         }
     }
 }

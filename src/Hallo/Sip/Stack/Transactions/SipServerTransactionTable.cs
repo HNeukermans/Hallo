@@ -4,7 +4,6 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Hallo.Sip.Stack.Transactions;
-using System.Reactive;
 using System.Reactive.Disposables;
 
 namespace Hallo.Sip

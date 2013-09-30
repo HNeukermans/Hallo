@@ -11,9 +11,10 @@ namespace Hallo.Sip.Stack.Transactions.InviteServer
                 tx.SendTryingTimer.Start();
             }
 
-            internal override StateResult ProcessRequest(SipInviteServerTransaction tx, SipRequestEvent request)
+            internal override StateResult ProcessRequest(SipInviteServerTransaction tx, SipRequestEvent requestEvent)
             {
                 tx.SendResponseInternal();
+                requestEvent.IsSent = true;
                 return new StateResult();
             }
 

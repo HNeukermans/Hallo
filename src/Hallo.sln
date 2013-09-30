@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hallo.UnitTest", "Hallo.Uni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hallo.Console", "Hallo.Console\Hallo.Console.csproj", "{F0E832F7-9C93-4BDE-AEA3-574DA951211D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hallo.Specs", "Hallo.Specs\Hallo.Specs.csproj", "{EEE740CF-8982-4757-B2F0-51DD5E8747BE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,21 +116,6 @@ Global
 		{F0E832F7-9C93-4BDE-AEA3-574DA951211D}.Release|Mixed Platforms.Build.0 = Release|x86
 		{F0E832F7-9C93-4BDE-AEA3-574DA951211D}.Release|x86.ActiveCfg = Release|x86
 		{F0E832F7-9C93-4BDE-AEA3-574DA951211D}.Release|x86.Build.0 = Release|x86
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Publish|Any CPU.ActiveCfg = Release|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Publish|Any CPU.Build.0 = Release|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Publish|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Publish|Mixed Platforms.Build.0 = Release|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Publish|x86.ActiveCfg = Release|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{EEE740CF-8982-4757-B2F0-51DD5E8747BE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

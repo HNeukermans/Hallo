@@ -7,7 +7,7 @@ namespace Hallo.Sdk
     public interface IPhoneCall
     {
         event EventHandler<VoipEventArgs<CallError>> CallErrorOccured;
-        void Invite(string to);
+        void Start(string to);
 
         void Answer();
 

@@ -31,6 +31,7 @@ namespace Hallo.Sdk
         private readonly ICommand _answerCommand;
         private SoftPhone _softPhone;
         private SipUri _toUri;
+        private ICommand _rejectCommand;
 
         public PhoneCall(SoftPhone softPhone, bool isIncoming, ICommand<IPhoneCall> startCommand)
         {
@@ -39,11 +40,12 @@ namespace Hallo.Sdk
             _startCommand = startCommand;
         }
 
-        public PhoneCall(SoftPhone softPhone, bool isIncoming, ICommand answerCommand)
+        public PhoneCall(SoftPhone softPhone, bool isIncoming, SipUri from, ICommand answerCommand, ICommand rejectCommand)
         {
             _softPhone = softPhone;
             _isIncoming = isIncoming;
             _answerCommand = answerCommand;
+            _rejectCommand = rejectCommand;
         }
 
         public bool IsIncoming
@@ -63,9 +65,8 @@ namespace Hallo.Sdk
         
         public CallState State { get; set; }
 
-        public void Invite(string to)
+        public void Start(string to)
         {
-
             Check.IsTrue(!_isIncoming, "Failed to start a call. Only outgoing calls can be started.");
 
             if (_softPhone.RegisteredPhoneLine == null)

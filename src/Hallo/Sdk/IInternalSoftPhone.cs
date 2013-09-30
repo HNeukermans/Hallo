@@ -16,17 +16,20 @@ namespace Hallo.Sdk
         ISipProvider SipProvider { get; }
         void ChangeState(ISoftPhoneState ringingState);
         ISoftPhoneState InternalState { get; }
-        ICommandFactory CommandFactory { get; }
         SipMessageFactory MessageFactory { get; }
         int MessageCounter { get; set; }
-        void RaiseIncomingCall();
+        void RaiseIncomingCall(SipUri from);
+        ISoftPhoneStateProvider StateProvider { get; }
     }
 
     public class InviteInfo
     {
         public SipRequest OriginalRequest { get; set; }
-        public SipInviteServerTransaction Transaction { get; set; }
+        public SipInviteServerTransaction InviteTransaction { get; set; }
         public SipInviteServerDialog Dialog { get; set; }
         public SipResponse RingingResponse { get; set; }
+        public SipUri From { get; set; }
+        public SipUri To { get; set; }
+        public bool IsIncomingCall { get; set; }
     }
 }
