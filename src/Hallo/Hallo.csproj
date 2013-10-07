@@ -143,8 +143,11 @@
     <Compile Include="Sdk\Commands\Command.cs" />
     <Compile Include="Sdk\Commands\ICommand.cs" />
     <Compile Include="Sdk\Commands\EmptyCommand.cs" />
+    <Compile Include="Sdk\SoftPhoneProvider.cs" />
     <Compile Include="Sdk\ICommandFactory.cs" />
     <Compile Include="Sdk\Commands\InitialInviteSendCommand.cs" />
+    <Compile Include="Sdk\ISoftPhoneProvider.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\EstablishedState.cs" />
     <Compile Include="Sdk\SoftPhoneStates\ISoftPhoneState.cs" />
     <Compile Include="Sdk\CallState.cs" />
     <Compile Include="Sdk\SoftPhoneStates\IdleState.cs" />
@@ -162,6 +165,7 @@
     <Compile Include="Sdk\SoftPhoneSate.cs" />
     <Compile Include="Sdk\SoftPhoneStates\RingingState.cs" />
     <Compile Include="Sdk\CommandFactory.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\WaitForAckState.cs" />
     <Compile Include="Sdk\VoipEventArgs.cs" />
     <Compile Include="Sdp\Parsers\ParserForAttribute.cs" />
     <Compile Include="Sdp\Parsers\SdpOriginParser.cs" />

@@ -9,52 +9,26 @@ using Hallo.UnitTest.Builders;
 using Hallo.UnitTest.Helpers;
 using Hallo.UnitTest.Stubs;
 using NUnit.Framework;
+using Hallo.Component;
 
-namespace Hallo.UnitTest.Sdk
+namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
-    public class When_Idle_an_invite_is_received : Specification
+    internal class When_Idle_a_invite_is_received : SoftPhoneSpecificationBase
     {
-        private FakeNetwork _network;
-        private SipRequest _invite;
-        //TODO:test invite no from tag
-        //TODO:test invite no contact header
 
-        ManualResetEvent _wait = new ManualResetEvent(false);
-        private decimal _counter;
-        private ISoftPhone _calleePhone;
-        private bool _firedStateChanged;
-        private bool _firedIncomingCall;
-        private IPhoneCall _incomingCall;
-        private SipProvider _sipProvider1;
-        protected override void Given()
+        protected override void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
         {
-            //create invite.
-            _invite = CreateInviteRequest(TestConstants.EndPoint1Uri, TestConstants.EndPoint2Uri);
-
-            //create phone
-            var cs1 = new FakeSipContextSource(TestConstants.IpEndPoint2);
-
-            _network = new FakeNetwork();
-            _sipProvider1 = new SipProvider(new SipStack(), cs1);
-            _calleePhone = new SoftPhone(_sipProvider1, new SipMessageFactory(), new SipHeaderFactory(), new SipAddressFactory(), new SoftPhoneStateProvider());
-            cs1.AddToNetwork(_network);
-            _network.AddReceiver(TestConstants.IpEndPoint1, OnReceive);
-            _calleePhone.IncomingCall += (s, e) =>
-            {
-                _incomingCall = e.Item;
-                _firedIncomingCall = true;
-            };
-            _calleePhone.StateChanged += _calleePhone_StateChanged;
-            _calleePhone.Start();
+            _incomingCall = e.Item;
+            _firedIncomingCall = true;
         }
 
-        void _calleePhone_StateChanged(object sender, VoipEventArgs<SoftPhoneState> e)
+        protected override void _calleePhone_StateChanged(object sender, VoipEventArgs<SoftPhoneState> e)
         {
             _firedStateChanged = true;
             _wait.Set();
         }
 
-        private void OnReceive(SipContext sipContext)
+        protected override void OnReceive(SipContext sipContext)
         {
             /*continue test execution*/
             //_wait.Set(); move to statechanged, as this is the last event in code.
@@ -118,6 +92,8 @@ namespace Hallo.UnitTest.Sdk
 
             return r;
         }
+
+       
     }
    
 }

@@ -8,6 +8,7 @@ namespace Hallo.Sdk
     public enum SoftPhoneState
     {
         Idle,
-        Ringing
+        Ringing,
+        Established
     }
 }

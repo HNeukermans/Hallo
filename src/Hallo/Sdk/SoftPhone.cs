@@ -7,11 +7,14 @@ using Hallo.Sip.Stack;
 using Hallo.Sip.Util;
 using Hallo.Util;
 using Hallo.Sip.Stack.Transactions.InviteClient;
+using NLog;
 
 namespace Hallo.Sdk
 {
     internal class SoftPhone : IInternalSoftPhone, ISipListener
     {
+        private static readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
         private ISipProvider _provider = null;
         private readonly SipMessageFactory _messageFactory;
         private readonly SipHeaderFactory _headerFactory;
@@ -29,21 +32,26 @@ namespace Hallo.Sdk
         private IPhoneCall _pendingPhoneCall;
         private int _counter;
         private ISoftPhoneStateProvider _stateProvider;
-
+        private ITimerFactory _timerFactory;
         public ISoftPhoneState InternalState { get; private set; }
         public ISoftPhoneStateProvider StateProvider { get { return _stateProvider; } }
 
         internal SoftPhone(ISipProvider provider, SipMessageFactory messageFactory, SipHeaderFactory headerFactory,
-            SipAddressFactory addressFactory, ISoftPhoneStateProvider stateProvider)
+            SipAddressFactory addressFactory, ISoftPhoneStateProvider stateProvider, ITimerFactory timerFactory)
         {
             _provider = provider;
             _messageFactory = messageFactory;
             _headerFactory = headerFactory;
             _addressFactory = addressFactory;
             _stateProvider = stateProvider;
+            _timerFactory = timerFactory;
 
             InternalState = _stateProvider.GetIdle();
             InternalState.Initialize(this);
+            RetransmitRingingTimer = _timerFactory.CreateRingingTimer(OnRetransmitRinging);
+            EndWaitForAckTimer = _timerFactory.CreateInviteCtxTimeOutTimer(OnWaitForAckTimeOut);
+
+            if(_logger.IsDebugEnabled) _logger.Debug("Initialized.");
         }
 
         public IPhoneLine CreatePhoneLine(SipAccount account)
@@ -87,10 +95,14 @@ namespace Hallo.Sdk
             StartCall(phoneCall.GetToUri());
         }
 
-        public event EventHandler<VoipEventArgs<IPhoneCall>> IncomingCall;
+        public event EventHandler<VoipEventArgs<IPhoneCall>> IncomingCall = delegate { };
 
         public void ProcessRequest(SipRequestEvent requestEvent)
         {
+            string method = requestEvent.Request.RequestLine.Method;
+
+            _logger.Debug("Processing request: {0} ...", method);
+
             ValidateSipSchema(requestEvent.Request);
 
             ////not sure if this is the right place?
@@ -100,6 +112,8 @@ namespace Hallo.Sdk
             //}
 
             InternalState.ProcessRequest(this, requestEvent);
+
+            _logger.Debug("Request processed.");
         }
 
         /// <summary>
@@ -201,22 +215,31 @@ namespace Hallo.Sdk
             ChangeState(_stateProvider.GetRinging());
         }
        
-        public InviteInfo PendingInvite { get; set; }
+        public InviteInfo PendingInvite 
+        { 
+            get;
+            set;
+        }
     
-        public ITimer RingingTimer { get; set; }
+        public ITimer RetransmitRingingTimer { get; set; }
+        public ITimer EndWaitForAckTimer{ get; set; }
 
         public ISipProvider SipProvider
         {
             get { return _provider; }
         }
 
-        public void ChangeState(ISoftPhoneState state)
+        public void ChangeState(ISoftPhoneState newState)
         {
-            Check.IsTrue(!state.Equals(InternalState), string.Format("Can not change state to '{0}'. The phone is already in '{0}' state",  this.InternalState.StateName));
+            Check.IsTrue(!newState.Equals(InternalState), string.Format("Can not change state to '{0}'. The phone is already in '{0}' state",  this.InternalState.StateName));
 
-            state.Initialize(this);
-            InternalState = state;
-            StateChanged(this, new VoipEventArgs<SoftPhoneState>(InternalState.StateName));
+            var previousStateName = InternalState.StateName;
+
+            InternalState.Terminate(this);
+
+            newState.Initialize(this);
+            InternalState = newState;
+            if (previousStateName != InternalState.StateName) StateChanged(this, new VoipEventArgs<SoftPhoneState>(InternalState.StateName));
         }
 
         public SipAddressFactory AddressFactory { get { return _addressFactory; } }
@@ -250,44 +273,84 @@ namespace Hallo.Sdk
         {
             get { return InternalState.StateName; }
         }
-        
+
+        private void OnWaitForAckTimeOut()
+        {
+            if (InternalState != _stateProvider.GetWaitForAck())
+            {
+                if (_logger.IsDebugEnabled) _logger.Debug("Wait_For_Ack Timeout ignored due to race condition. OnWaitForAckTimeOut was called, but the phone is currently not in 'WAITFORACK' state.");
+                return;
+            }
+            
+            if (_logger.IsInfoEnabled) _logger.Info("ACK has not been received after 64 * T1. Sending Bye and terminating dialog...");
+
+           /*ack not been received after 64 * T1 end dialog. TODO:terminate session*/
+           var bye = PendingInvite.Dialog.CreateRequest(SipMethods.Bye);
+
+           var ctx = _provider.CreateClientTransaction(bye);
+                      
+           /*send bye in-dialog*/
+           PendingInvite.Dialog.SendRequest(ctx);
+
+           PendingInvite.Dialog.Terminate();
+
+           _pendingPhoneCall.RaiseCallErrorOccured(CallError.WaitForAckTimeOut);
+
+           if (_logger.IsInfoEnabled) _logger.Info("Transitioning back to idle state...");
+            
+           ChangeState(_stateProvider.GetIdle());          
+        }
+
         public void RaiseIncomingCall(SipUri from)
         {
-            _pendingPhoneCall = new PhoneCall(this, true, from, new Command(OnPhoneCallAnswered), new Command(OnPhoneCallRejected));
+            _pendingPhoneCall = new PhoneCall(this, true, from, new Command(OnPhoneCallAccepted), new Command(OnPhoneCallRejected));
             IncomingCall(this, new VoipEventArgs<IPhoneCall>(_pendingPhoneCall));
         }
 
-        private void OnPhoneCallAnswered()
+        private void OnPhoneCallAccepted()
         {
+            Check.IsTrue(InternalState.StateName == SoftPhoneState.Ringing, 
+                string.Format("Can not accept the phonecall. The phonecall can only be accepted while the phone is in 'RINGING state'. Currentstate: '{0}'", InternalState.StateName));
+
+            if (_logger.IsDebugEnabled) _logger.Debug("accepting phonecall...");
+
+            var okResponse = PendingInvite.OriginalRequest.CreateResponse(SipResponseCodes.x200_Ok);
+
+            PendingInvite.Dialog.SendOk(okResponse);
+
+            ChangeState(_stateProvider.GetWaitForAck());
+
+            if (_logger.IsDebugEnabled) _logger.Debug("Phonecall accepted.");
 
         }
 
         private void OnPhoneCallRejected() 
-        { 
-
-        }      
-    }
-
-    internal interface ISoftPhoneStateProvider 
-    {
-        ISoftPhoneState GetRinging();
-        ISoftPhoneState GetIdle();       
-    }
-
-    internal class SoftPhoneStateProvider : ISoftPhoneStateProvider
-    {
-        public readonly ISoftPhoneState _ringing = new RingingState();
-        public readonly ISoftPhoneState _idle = new IdleState();
-
-
-        public ISoftPhoneState GetRinging() 
         {
-            return _ringing;  
+            Check.IsTrue(InternalState.StateName == SoftPhoneState.Ringing,
+               string.Format("Can not reject the phonecall. The phonecall can only be rejected while in the phone is in 'RINGING state'. Currentstate: '{0}'", InternalState.StateName));
+
+            if (_logger.IsDebugEnabled) _logger.Debug("Rejecting phonecall...");
+
+            var rejectResponse = PendingInvite.OriginalRequest.CreateResponse(SipResponseCodes.x486_Busy_Here);
+            PendingInvite.InviteTransaction.SendResponse(rejectResponse);
+
+            if (_logger.IsDebugEnabled) _logger.Debug("Phonecall rejected.");
         }
 
-        public ISoftPhoneState GetIdle()
-        {
-            return _idle;
+        private void OnRetransmitRinging()
+        {            
+            if (InternalState != _stateProvider.GetRinging())
+            {
+                if (_logger.IsDebugEnabled) _logger.Debug("Retransmit ignored due to race condition. OnRetransmitRinging was called, but the phone is currently not in 'RINGING' state.");
+                return;
+            }
+                        
+            if (_logger.IsDebugEnabled) _logger.Debug("Retransmitting ringing response...");
+
+            PendingInvite.InviteTransaction.SendResponse(PendingInvite.RingingResponse);
+
+            if (_logger.IsDebugEnabled) _logger.Debug("Ringing response retransmitted.");  
         }
     }
+       
 }

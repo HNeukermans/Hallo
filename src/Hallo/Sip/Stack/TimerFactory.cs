@@ -98,5 +98,10 @@ namespace Hallo.Sip.Stack
         {
             return CreateDelayedAction(callBack, 200);
         }
+
+        public ITimer CreateRingingTimer(Action callBack)
+        {
+            return CreatePeriodicTimer(callBack, 5000);
+        }
     }
 }

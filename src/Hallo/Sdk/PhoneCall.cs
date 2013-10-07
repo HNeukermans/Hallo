@@ -90,7 +90,7 @@ namespace Hallo.Sdk
             return _toUri;
         }
 
-        public void Answer()
+        public void Accept()
         {
             Check.IsTrue(_isIncoming, "Failed to Answer the call. Only incoming calls can be answered.");
             _answerCommand.Execute();
@@ -117,6 +117,9 @@ namespace Hallo.Sdk
         //    });
         //}
 
-       
+        public void RaiseCallErrorOccured(CallError error)
+        {
+            CallErrorOccured(this, new VoipEventArgs<CallError>(error));
+        }
     }
 }

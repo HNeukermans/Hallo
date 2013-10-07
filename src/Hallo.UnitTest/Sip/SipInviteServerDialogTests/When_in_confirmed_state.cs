@@ -2,6 +2,7 @@ using FluentAssertions;
 using Hallo.Sip.Stack.Dialogs;
 using NUnit.Framework;
 
+
 namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
 {
     public class When_in_confirmed_state : SipInviteServerDialogSpecificationBase

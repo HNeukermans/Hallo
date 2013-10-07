@@ -52,8 +52,10 @@ namespace Hallo.Sip.Stack.Dialogs
             }
             /*12.2.1.1. Generating the Request*/
             /*The sequence number of the CSeq header field MUST be the same as the OK being acknowledged,
-             * but the CSeq method MUST be ACK. */
-            var ackRequest = CreateRequest(SipMethods.Ack);
+             * but the CSeq method MUST be ACK. The ACK MUST contain a single Via header field, and
+             * this MUST be equal to the top Via header field of the original
+             * request. */
+            var ackRequest = CreateRequest(SipMethods.Ack, _firstRequest.Vias.GetTopMost());
             var cseqHeader = _headerFactory.CreateSCeqHeader(SipMethods.Ack, _lastOKSequenceNr);
             ackRequest.CSeq = cseqHeader;
 

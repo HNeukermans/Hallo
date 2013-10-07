@@ -108,6 +108,7 @@
     <Compile Include="Builders\SipResponseEventBuilder.cs" />
     <Compile Include="Builders\TimerFactoryMockBuilder.cs" />
     <Compile Include="Builders\TxTimerBuilder.cs" />
+    <Compile Include="Helpers\InvocationCounter.cs" />
     <Compile Include="Helpers\SipMessageBodyHelper.cs" />
     <Compile Include="Builders\SipMessageBuilder.cs" />
     <Compile Include="Builders\SipRequestBuilder.cs" />
@@ -123,9 +124,13 @@
     <Compile Include="Helpers\TestConstants.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sdk\SoftPhoneTests\When_ringing.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\SoftPhoneSpecificationBase.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_Ringing.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_Ringing_a_long_time.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_Ringing_the_call_is_accepted.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_the_phone_is_started.cs" />
-    <Compile Include="Sdk\SoftPhoneTests\When_Idle_an_invite_is_received_retransmitted.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_Idle_a_retransmitted_invite_is_received.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_WaitForAck.cs" />
     <Compile Include="Sdp\ParserTests\SdpOriginParserTests.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Idle_an_invite_is_received.cs" />
     <Compile Include="Sip\SipAllowHeaderTests.cs" />

@@ -72,6 +72,7 @@ namespace Hallo.Component
         public Func<Action, ITimer> CreateInviteCtxRetransmitTimerInterceptor { get; set; }
         public Func<Action, ITimer> CreateInviteCtxEndCompletedTimerInterceptor { get; set; }
         public Func<Action, ITimer> CreateInviteCtxTimeOutTimerInterceptor { get; set; }
+        public Func<Action, ITimer> CreateRingingTimerInterceptor { get; set; }
 
         #endregion
 
@@ -109,7 +110,11 @@ namespace Hallo.Component
 
         #endregion
 
-
+        
+        public ITimer CreateRingingTimer(Action callBack)
+        {
+            return CreateRingingTimerInterceptor(callBack);
+        }
     }
 
 }

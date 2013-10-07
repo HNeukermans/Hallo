@@ -62,5 +62,7 @@ namespace Hallo.Sip.Stack
 
 
         ITimer CreateInviteStxSendTryingTimer(Action onSendTryingTimer);
+
+        ITimer CreateRingingTimer(Action callBack);
     }
 }

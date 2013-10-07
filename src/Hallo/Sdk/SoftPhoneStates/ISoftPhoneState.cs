@@ -15,6 +15,8 @@ namespace Hallo.Sdk.SoftPhoneStates
 
         void ProcessResponse(IInternalSoftPhone softPhone, SipResponseEvent responseEvent);
 
+        void Terminate(IInternalSoftPhone softPhone);
+
         SoftPhoneState StateName { get; }
     }
 }

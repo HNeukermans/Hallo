@@ -156,7 +156,7 @@ namespace Hallo.Sip.Stack.Dialogs
             return CallId + ":" + LocalTag + ":" + RemoteTag;
         }
 
-        public SipRequest CreateRequest(string method)
+        public SipRequest CreateRequest(string method, SipViaHeader viaheader = null)
         {
             if (State < DialogState.Early) throw new InvalidOperationException("The dialog is unable to create the request. A dialog in 'NULL' state can not create requests.");
 
@@ -168,7 +168,7 @@ namespace Hallo.Sip.Stack.Dialogs
             var fromAddress = _addressFactory.CreateAddress(null, _localUri);
             var fromHeader = _headerFactory.CreateFromHeader(fromAddress, _localTag);
             var callIdheader = _headerFactory.CreateCallIdHeader(_callId);
-            var viaHeader = _headerFactory.CreateViaHeader(_listeningPoint, SipConstants.Udp, SipUtil.CreateBranch());
+            var viaHeader =  viaheader ?? _headerFactory.CreateViaHeader(_listeningPoint, SipConstants.Udp, SipUtil.CreateBranch());
             var requestUri = _remoteUri.Clone();
 
             var maxForwardsHeader = _headerFactory.CreateMaxForwardsHeader();

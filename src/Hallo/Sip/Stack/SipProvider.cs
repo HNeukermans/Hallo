@@ -52,6 +52,11 @@ namespace Hallo.Sip
             get { return _stxTable; }
         }
 
+        internal SipDialogTable DialogTable
+        {
+            get { return _dialogTable; }
+        }
+
         public SipListeningPoint ListeningPoint
         {
             get { return new SipListeningPoint(_contextSource.ListeningPoint); }

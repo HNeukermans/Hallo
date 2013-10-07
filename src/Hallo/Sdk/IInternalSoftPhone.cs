@@ -10,7 +10,8 @@ namespace Hallo.Sdk
     {
         SipAccount Account { get; }
         InviteInfo PendingInvite { get; set; }
-        ITimer RingingTimer { get; set; }
+        ITimer RetransmitRingingTimer { get; set; }
+        ITimer EndWaitForAckTimer { get; set; }
         SipAddressFactory AddressFactory { get; }
         SipHeaderFactory HeaderFactory { get; }
         ISipProvider SipProvider { get; }

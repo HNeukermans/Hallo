@@ -17,6 +17,7 @@ namespace Hallo.Component
             _inviteCtxRetransmitTimerInterceptor = CreateDoNothingTimer;
             _inviteCtxEndCompletedTimerInterceptor = CreateDoNothingTimer;
             _inviteCtxTimeOutTimerInterceptor = CreateDoNothingTimer;
+            _ringingTimerInterceptor = CreateDoNothingTimer;
         }
 
         private static ITimer CreateDoNothingTimer(Action callback)
@@ -29,6 +30,14 @@ namespace Hallo.Component
         public TimerFactoryStubBuilder WithNonInviteCtxRetransmitTimerInterceptor(Func<Action, ITimer> value)
         {
             _nonInviteCtxRetransmitTimerInterceptor = value;
+            return this;
+        }
+
+        Func<Action, ITimer> _ringingTimerInterceptor;
+
+        public TimerFactoryStubBuilder WithRingingTimerInterceptor(Func<Action, ITimer> value)
+        {
+            _ringingTimerInterceptor = value;
             return this;
         }
 
@@ -105,6 +114,7 @@ namespace Hallo.Component
             tf.CreateInviteCtxTimeOutTimerInterceptor = _inviteCtxTimeOutTimerInterceptor;
             tf.CreateInviteCtxRetransmitTimerInterceptor = _inviteCtxRetransmitTimerInterceptor;
             tf.CreateInviteCtxEndCompletedTimerInterceptor = _inviteCtxEndCompletedTimerInterceptor;
+            tf.CreateRingingTimerInterceptor = _ringingTimerInterceptor;
             return tf;
         }
 

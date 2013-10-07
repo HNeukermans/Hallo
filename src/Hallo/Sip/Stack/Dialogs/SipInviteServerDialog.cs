@@ -17,15 +17,15 @@ namespace Hallo.Sip.Stack.Dialogs
         private SipResponse _firstResponse;
         private SipResponse _okResponse;
         private ITimer _retransmitOkTimer;
-        private ITimer _endWaitForAckTimer;
+        //private ITimer _endWaitForAckTimer;
         private object _lock = new object();
         private readonly SipRequest _firstRequest;
 
         public SipInviteServerDialog(
-            ISipServerTransaction transaction, 
-            SipDialogTable dialogTable,
-            ITimerFactory timerFactory,
-            SipHeaderFactory headerFactory,
+             ISipServerTransaction transaction, 
+             SipDialogTable dialogTable,
+             ITimerFactory timerFactory,
+             SipHeaderFactory headerFactory,
              SipMessageFactory messageFactory,
              SipAddressFactory addressFactory,
              ISipMessageSender messageSender,
@@ -49,8 +49,8 @@ namespace Hallo.Sip.Stack.Dialogs
             //(only ?) localtag is set on firstresponse
             //localtarget is not defined, because is has no use, (every user agent knows it local address)
 
-            _retransmitOkTimer = _timerFactory.CreateInviteCtxRetransmitTimer(OnReTransmit);
-            _endWaitForAckTimer = _timerFactory.CreateInviteCtxTimeOutTimer(OnWaitForAckTimeOut);
+            _retransmitOkTimer = _timerFactory.CreateInviteCtxRetransmitTimer(OnOkReTransmit);
+            //_endWaitForAckTimer = _timerFactory.CreateInviteCtxTimeOutTimer(OnWaitForAckTimeOut);
             
             if (_logger.IsInfoEnabled) _logger.Info("ServerDialog[Id={0}] created.", GetId());
         }
@@ -127,7 +127,7 @@ namespace Hallo.Sip.Stack.Dialogs
                         _okResponse = response;
                         /*start timers*/
                         _retransmitOkTimer.Start();
-                        _endWaitForAckTimer.Start();
+                        //_endWaitForAckTimer.Start();
                     }
                     else if (_state == DialogState.Terminated)
                     {
@@ -165,7 +165,7 @@ namespace Hallo.Sip.Stack.Dialogs
             }
 
             _retransmitOkTimer.Dispose();
-            _endWaitForAckTimer.Dispose();
+            //_endWaitForAckTimer.Dispose();
 
         }
 
@@ -177,17 +177,9 @@ namespace Hallo.Sip.Stack.Dialogs
         protected override void ProcessResponseOverride(DialogResult result, SipResponseEvent responseEvent)
         {
             
-        }
+        }       
 
-        private void OnWaitForAckTimeOut()
-        {
-            if (_logger.IsInfoEnabled) _logger.Info("ServerDialog[Id={0}], ACK has not been received after 64 * T1. Terminating dialog...", GetId());
-            
-            /*ack not been received after 64 * T1 end dialog. TODO:terminate session*/
-            Terminate();
-        }
-
-        private void OnReTransmit()
+        private void OnOkReTransmit()
         {
             if (_logger.IsDebugEnabled) _logger.Info("ServerDialog[Id={0}], Retransmitting OK.", GetId());
             
@@ -210,9 +202,18 @@ namespace Hallo.Sip.Stack.Dialogs
             _localTag = _firstResponse.To.Tag;
         }
 
-        
+        /// <summary>
+        /// Sends the OK response and handles retransmitions of OK.
+        /// </summary>
+        /// <param name="okResponse"></param>
+        internal void SendOk(SipResponse okResponse)
+        {
+            Check.Require(okResponse, "okResponse");
+            Check.IsTrue(okResponse.StatusLine.StatusCode / 100 == 2, "parameter 'okResponse' is not an ok response.");
+
+            SetLastResponse(okResponse);
+
+            _messageSender.SendResponse(okResponse);
+        }
     }
-
-
-   
 }

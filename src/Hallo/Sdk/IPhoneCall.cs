@@ -9,15 +9,17 @@ namespace Hallo.Sdk
         event EventHandler<VoipEventArgs<CallError>> CallErrorOccured;
         void Start(string to);
 
-        void Answer();
+        void Accept();
 
         SipAddress From { get; }
 
         SipUri GetToUri();
+
+        void RaiseCallErrorOccured(CallError error);       
     }
 
-    public class CallError
+    public enum CallError
     {
-
+        WaitForAckTimeOut
     }
 }

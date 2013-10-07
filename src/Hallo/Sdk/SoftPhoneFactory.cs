@@ -1,6 +1,7 @@
 using System.Net;
 using Hallo.Sdk.SoftPhoneStates;
 using Hallo.Sip;
+using Hallo.Component;
 
 namespace Hallo.Sdk
 {
@@ -16,7 +17,7 @@ namespace Hallo.Sdk
             var sipStack = new SipStack();
             var sipListeningPoint = sipStack.CreateUdpListeningPoint(listeningPoint);
             var provider = sipStack.CreateSipProvider(sipListeningPoint);
-            return new SoftPhone(provider, sipStack.CreateMessageFactory(), sipStack.CreateHeaderFactory(), sipStack.CreateAddressFactory(), new SoftPhoneStateProvider());
+            return new SoftPhone(provider, sipStack.CreateMessageFactory(), sipStack.CreateHeaderFactory(), sipStack.CreateAddressFactory(), new SoftPhoneStateProvider(), new TimerFactoryStub());
         }
     }
 }
