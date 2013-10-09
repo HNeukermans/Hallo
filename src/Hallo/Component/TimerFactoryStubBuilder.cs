@@ -20,7 +20,7 @@ namespace Hallo.Component
             _ringingTimerInterceptor = CreateDoNothingTimer;
         }
 
-        private static ITimer CreateDoNothingTimer(Action callback)
+        public static ITimer CreateDoNothingTimer(Action callback)
         {
             return new TxTimerStubBuilder().WithCallback(callback).Build();
         }

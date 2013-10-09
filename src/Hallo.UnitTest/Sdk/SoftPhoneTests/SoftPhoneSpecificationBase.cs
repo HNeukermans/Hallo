@@ -43,9 +43,9 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         private ISoftPhoneStateProvider CreateStateProviderMock()
         {
-            _idleStateProxy = new SoftPhoneStateProxy(new IdleState());
+            _idleStateProxy = new SoftPhoneStateProxy(new IdleState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
             _ringingStateProxy = new SoftPhoneStateProxy(new RingingState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
-            _waitforAckStateProxy = new SoftPhoneStateProxy(new WaitForAckState());
+            _waitforAckStateProxy = new SoftPhoneStateProxy(new WaitForAckState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
 
             Mock<ISoftPhoneStateProvider> mock = new Mock<ISoftPhoneStateProvider>();
             mock.Setup(s => s.GetIdle()).Returns(_idleStateProxy);
@@ -59,12 +59,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
            
         }
 
-        protected virtual void AfterProcessResponse(ISoftPhoneState softPhoneState)
+        protected virtual void AfterProcessResponse(ISoftPhoneState softPhoneState, SipResponseEvent responseEvent)
         {
             
         }
 
-        protected virtual void AfterProcessRequest(ISoftPhoneState softPhoneState)
+        protected virtual void AfterProcessRequest(ISoftPhoneState softPhoneState, SipRequestEvent requestEvent)
         {
            
         }
@@ -83,12 +83,16 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             cs1.AddToNetwork(_network);
             _network.AddReceiver(TestConstants.IpEndPoint1, OnReceive);
             _calleePhone.StateChanged += new EventHandler<VoipEventArgs<SoftPhoneState>>(_calleePhone_StateChanged);
+            _calleePhone.InternalStateChanged += new EventHandler<EventArgs>(_calleePhone_InternalStateChanged);     
             _calleePhone.IncomingCall += new EventHandler<VoipEventArgs<IPhoneCall>>(_calleePhone_IncomingCall);
             _calleePhone.Start();
 
             GivenOverride();
         }
 
+        protected virtual void _calleePhone_InternalStateChanged(object sender, EventArgs e) 
+        { }
+        
         protected SipRequest CreateAckRequest(SipRequest invite, SipResponse ringing)
         {
             var addressFactory = new SipAddressFactory();
@@ -135,10 +139,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             return request;
         }
 
-        protected abstract void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e);
-        
+        protected virtual void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
+        { }
 
-        protected abstract void _calleePhone_StateChanged(object sender, VoipEventArgs<SoftPhoneState> e);
+
+        protected virtual void _calleePhone_StateChanged(object sender, VoipEventArgs<SoftPhoneState> e) 
+        { }
         
 
         protected virtual void GivenOverride()

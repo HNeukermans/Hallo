@@ -3,6 +3,7 @@ using Hallo.Sip;
 using Hallo.Sip.Stack;
 using Hallo.Sip.Stack.Dialogs;
 using Hallo.Sip.Stack.Transactions.InviteServer;
+using System;
 
 namespace Hallo.Sdk
 {
@@ -21,6 +22,7 @@ namespace Hallo.Sdk
         int MessageCounter { get; set; }
         void RaiseIncomingCall(SipUri from);
         ISoftPhoneStateProvider StateProvider { get; }
+        event EventHandler<EventArgs> InternalStateChanged;
     }
 
     public class InviteInfo

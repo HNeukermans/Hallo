@@ -94,6 +94,11 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         private IPhoneCall _incomingCall;
         private SipResponse _okResponse;
 
+
+        protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
   
 }

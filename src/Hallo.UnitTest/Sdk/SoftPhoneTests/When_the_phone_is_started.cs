@@ -43,7 +43,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _sipProvider1.ServerTransactionTable.Count.Should().Be(0);
             _sipProvider1.ClientTransactionTable.Count.Should().Be(0);
         }
-               
+
+
+        protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
+        {
+           
+        }
     }
    
 }

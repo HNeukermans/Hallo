@@ -82,5 +82,10 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _ringingReceivedCounter.Should().BeGreaterThan((_longtimeSpan / _periodicity));
         }
 
+
+        protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

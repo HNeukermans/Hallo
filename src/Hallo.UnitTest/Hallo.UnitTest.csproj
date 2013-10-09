@@ -131,6 +131,7 @@
     <Compile Include="Sdk\SoftPhoneTests\When_the_phone_is_started.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Idle_a_retransmitted_invite_is_received.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitForAck.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_WaitForAck_an_ack_is_received.cs" />
     <Compile Include="Sdp\ParserTests\SdpOriginParserTests.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Idle_an_invite_is_received.cs" />
     <Compile Include="Sip\SipAllowHeaderTests.cs" />

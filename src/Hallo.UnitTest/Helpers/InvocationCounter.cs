@@ -11,9 +11,9 @@ namespace Hallo.UnitTest.Helpers
     internal class SoftPhoneStateProxy : ISoftPhoneState
     {
         ISoftPhoneState _state;
-        private Action<ISoftPhoneState> _afterProcessResponse;
+        private Action<ISoftPhoneState,SipResponseEvent > _afterProcessResponse;
         private readonly Action<ISoftPhoneState> _afterInitialized;
-        private Action<ISoftPhoneState> _afterProcessRequest;
+        private Action<ISoftPhoneState, SipRequestEvent> _afterProcessRequest;
 
         public SoftPhoneStateProxy(ISoftPhoneState state)
         {
@@ -23,7 +23,12 @@ namespace Hallo.UnitTest.Helpers
             _afterInitialized = delegate { };
         }
 
-        public SoftPhoneStateProxy(ISoftPhoneState state, Action<ISoftPhoneState> afterProcessRequest, Action<ISoftPhoneState> afterProcessResponse, Action<ISoftPhoneState> afterInitialized)
+        public ISoftPhoneState State 
+        {
+            get { return _state; }
+        }
+
+        public SoftPhoneStateProxy(ISoftPhoneState state, Action<ISoftPhoneState, SipRequestEvent> afterProcessRequest, Action<ISoftPhoneState, SipResponseEvent> afterProcessResponse, Action<ISoftPhoneState> afterInitialized)
         {
             _state = state;
             _afterProcessRequest = afterProcessRequest;
@@ -48,7 +53,7 @@ namespace Hallo.UnitTest.Helpers
 
             _state.ProcessRequest(softPhone, requestEvent);
 
-            _afterProcessRequest(_state);
+            _afterProcessRequest(this, requestEvent);
         }
 
         public void ProcessResponse(IInternalSoftPhone softPhone, SipResponseEvent responseEvent)
@@ -57,18 +62,18 @@ namespace Hallo.UnitTest.Helpers
 
             _state.ProcessResponse(softPhone, responseEvent);
 
-            _afterProcessResponse(_state);
+            _afterProcessResponse(this, responseEvent);
         }
 
         public SoftPhoneState StateName
         {
-            get { throw new NotImplementedException(); }
+            get { return _state.StateName; }
         }
 
 
         public void Terminate(IInternalSoftPhone softPhone)
         {
-            throw new NotImplementedException();
+            _state.Terminate(softPhone);
         }
     }
 

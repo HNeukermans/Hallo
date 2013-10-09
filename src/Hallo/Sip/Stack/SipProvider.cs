@@ -624,9 +624,11 @@ namespace Hallo.Sip
 
                     //set the dialog, so it can initiate
                     SipAbstractDialog found;
-                    TrySetDialogOnTx((SipInviteServerTransaction)stx, out found);
-                    
-                    requestEvent.Dialog = found;
+                    if(TryGetDialogOnTx((SipInviteServerTransaction)stx, context.Request, out found))
+                    {
+                        requestEvent.Dialog = found;
+                    }
+                        
                     
                 //}
             }
@@ -717,11 +719,11 @@ namespace Hallo.Sip
 
         #endregion
         
-        private bool TrySetDialogOnTx(SipInviteServerTransaction stx, out SipAbstractDialog dialog)
+        private bool TryGetDialogOnTx(SipInviteServerTransaction stx, SipRequest request, out SipAbstractDialog dialog)
         {
             dialog = null;
 
-            if(stx.Request.To.Tag == null) return false;
+            if (request.To.Tag == null) return false;
 
             /* merged request: Based on the To tag, the UAS MAY either accept or reject the request.
              * If the request has a tag in the To header field, 
@@ -730,7 +732,7 @@ namespace Hallo.Sip
             if(_logger.IsDebugEnabled)_logger.Debug("Searching the table for a matching dialog...");
             
             SipAbstractDialog inTableDialog;
-            if (_dialogTable.TryGetValue(GetDialogId(stx.Request, true), out inTableDialog))
+            if (_dialogTable.TryGetValue(GetDialogId(request, true), out inTableDialog))
             {
                 if (_logger.IsDebugEnabled) _logger.Debug("Found a matching dialog. Setting it on tx.");
                 //stx.SetDialog((SipInviteServerDialog)inTableDialog);

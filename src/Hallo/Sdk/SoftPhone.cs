@@ -239,6 +239,10 @@ namespace Hallo.Sdk
 
             newState.Initialize(this);
             InternalState = newState;
+
+            /*fire internal event*/
+            InternalStateChanged(this, new EventArgs());
+
             if (previousStateName != InternalState.StateName) StateChanged(this, new VoipEventArgs<SoftPhoneState>(InternalState.StateName));
         }
 
@@ -261,7 +265,9 @@ namespace Hallo.Sdk
         }
 
         public event EventHandler<VoipEventArgs<SoftPhoneState>> StateChanged = delegate {};
-       
+
+        public event EventHandler<EventArgs> InternalStateChanged = delegate { };
+
         public int MessageCounter { get; set; }
    
         public IPhoneLine RegisteredPhoneLine 

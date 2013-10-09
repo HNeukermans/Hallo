@@ -33,15 +33,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             if (e.Item == SoftPhoneState.Ringing) _wait.Set();
         }
 
-        protected override void AfterProcessRequest(Hallo.Sdk.SoftPhoneStates.ISoftPhoneState softPhoneState)
-        {
-        }
-
-        protected override void AfterInitialized(Hallo.Sdk.SoftPhoneStates.ISoftPhoneState softPhoneState)
-        {
-            
-        }
-
+        
         protected override void GivenOverride()
         {
             _network.SendTo(SipFormatter.FormatMessage(_invite), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
@@ -135,6 +127,11 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         private TxTimerStub _ringingTimer;
 
+
+        protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

@@ -64,6 +64,11 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             _idleStateCountable.ProcessRequestCounter.Should().Be(1);
         }
+
+        protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
     
 }
