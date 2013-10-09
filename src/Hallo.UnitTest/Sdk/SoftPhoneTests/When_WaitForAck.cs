@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Hallo.Sdk.SoftPhoneStates;
 using Hallo.Sip;
 using Hallo.Component;
 using Hallo.Sdk;
@@ -29,11 +30,24 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             /*immediately accept*/
             e.Item.Accept();
-            _waitForAccepted.Set();
         }
 
         protected override void _calleePhone_StateChanged(object sender, VoipEventArgs<SoftPhoneState> e)
         {
+        }
+
+
+        protected override void AfterInitialized(Hallo.Sdk.SoftPhoneStates.ISoftPhoneState softPhoneState)
+        {
+            if (softPhoneState is RingingState)
+            {
+                _waitForRinging.Set();
+            }
+
+            if (softPhoneState is WaitForAckState)
+            {
+                _waitForAccepted.Set();
+            }
         }
 
         protected override void GivenOverride()
@@ -61,7 +75,6 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
             {
                 if (_receivedRingingResponse == null) {
-                    _waitForRinging.Set();
                     _receivedRingingResponse = sipContext.Response;
                 } 
             }

@@ -8,13 +8,27 @@ using Hallo.Sip.Stack;
 
 namespace Hallo.UnitTest.Helpers
 {
-    internal class InvocationCounter : ISoftPhoneState
+    internal class SoftPhoneStateProxy : ISoftPhoneState
     {
         ISoftPhoneState _state;
+        private Action<ISoftPhoneState> _afterProcessResponse;
+        private readonly Action<ISoftPhoneState> _afterInitialized;
+        private Action<ISoftPhoneState> _afterProcessRequest;
 
-        public InvocationCounter(ISoftPhoneState state)
+        public SoftPhoneStateProxy(ISoftPhoneState state)
         {
             _state = state;
+            _afterProcessRequest = delegate { };
+            _afterProcessResponse = delegate { };
+            _afterInitialized = delegate { };
+        }
+
+        public SoftPhoneStateProxy(ISoftPhoneState state, Action<ISoftPhoneState> afterProcessRequest, Action<ISoftPhoneState> afterProcessResponse, Action<ISoftPhoneState> afterInitialized)
+        {
+            _state = state;
+            _afterProcessRequest = afterProcessRequest;
+            _afterProcessResponse = afterProcessResponse;
+            _afterInitialized = afterInitialized;
         }
 
         public int ProcessRequestCounter { get; set; }
@@ -24,6 +38,8 @@ namespace Hallo.UnitTest.Helpers
         public void Initialize(IInternalSoftPhone softPhone)
         {
             _state.Initialize(softPhone);
+
+            _afterInitialized(_state);
         }
 
         public void ProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)
@@ -31,6 +47,8 @@ namespace Hallo.UnitTest.Helpers
             ProcessRequestCounter++;
 
             _state.ProcessRequest(softPhone, requestEvent);
+
+            _afterProcessRequest(_state);
         }
 
         public void ProcessResponse(IInternalSoftPhone softPhone, SipResponseEvent responseEvent)
@@ -38,6 +56,8 @@ namespace Hallo.UnitTest.Helpers
             ProcessResponseCounter++;
 
             _state.ProcessResponse(softPhone, responseEvent);
+
+            _afterProcessResponse(_state);
         }
 
         public SoftPhoneState StateName

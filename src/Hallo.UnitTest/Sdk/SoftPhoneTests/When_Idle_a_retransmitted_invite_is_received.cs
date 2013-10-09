@@ -17,12 +17,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {   
     internal class When_Idle_a_retransmitted_invite_is_received : SoftPhoneSpecificationBase
     {
-       private InvocationCounter _idleStateCountable;
+        private SoftPhoneStateProxy _idleStateCountable;
 
 
        public When_Idle_a_retransmitted_invite_is_received()
        {
-           _idleStateCountable = new InvocationCounter(new IdleState());
+           _idleStateCountable = new SoftPhoneStateProxy(new IdleState());
 
            Mock<ISoftPhoneStateProvider> softPhoneStateProviderMock = new Mock<ISoftPhoneStateProvider>();
            softPhoneStateProviderMock.Setup(s => s.GetIdle()).Returns(_idleStateCountable);

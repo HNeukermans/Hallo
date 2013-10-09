@@ -22,8 +22,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             _timerFactory = new TimerFactoryStubBuilder().WithRingingTimerInterceptor(OnCreateRingingTimer).Build();
         }
-
-
+        
         protected override void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
         {
             
@@ -34,6 +33,15 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             if (e.Item == SoftPhoneState.Ringing) _wait.Set();
         }
 
+        protected override void AfterProcessRequest(Hallo.Sdk.SoftPhoneStates.ISoftPhoneState softPhoneState)
+        {
+        }
+
+        protected override void AfterInitialized(Hallo.Sdk.SoftPhoneStates.ISoftPhoneState softPhoneState)
+        {
+            
+        }
+
         protected override void GivenOverride()
         {
             _network.SendTo(SipFormatter.FormatMessage(_invite), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
@@ -41,7 +49,6 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             //_wait.WaitOne();
 
             _calleePhone.InternalState.Should().Be(_stateProvider.GetRinging()); /*required assertion*/
-            
         }
 
         protected virtual ITimer OnCreateRingingTimer(Action action)

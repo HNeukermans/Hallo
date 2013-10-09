@@ -2,12 +2,14 @@
 using System.Threading;
 using FluentAssertions;
 using Hallo.Sdk;
+using Hallo.Sdk.SoftPhoneStates;
 using Hallo.Sip;
 using Hallo.Sip.Stack;
 using Hallo.Sip.Util;
 using Hallo.UnitTest.Builders;
 using Hallo.UnitTest.Helpers;
 using Hallo.UnitTest.Stubs;
+using Moq;
 using NUnit.Framework;
 using Hallo.Component;
 using System.Linq;
@@ -29,11 +31,42 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected SipProvider _sipProvider1;
         protected TimerFactoryStub _timerFactory;
         protected ISoftPhoneStateProvider _stateProvider;
+        protected SoftPhoneStateProxy _idleStateProxy;
+        protected SoftPhoneStateProxy _ringingStateProxy;
+        protected SoftPhoneStateProxy _waitforAckStateProxy;
 
         protected SoftPhoneSpecificationBase()
         {
             _timerFactory = new TimerFactoryStubBuilder().Build();
-            _stateProvider = new SoftPhoneStateProvider();
+            _stateProvider = CreateStateProviderMock();
+        }
+
+        private ISoftPhoneStateProvider CreateStateProviderMock()
+        {
+            _idleStateProxy = new SoftPhoneStateProxy(new IdleState());
+            _ringingStateProxy = new SoftPhoneStateProxy(new RingingState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
+            _waitforAckStateProxy = new SoftPhoneStateProxy(new WaitForAckState());
+
+            Mock<ISoftPhoneStateProvider> mock = new Mock<ISoftPhoneStateProvider>();
+            mock.Setup(s => s.GetIdle()).Returns(_idleStateProxy);
+            mock.Setup(s => s.GetRinging()).Returns(_ringingStateProxy);
+            mock.Setup(s => s.GetWaitForAck()).Returns(_waitforAckStateProxy);
+            return mock.Object;
+        }
+
+        protected virtual void AfterInitialized(ISoftPhoneState softPhoneState)
+        {
+           
+        }
+
+        protected virtual void AfterProcessResponse(ISoftPhoneState softPhoneState)
+        {
+            
+        }
+
+        protected virtual void AfterProcessRequest(ISoftPhoneState softPhoneState)
+        {
+           
         }
 
         protected override void Given()
