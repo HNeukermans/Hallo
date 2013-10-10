@@ -9,6 +9,7 @@ using Hallo.Sdk;
 using FluentAssertions;
 using Hallo.UnitTest.Helpers;
 using Hallo.Sip.Stack;
+using Moq;
 using NUnit.Framework;
 using System.Threading;
 
@@ -19,7 +20,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         SipResponse _receivedRingingResponse;
         protected ManualResetEvent _waitForRinging = new ManualResetEvent(false);
         protected ManualResetEvent _waitForAck = new ManualResetEvent(false);
-        protected ManualResetEvent _waitForAck_AckReceived = new ManualResetEvent(false);
+        protected ManualResetEvent _waitForAckReceived = new ManualResetEvent(false);
 
        
 
@@ -28,6 +29,8 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _timerFactory = new TimerFactoryStubBuilder()
                 .WithInviteCtxTimeOutTimerInterceptor(OnWaitForAckTimer)
                 .Build();
+
+            var mock = new Mock<SoftPhone>();
         }
 
         protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
@@ -49,11 +52,11 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             e.Item.Accept();
         }
 
-        protected override void AfterProcessRequest(ISoftPhoneState softPhoneState, SipRequestEvent requestEvent)
+        protected override void AfterProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)
         {
-            if (softPhoneState == _stateProvider.GetWaitForAck() && requestEvent.Request.RequestLine.Method == SipMethods.Ack)
+            if (requestEvent.Request.RequestLine.Method == SipMethods.Ack)
             {
-                _waitForAck_AckReceived.Set();
+                _waitForAckReceived.Set();
             }
         }
         
@@ -67,14 +70,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected override void When()
         {
+            _calleePhone.InternalState.Should().Be(_stateProvider.GetWaitForAck()); /*required assertion*/   
+
             var ack = CreateAckRequest(_invite, _receivedRingingResponse);
             _network.SendTo(SipFormatter.FormatMessage(ack), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
 
-            Thread.Sleep(8000);
-
-            _waitForAck_AckReceived.WaitOne();
-
-            _calleePhone.InternalState.Should().Be(_stateProvider.GetWaitForAck()); /*required assertion*/   
+            _waitForAckReceived.WaitOne();
         }
 
 
@@ -94,7 +95,6 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             }
         }
 
-
         [Test]
         public void Expect_the_phone_to_transition_to_established_state()
         {
@@ -107,19 +107,13 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _receivedRingingResponse.Should().NotBeNull();
         }
 
-        [Test]
-        public void Expect_ringing_timer_to_be_stopped()
-        {
-            _ringingTimer.IsStarted.Should().BeFalse();
-        }
-
+        //TODO: move to when_established
         [Test]
         public void Expect_WaitForAck_timer_to_be_stopped()
         {
             _waitforAckTimer.IsStarted.Should().BeFalse();
         }
 
-        private TxTimerStub _ringingTimer;
         private TxTimerStub _waitforAckTimer;
     }
 

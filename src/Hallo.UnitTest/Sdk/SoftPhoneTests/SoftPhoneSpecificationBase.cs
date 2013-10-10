@@ -34,6 +34,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected SoftPhoneStateProxy _idleStateProxy;
         protected SoftPhoneStateProxy _ringingStateProxy;
         protected SoftPhoneStateProxy _waitforAckStateProxy;
+        protected SoftPhoneStateProxy _establishedStateProxy;
 
         protected SoftPhoneSpecificationBase()
         {
@@ -46,25 +47,27 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _idleStateProxy = new SoftPhoneStateProxy(new IdleState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
             _ringingStateProxy = new SoftPhoneStateProxy(new RingingState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
             _waitforAckStateProxy = new SoftPhoneStateProxy(new WaitForAckState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
+            _establishedStateProxy = new SoftPhoneStateProxy(new EstablishedState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
 
             Mock<ISoftPhoneStateProvider> mock = new Mock<ISoftPhoneStateProvider>();
             mock.Setup(s => s.GetIdle()).Returns(_idleStateProxy);
             mock.Setup(s => s.GetRinging()).Returns(_ringingStateProxy);
             mock.Setup(s => s.GetWaitForAck()).Returns(_waitforAckStateProxy);
+            mock.Setup(s => s.GetEstablished()).Returns(_establishedStateProxy);
             return mock.Object;
         }
 
-        protected virtual void AfterInitialized(ISoftPhoneState softPhoneState)
+        protected virtual void AfterInitialized(IInternalSoftPhone softPhone)
         {
            
         }
 
-        protected virtual void AfterProcessResponse(ISoftPhoneState softPhoneState, SipResponseEvent responseEvent)
+        protected virtual void AfterProcessResponse(IInternalSoftPhone softPhone, SipResponseEvent responseEvent)
         {
             
         }
 
-        protected virtual void AfterProcessRequest(ISoftPhoneState softPhoneState, SipRequestEvent requestEvent)
+        protected virtual void AfterProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)
         {
            
         }

@@ -11,9 +11,9 @@ namespace Hallo.UnitTest.Helpers
     internal class SoftPhoneStateProxy : ISoftPhoneState
     {
         ISoftPhoneState _state;
-        private Action<ISoftPhoneState,SipResponseEvent > _afterProcessResponse;
-        private readonly Action<ISoftPhoneState> _afterInitialized;
-        private Action<ISoftPhoneState, SipRequestEvent> _afterProcessRequest;
+        private Action<IInternalSoftPhone, SipResponseEvent> _afterProcessResponse;
+        private readonly Action<IInternalSoftPhone> _afterInitialized;
+        private Action<IInternalSoftPhone, SipRequestEvent> _afterProcessRequest;
 
         public SoftPhoneStateProxy(ISoftPhoneState state)
         {
@@ -28,7 +28,7 @@ namespace Hallo.UnitTest.Helpers
             get { return _state; }
         }
 
-        public SoftPhoneStateProxy(ISoftPhoneState state, Action<ISoftPhoneState, SipRequestEvent> afterProcessRequest, Action<ISoftPhoneState, SipResponseEvent> afterProcessResponse, Action<ISoftPhoneState> afterInitialized)
+        public SoftPhoneStateProxy(ISoftPhoneState state, Action<IInternalSoftPhone, SipRequestEvent> afterProcessRequest, Action<IInternalSoftPhone, SipResponseEvent> afterProcessResponse, Action<IInternalSoftPhone> afterInitialized)
         {
             _state = state;
             _afterProcessRequest = afterProcessRequest;
@@ -44,7 +44,7 @@ namespace Hallo.UnitTest.Helpers
         {
             _state.Initialize(softPhone);
 
-            _afterInitialized(_state);
+            _afterInitialized(softPhone);
         }
 
         public void ProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)
@@ -53,7 +53,7 @@ namespace Hallo.UnitTest.Helpers
 
             _state.ProcessRequest(softPhone, requestEvent);
 
-            _afterProcessRequest(this, requestEvent);
+            _afterProcessRequest(softPhone, requestEvent);
         }
 
         public void ProcessResponse(IInternalSoftPhone softPhone, SipResponseEvent responseEvent)
@@ -62,7 +62,7 @@ namespace Hallo.UnitTest.Helpers
 
             _state.ProcessResponse(softPhone, responseEvent);
 
-            _afterProcessResponse(this, responseEvent);
+            _afterProcessResponse(softPhone, responseEvent);
         }
 
         public SoftPhoneState StateName

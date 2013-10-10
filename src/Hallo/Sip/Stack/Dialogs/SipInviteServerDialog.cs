@@ -202,18 +202,18 @@ namespace Hallo.Sip.Stack.Dialogs
             _localTag = _firstResponse.To.Tag;
         }
 
-        /// <summary>
-        /// Sends the OK response and handles retransmitions of OK.
-        /// </summary>
-        /// <param name="okResponse"></param>
-        internal void SendOk(SipResponse okResponse)
-        {
-            Check.Require(okResponse, "okResponse");
-            Check.IsTrue(okResponse.StatusLine.StatusCode / 100 == 2, "parameter 'okResponse' is not an ok response.");
+        ///// <summary>
+        ///// Sends the OK response and handles retransmitions of OK.
+        ///// </summary>
+        ///// <param name="okResponse"></param>
+        //internal void SendOk(SipResponse okResponse)
+        //{
+        //    Check.Require(okResponse, "okResponse");
+        //    Check.IsTrue(okResponse.StatusLine.StatusCode / 100 == 2, "parameter 'okResponse' is not an ok response.");
 
-            SetLastResponse(okResponse);
+        //    SetLastResponse(okResponse);
 
-            _messageSender.SendResponse(okResponse);
-        }
+        //    _messageSender.SendResponse(okResponse);
+        //}
     }
 }

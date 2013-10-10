@@ -540,7 +540,7 @@ namespace Hallo.Sip
                 else
                 {
                     if (_logger.IsDebugEnabled) _logger.Debug("Searching the table for a matching dialog...");
-                    if(_dialogTable.TryGetValue(GetDialogId(responseEvent.Response, true), out found))
+                    if(_dialogTable.TryGetValue(GetDialogId(responseEvent.Response, false), out found))
                     {
                         if (_logger.IsDebugEnabled) _logger.Debug("Found a matching dialog.");
                     }

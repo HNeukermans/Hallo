@@ -322,7 +322,7 @@ namespace Hallo.Sdk
 
             var okResponse = PendingInvite.OriginalRequest.CreateResponse(SipResponseCodes.x200_Ok);
 
-            PendingInvite.Dialog.SendOk(okResponse);
+            PendingInvite.InviteTransaction.SendResponse(okResponse);
 
             ChangeState(_stateProvider.GetWaitForAck());
 
