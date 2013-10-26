@@ -76,6 +76,7 @@ namespace Hallo.UnitTest.Sip.SipNonInviteServerTransactionTests
         protected override void Given()
         {
             _ctx = new SipNonInviteServerTransaction(TxTable, Request, Listener.Object, Sender.Object, TimerFactory);
+            _ctx.Initialize();
             GivenOverride();
         }
 

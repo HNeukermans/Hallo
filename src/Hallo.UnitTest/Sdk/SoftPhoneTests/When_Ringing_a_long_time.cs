@@ -47,7 +47,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _wait.WaitOne(TimeSpan.FromMilliseconds(_longtimeSpan + 500));
             //_wait.WaitOne();
 
-            _calleePhone.InternalState.Should().Be(_stateProvider.GetRinging()); /*required assertion*/
+            _phone.InternalState.Should().Be(_stateProvider.GetRinging()); /*required assertion*/
         }
 
         protected virtual ITimer OnCreateRingingTimer(Action action, int periodicity)
@@ -85,7 +85,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

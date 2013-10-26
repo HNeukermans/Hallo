@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Hallo.Sip;
+using Hallo.Sip.Stack.Transactions;
 using Hallo.Sip.Stack.Transactions.InviteServer;
 using Hallo.UnitTest.Builders;
 using Moq;
@@ -19,7 +20,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerTransactionTests
 
         protected override void GivenOverride()
         {
-            Stx.Start();
+            ((SipAbstractServerTransaction) Stx).Initialize();
             _provisionalResponse = CreateProvisionalResponse();
             Stx.SendResponse(_provisionalResponse);
             Stx.State.Should().Be(SipInviteServerTransaction.ProceedingState); /*assertion*/

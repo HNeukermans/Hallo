@@ -34,7 +34,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_the_phone_to_be_in_Idle_state()
         {
-            _calleePhone.InternalState.Should().Be(_stateProvider.GetIdle());
+            _phone.InternalState.Should().Be(_stateProvider.GetIdle());
         }
                
         [Test]
@@ -50,5 +50,4 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
            
         }
     }
-   
 }

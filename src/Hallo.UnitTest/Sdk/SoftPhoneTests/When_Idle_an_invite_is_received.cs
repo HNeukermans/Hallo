@@ -44,7 +44,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_the_phone_to_transition_to_Ringing_state()
         {
-            _calleePhone.CurrentState.Should().Be(SoftPhoneState.Ringing);
+            _phone.CurrentState.Should().Be(SoftPhoneState.Ringing);
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
     }
    

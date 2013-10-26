@@ -9,19 +9,24 @@ namespace Hallo.UnitTest.Sip.SipNonInviteServerTransactionTests
         public When_the_stx_is_instantiated()
             : base()
         {
+            //Stx.Start();
+        }
 
+        protected override void Given()
+        {
+            Stx = new SipNonInviteServerTransaction(TxTable, Request, Listener.Object, Sender.Object, TimerFactory);
         }
 
         [Test]
-        public void Expect_the_Stx_to_be_in_trying_state()
+        public void Expect_the_Stx_Statz_to_be_null()
         {
-            Stx.State.Should().Be(SipNonInviteServerTransaction.TryingState);
+            Stx.State.Should().BeNull();
         }
 
         [Test]
-        public void Expect_TxTable_to_contain_the_Tx_id()
+        public void Expect_TxTable_to_be_empty()
         {
-            TxTable.ContainsKey(Stx.GetId()).Should().BeTrue();
+            TxTable.ContainsKey(Stx.GetId()).Should().BeFalse();
         }
     }
 }

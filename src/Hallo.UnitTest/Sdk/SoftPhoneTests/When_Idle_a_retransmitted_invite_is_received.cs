@@ -67,7 +67,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
     }
     

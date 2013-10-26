@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Hallo.Sip;
+using Hallo.Sip.Stack.Transactions;
 using Moq;
 using NUnit.Framework;
 
@@ -17,7 +18,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerTransactionTests
 
         protected override void GivenOverride()
         {
-            Stx.Start();
+            ((SipAbstractServerTransaction) Stx).Initialize();
             TxTable.ContainsKey(Stx.GetId()).Should().BeTrue();
         }
 

@@ -21,9 +21,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected ManualResetEvent _waitForRinging = new ManualResetEvent(false);
         protected ManualResetEvent _waitForAck = new ManualResetEvent(false);
         protected ManualResetEvent _waitForAckReceived = new ManualResetEvent(false);
-
-       
-
+        
         public When_WaitForAck_an_ack_is_received()
         {
             _timerFactory = new TimerFactoryStubBuilder()
@@ -35,12 +33,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
         {
-            if (_calleePhone.InternalState == _stateProvider.GetRinging())
+            if (_phone.InternalState == _stateProvider.GetRinging())
             {
                 _waitForRinging.Set();
             }
 
-            if (_calleePhone.InternalState == _stateProvider.GetWaitForAck())
+            if (_phone.InternalState == _stateProvider.GetWaitForAck())
             {
                 _waitForAck.Set();
             }
@@ -70,7 +68,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected override void When()
         {
-            _calleePhone.InternalState.Should().Be(_stateProvider.GetWaitForAck()); /*required assertion*/   
+            _phone.InternalState.Should().Be(_stateProvider.GetWaitForAck()); /*required assertion*/   
 
             var ack = CreateAckRequest(_invite, _receivedRingingResponse);
             _network.SendTo(SipFormatter.FormatMessage(ack), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
@@ -98,7 +96,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_the_phone_to_transition_to_established_state()
         {
-            _calleePhone.InternalState.Should().Be(_stateProvider.GetEstablished());
+            _phone.InternalState.Should().Be(_stateProvider.GetEstablished());
         }
 
         [Test]
@@ -116,7 +114,4 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         private TxTimerStub _waitforAckTimer;
     }
-
-
-
 }

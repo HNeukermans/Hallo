@@ -125,8 +125,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sdk\SoftPhoneTests\SoftPhoneSpecificationBase.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_a_new_call_is_started.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Established.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Established_a_bye_is_received.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_Idle.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Ringing.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Ringing_a_long_time.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Ringing_the_call_is_accepted.cs" />
@@ -135,6 +137,7 @@
     <Compile Include="Sdk\SoftPhoneTests\When_WaitForAck.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitForAck_an_ack_is_received.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitForAck_the_timer_expires.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_WaitProvisional.cs" />
     <Compile Include="Sdp\ParserTests\SdpOriginParserTests.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Idle_an_invite_is_received.cs" />
     <Compile Include="Sip\SipAllowHeaderTests.cs" />
@@ -236,6 +239,7 @@
     <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_trying_state_a_provisional_response_is_send.cs" />
     <Compile Include="Sip\SipNonInviteServerTransactionTests\When_in_trying_state_a_resent_request_is_received.cs" />
     <Compile Include="Sip\SipNonInviteServerTransactionTests\When_the_stx_is_instantiated.cs" />
+    <Compile Include="Sip\SipNonInviteServerTransactionTests\When_the_stx_is_started.cs" />
     <Compile Include="Sip\SipParameterCollectionTests.cs" />
     <Compile Include="Sip\SipParserContextTests\rfc_7_3_1\When_headerlines_are_folded.cs" />
     <Compile Include="Sip\SipParserContextTests\rfc_7_3_1\When_multiple_headerlines_with_the_same_name_are_present.cs" />

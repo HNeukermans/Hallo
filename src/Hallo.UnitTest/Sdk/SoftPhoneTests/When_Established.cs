@@ -1,13 +1,16 @@
 using System;
+using System.Threading;
+using FluentAssertions;
+using Hallo.Component;
+using Hallo.Sdk;
 using Hallo.Sip;
+using Hallo.Sip.Stack;
+using Hallo.UnitTest.Helpers;
+using Moq;
+using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
-    internal class When_Established : SoftPhoneSpecificationBase
-    {
-        protected override void OnReceive(SipContext sipContext)
-        {
-            throw new NotImplementedException();
-        }
-    }
+
+
 }

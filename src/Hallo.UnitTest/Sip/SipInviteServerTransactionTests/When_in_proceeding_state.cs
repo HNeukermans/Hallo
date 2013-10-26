@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using FluentAssertions;
 using Hallo.Component;
+using Hallo.Sip.Stack.Transactions;
 using Hallo.Sip.Stack.Transactions.InviteServer;
 using Hallo.UnitTest.Stubs;
 using NUnit.Framework;
@@ -21,7 +22,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerTransactionTests
 
         protected override void When()
         {
-            Stx.Start();
+            ((SipAbstractServerTransaction) Stx).Initialize();
             Stx.State.Should().Be(SipInviteServerTransaction.ProceedingState); /*required assertion*/
         }
         

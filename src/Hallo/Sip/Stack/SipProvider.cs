@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reactive.Disposables;
-using System.Threading;
 using Hallo.Server;
-using Hallo.Sip.Headers;
 using Hallo.Sip.Stack.Dialogs;
 using Hallo.Sip.Stack.Transactions;
 using Hallo.Sip.Stack.Transactions.InviteClient;
@@ -17,7 +13,6 @@ using Hallo.Sip.Util;
 using Hallo.Sip.Stack;
 using Hallo.Util;
 using NLog;
-using Hallo.Util;
 using System.Reactive.Linq;
 using System.Reactive;
 
@@ -255,21 +250,25 @@ namespace Hallo.Sip
 
             if (request.RequestLine.Method == SipMethods.Invite)
             {
-                tx = new SipInviteServerTransaction(
+                var istx = new SipInviteServerTransaction(
                     ServerTransactionTable,
                     this,
                     txListener,
                     request,
                     _stack.GetTimerFactory());
+                //istx.Start();
+                tx = istx;
             }
             else
             {
-                tx = new SipNonInviteServerTransaction(
+                var nistx = new SipNonInviteServerTransaction(
                     ServerTransactionTable,
                     request,
                     txListener,
                     this,
                     _stack.GetTimerFactory());
+                //nistx.Start();
+                tx = nistx;
             }
 
             return tx;

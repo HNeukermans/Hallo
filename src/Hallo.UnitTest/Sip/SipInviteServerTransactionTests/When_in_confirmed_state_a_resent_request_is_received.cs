@@ -2,6 +2,7 @@ using System.Threading;
 using FluentAssertions;
 using Hallo.Component;
 using Hallo.Sip;
+using Hallo.Sip.Stack.Transactions;
 using Hallo.Sip.Stack.Transactions.InviteServer;
 using Hallo.UnitTest.Builders;
 using Moq;
@@ -23,7 +24,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerTransactionTests
 
         protected override void GivenOverride()
         {
-            Stx.Start();
+            ((SipAbstractServerTransaction) Stx).Initialize();
             _non200FinalResponse = CreateFinalResponse(302, "Moved Temporarily");
             Stx.SendResponse(_non200FinalResponse);
             var ackRequest = new SipRequestBuilder().WithRequestLine(

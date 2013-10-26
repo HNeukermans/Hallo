@@ -30,12 +30,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
         {
-            if (_calleePhone.InternalState == _stateProvider.GetRinging())
+            if (_phone.InternalState == _stateProvider.GetRinging())
             {
                 _waitForRinging.Set();
             }
 
-            if (_calleePhone.InternalState == _stateProvider.GetWaitForAck())
+            if (_phone.InternalState == _stateProvider.GetWaitForAck())
             {
                 _waitForAck.Set();
             }
@@ -53,7 +53,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _waitForRinging.WaitOne();
             _waitForAck.WaitOne();
 
-            _calleePhone.InternalState.Should().Be(_stateProvider.GetWaitForAck()); /*required assertion*/
+            _phone.InternalState.Should().Be(_stateProvider.GetWaitForAck()); /*required assertion*/
         }
 
         protected virtual ITimer OnCreateRingingTimer(Action action)
@@ -105,37 +105,37 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_PendingInvite_not_to_be_null()
         {
-            _calleePhone.PendingInvite.Should().NotBeNull();
+            _phone.PendingInvite.Should().NotBeNull();
         }
 
         [Test]
         public void Expect_InviteTransaction_not_to_be_null()
         {
-            _calleePhone.PendingInvite.InviteTransaction.Should().NotBeNull();
+            _phone.PendingInvite.InviteServerTransaction.Should().NotBeNull();
         }
 
         [Test]
         public void Expect_IsIncomingCall_to_be_true()
         {
-            _calleePhone.PendingInvite.IsIncomingCall.Should().BeTrue();
+            _phone.PendingInvite.IsIncomingCall.Should().BeTrue();
         }
 
         [Test]
         public void Expect_Dailog_not_to_be_null()
         {
-            _calleePhone.PendingInvite.Dialog.Should().NotBeNull();
+            _phone.PendingInvite.ServerDialog.Should().NotBeNull();
         }
 
         [Test]
         public void Expect_OriginalRequest_not_to_be_null()
         {
-            _calleePhone.PendingInvite.OriginalRequest.Should().NotBeNull();
+            _phone.PendingInvite.OriginalRequest.Should().NotBeNull();
         }
 
         [Test]
         public void Expect_RingingResponse_not_to_be_null()
         {
-            _calleePhone.PendingInvite.RingingResponse.Should().NotBeNull();
+            _phone.PendingInvite.RingingResponse.Should().NotBeNull();
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_dialog_to_be_confirmed()
         {
-            _calleePhone.PendingInvite.Dialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Confirmed);
+            _phone.PendingInvite.ServerDialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Confirmed);
         }
 
         private TxTimerStub _ringingTimer;

@@ -31,7 +31,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             // _waitForInRinging.WaitOne(TimeSpan.FromSeconds(3));
             _waitForInRinging.WaitOne();
 
-            _calleePhone.InternalState.Should().Be(_stateProvider.GetRinging()); /*required assertion*/
+            _phone.InternalState.Should().Be(_stateProvider.GetRinging()); /*required assertion*/
         }
         
         protected override void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
@@ -81,13 +81,13 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_dialog_to_be_confirmed()
         {
-            _calleePhone.PendingInvite.Dialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Confirmed);
+            _phone.PendingInvite.ServerDialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Confirmed);
         }
 
         [Test]
         public void Expect_the_phone_to_transition_to_waitforack_state()
         {
-            _calleePhone.InternalState.Should().Be(_stateProvider.GetWaitForAck());
+            _phone.InternalState.Should().Be(_stateProvider.GetWaitForAck());
         }
 
         private TxTimerStub _ringingTimer;
@@ -97,7 +97,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
     }
   

@@ -18,6 +18,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         public When_WaitForAck_the_timer_expires()
         {
+            _waitForTimeOut = new ManualResetEvent(false);
             _timerFactory = new TimerFactoryStubBuilder()
                 .WithRingingTimerInterceptor(OnCreateRingingTimer)
                 .WithInviteCtxTimeOutTimerInterceptor(OnWaitForAckTimer).Build();
@@ -25,12 +26,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
         {
-            if (_calleePhone.InternalState == _stateProvider.GetRinging())
+            if (_phone.InternalState == _stateProvider.GetRinging())
             {
                 _waitForRinging.Set();
             }
 
-            if (_calleePhone.InternalState == _stateProvider.GetWaitForAck())
+            if (_phone.InternalState == _stateProvider.GetWaitForAck())
             {
                 _waitForAck.Set();
             }
@@ -39,16 +40,16 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected override void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
         {
             /*immediately accept*/
-            e.Item.Accept();
+            _phoneCall = e.Item;
+            _phoneCall.CallErrorOccured += (s, ev) => _callError = ev.Item;
+            _phoneCall.Accept(); ;
         }
 
         protected override void GivenOverride()
         {
             _network.SendTo(SipFormatter.FormatMessage(_invite), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
             _waitForRinging.WaitOne();
-            _waitForAck.WaitOne();
-
-            _calleePhone.InternalState.Should().Be(_stateProvider.GetWaitForAck()); /*required assertion*/
+           
         }
 
         protected virtual ITimer OnCreateRingingTimer(Action action)
@@ -59,94 +60,65 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected virtual ITimer OnWaitForAckTimer(Action action)
         {
-            _waitforAckTimer = new TxTimerStub(action, int.MaxValue, false, null);
+            _waitforAckTimer = new TxTimerStub(action, 200, false, AfterCallBack);
             return _waitforAckTimer;
+        }
+
+        private void AfterCallBack()
+        {
+            _waitForTimeOut.Set();
         }
 
         protected override void OnReceive(SipContext sipContext)
         {
-            if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
+            if (sipContext.Response != null && sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
             {
                 if (_receivedRingingResponse == null)
                 {
                     _receivedRingingResponse = sipContext.Response;
                 }
             }
+            if (sipContext.Request != null && sipContext.Request.RequestLine.Method == SipMethods.Bye)
+            {
+                _receivedByeRequest = sipContext.Request;
+            }
         }
 
         protected override void When()
         {
-
+            _waitForTimeOut.WaitOne(TimeSpan.FromSeconds(3));
         }
 
         [Test]
-        public void Expect_at_least_a_ringing_response_is_sent()
+        public void Expect_the_call_error_to_have_fired()
         {
-            _receivedRingingResponse.Should().NotBeNull();
+            _callError.Should().NotBeNull();
         }
 
         [Test]
-        public void Expect_ringing_timer_to_be_stopped()
+        public void Expect_the_call_error_to_be_WaitForAckTimeOut()
         {
-            _ringingTimer.IsStarted.Should().BeFalse();
+            _callError.Should().Be(CallError.WaitForAckTimeOut);
         }
 
         [Test]
-        public void Expect_WaitForAck_timer_to_be_started()
+        public void Expect_to_have_received_a_bye_request_()
         {
-            _waitforAckTimer.IsStarted.Should().BeTrue();
+            _receivedByeRequest.Should().NotBeNull();
         }
 
         [Test]
-        public void Expect_PendingInvite_not_to_be_null()
+        public void Expect_the_phone_to_transition_to_idle_state()
         {
-            _calleePhone.PendingInvite.Should().NotBeNull();
+            _phone.InternalState.Should().Be(_stateProvider.GetIdle());
         }
-
-        [Test]
-        public void Expect_InviteTransaction_not_to_be_null()
-        {
-            _calleePhone.PendingInvite.InviteTransaction.Should().NotBeNull();
-        }
-
-        [Test]
-        public void Expect_IsIncomingCall_to_be_true()
-        {
-            _calleePhone.PendingInvite.IsIncomingCall.Should().BeTrue();
-        }
-
-        [Test]
-        public void Expect_Dailog_not_to_be_null()
-        {
-            _calleePhone.PendingInvite.Dialog.Should().NotBeNull();
-        }
-
-        [Test]
-        public void Expect_OriginalRequest_not_to_be_null()
-        {
-            _calleePhone.PendingInvite.OriginalRequest.Should().NotBeNull();
-        }
-
-        [Test]
-        public void Expect_RingingResponse_not_to_be_null()
-        {
-            _calleePhone.PendingInvite.RingingResponse.Should().NotBeNull();
-        }
-
-        [Test]
-        public void Expect_Provider_DialogTable_to_have_1_dialog()
-        {
-            _sipProvider1.DialogTable.Count.Should().Be(1);
-        }
-
-        [Test]
-        public void Expect_dialog_to_be_confirmed()
-        {
-            _calleePhone.PendingInvite.Dialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Confirmed);
-        }
-
+      
         private TxTimerStub _ringingTimer;
         private TxTimerStub _waitforAckTimer;
-
+        private IPhoneCall _phoneCall;
+        private ManualResetEvent _waitForTimeOut;
+        private CallError? _callError;
+        private SipRequest _receivedByeRequest
+            ;
     }
 }
