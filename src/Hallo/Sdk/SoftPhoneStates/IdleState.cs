@@ -63,9 +63,9 @@ namespace Hallo.Sdk.SoftPhoneStates
                 RingingResponse = ringingResponse,
                 From = requestEvent.Request.From.SipUri,
                 To = requestEvent.Request.To.SipUri,
-                InviteTransaction = (SipInviteServerTransaction) serverTransaction,
+                InviteServerTransaction = (SipInviteServerTransaction) serverTransaction,
                 IsIncomingCall = true,
-                Dialog = dialog
+                ServerDialog = dialog
             };
 
             softPhone.ChangeState(softPhone.StateProvider.GetRinging());

@@ -54,7 +54,7 @@ namespace Hallo.Sdk.SoftPhoneStates
                 return;
             }
 
-            if (requestEvent.Dialog.GetId() != softPhone.PendingInvite.Dialog.GetId())
+            if (requestEvent.Dialog.GetId() != softPhone.PendingInvite.ServerDialog.GetId())
             {
                 if (_logger.IsInfoEnabled) _logger.Info("Processing ABORTED. The 'ACK' RequestEvent it's Dialog, is expected to match only to the Dialog of the PendingInvite. DebugInfo: DialogId created from ACK: '{0}'. This case is not supposed to occur, since the phone can only process ONE dialog at a time. Check what's going on !!", SipProvider.GetDialogId(requestEvent.Request, true));
                 return;

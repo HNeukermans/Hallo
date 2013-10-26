@@ -35,7 +35,7 @@ namespace Hallo.Sip.Stack.Transactions.NonInviteServer
             EndCompletedTimer = _timerFactory.CreateNonInviteStxEndCompletedTimer(OnCompletedEnded);
         }
 
-        public override void Start()
+        internal override void Initialize()
         {
             if (!_table.TryAdd(this.GetId(), this))
                 throw new Exception(
@@ -54,6 +54,8 @@ namespace Hallo.Sip.Stack.Transactions.NonInviteServer
             lock(_lock)
             {
                 /*thread-safety is assured*/
+                if(_state == null) Initialize();
+
                 _state.HandleSendingResponse(this, response);
             }
         }

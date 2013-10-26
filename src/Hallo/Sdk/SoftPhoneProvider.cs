@@ -12,6 +12,8 @@ namespace Hallo.Sdk
         public readonly ISoftPhoneState _idle = new IdleState();
         public readonly ISoftPhoneState _waitForAck = new WaitForAckState();
         public readonly ISoftPhoneState _established = new EstablishedState();
+        public readonly ISoftPhoneState _waitProv = new WaitProvisionalState();
+        public readonly ISoftPhoneState _waitFinal = new WaitProvisionalState();
 
         public ISoftPhoneState GetRinging()
         {
@@ -31,6 +33,16 @@ namespace Hallo.Sdk
         public ISoftPhoneState GetEstablished()
         {
             return _established;
+        }
+
+        public ISoftPhoneState GetWaitFinal()
+        {
+            return _waitFinal;
+        }
+        
+        public ISoftPhoneState GetWaitProvisional()
+        {
+            return _waitProv;
         }
     }
 }

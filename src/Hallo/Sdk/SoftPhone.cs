@@ -65,6 +65,9 @@ namespace Hallo.Sdk
         
         public IPhoneCall CreateCall()
         {
+            //var idleState = InternalState as IdleState;
+            //Check.Require(idleState, "Failed to create the call. The phone has a call 'PENDING'. You need to terminate the 'PENDING' call.");
+            
             //Check.Require(to, "to");
             //Check.Require(_phoneLine, "Failed to create a call. The Phone requires phoneLine in 'Registered' state.");
             //Check.IsTrue(_phoneLine != null && _phoneLine.State == PhoneLineState.Registered, "Failed to create a call. The Phone requires phoneLine in 'Registered' state.");
@@ -84,10 +87,8 @@ namespace Hallo.Sdk
 
         private void OnPhoneCallStarted(IPhoneCall phoneCall)
         {
-            var idleState = InternalState as IdleState;
-
             Check.Require(phoneCall, "phoneCall");
-            Check.Require(idleState, "Failed to start the call. The phone has a call 'PENDING'. You need to terminate the 'PENDING' call.");
+            Check.IsTrue(InternalState == _stateProvider.GetIdle(), string.Format("Failed to start the call. The phone can only start calls while in 'IDLE' state. CurrentState: '{0}'", CurrentState));
             Check.IsTrue(_isRunning, "Failed to start the call. The phone must be started first.");
             
             _pendingPhoneCall = phoneCall;
@@ -179,8 +180,10 @@ namespace Hallo.Sdk
             get { throw new NotImplementedException(); }
         }
 
-        public void StartCall(SipUri calleeUri)
+        private void StartCall(SipUri calleeUri)
         {
+            if (_logger.IsInfoEnabled) _logger.Info("Starting new phonecall...");
+            if (_logger.IsDebugEnabled) _logger.Debug("Creating 'INVITE' request...");
             var thisUri = AddressFactory.CreateUri(string.Empty, SipProvider.ListeningPoint.ToString());
 
             var requestUri = calleeUri;
@@ -209,10 +212,27 @@ namespace Hallo.Sdk
             var contactHeader = HeaderFactory.CreateContactHeader(contactUri);
             request.Contacts.Add(contactHeader);
 
+            if (_logger.IsDebugEnabled) _logger.Debug("'INVITE' request created. Sending to callee..");
+
             var clientTransaction = SipProvider.CreateClientTransaction(request);
             var dialog = SipProvider.CreateClientDialog(clientTransaction as SipInviteClientTransaction);
             clientTransaction.SendRequest();
-            ChangeState(_stateProvider.GetRinging());
+
+            if (_logger.IsDebugEnabled) _logger.Debug("'INVITE' sent.");
+
+            if (_logger.IsInfoEnabled) _logger.Info("Request send. Transitioning to 'WAITPROVISIONAL' state...");
+
+            PendingInvite = new InviteInfo()
+            {
+                OriginalRequest = request,
+                From = request.From.SipUri,
+                To = request.To.SipUri,
+                InviteClientTransaction = (SipInviteClientTransaction)clientTransaction,
+                IsIncomingCall = false,
+                ClientDialog = dialog
+            };
+
+            ChangeState(_stateProvider.GetWaitProvisional());
         }
        
         public InviteInfo PendingInvite 
@@ -291,14 +311,14 @@ namespace Hallo.Sdk
             if (_logger.IsInfoEnabled) _logger.Info("ACK has not been received after 64 * T1. Sending Bye and terminating dialog...");
 
            /*ack not been received after 64 * T1 end dialog. TODO:terminate session*/
-           var bye = PendingInvite.Dialog.CreateRequest(SipMethods.Bye);
+           var bye = PendingInvite.ServerDialog.CreateRequest(SipMethods.Bye);
 
            var ctx = _provider.CreateClientTransaction(bye);
                       
            /*send bye in-dialog*/
-           PendingInvite.Dialog.SendRequest(ctx);
+           PendingInvite.ServerDialog.SendRequest(ctx);
 
-           PendingInvite.Dialog.Terminate();
+           PendingInvite.ServerDialog.Terminate();
 
            _pendingPhoneCall.RaiseCallErrorOccured(CallError.WaitForAckTimeOut);
 
@@ -315,14 +335,14 @@ namespace Hallo.Sdk
 
         private void OnPhoneCallAccepted()
         {
-            Check.IsTrue(InternalState.StateName == SoftPhoneState.Ringing, 
-                string.Format("Can not accept the phonecall. The phonecall can only be accepted while the phone is in 'RINGING state'. Currentstate: '{0}'", InternalState.StateName));
+            Check.IsTrue(InternalState.StateName == SoftPhoneState.Ringing,
+                string.Format("Can not accept the phonecall. The phonecall can only be accepted while the phone is in 'RINGING state'. Currentstate: '{0}'", CurrentState));
 
             if (_logger.IsDebugEnabled) _logger.Debug("accepting phonecall...");
 
             var okResponse = PendingInvite.OriginalRequest.CreateResponse(SipResponseCodes.x200_Ok);
 
-            PendingInvite.InviteTransaction.SendResponse(okResponse);
+            PendingInvite.InviteServerTransaction.SendResponse(okResponse);
 
             ChangeState(_stateProvider.GetWaitForAck());
 
@@ -338,7 +358,7 @@ namespace Hallo.Sdk
             if (_logger.IsDebugEnabled) _logger.Debug("Rejecting phonecall...");
 
             var rejectResponse = PendingInvite.OriginalRequest.CreateResponse(SipResponseCodes.x486_Busy_Here);
-            PendingInvite.InviteTransaction.SendResponse(rejectResponse);
+            PendingInvite.InviteServerTransaction.SendResponse(rejectResponse);
 
             if (_logger.IsDebugEnabled) _logger.Debug("Phonecall rejected.");
         }
@@ -353,7 +373,7 @@ namespace Hallo.Sdk
                         
             if (_logger.IsDebugEnabled) _logger.Debug("Retransmitting ringing response...");
 
-            PendingInvite.InviteTransaction.SendResponse(PendingInvite.RingingResponse);
+            PendingInvite.InviteServerTransaction.SendResponse(PendingInvite.RingingResponse);
 
             if (_logger.IsDebugEnabled) _logger.Debug("Ringing response retransmitted.");  
         }

@@ -166,6 +166,7 @@
     <Compile Include="Sdk\SoftPhoneStates\RingingState.cs" />
     <Compile Include="Sdk\CommandFactory.cs" />
     <Compile Include="Sdk\SoftPhoneStates\WaitForAckState.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\WaitProvisionalState.cs" />
     <Compile Include="Sdk\VoipEventArgs.cs" />
     <Compile Include="Sdp\Parsers\ParserForAttribute.cs" />
     <Compile Include="Sdp\Parsers\SdpOriginParser.cs" />

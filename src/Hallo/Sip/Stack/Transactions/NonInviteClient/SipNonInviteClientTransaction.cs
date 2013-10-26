@@ -15,7 +15,9 @@ namespace Hallo.Sip.Stack.Transactions.NonInviteClient
         internal static readonly ProceedingCtxState ProceedingState = new ProceedingCtxState();
         internal static readonly CompletedCtxState CompletedState = new CompletedCtxState();
 
-        internal SipNonInviteClientTransaction(
+        internal 
+            
+            SipNonInviteClientTransaction(
             SipClientTransactionTable table,
             ISipMessageSender messageSender,
             ISipListener listener,

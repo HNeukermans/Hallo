@@ -30,7 +30,7 @@ namespace Hallo.Sip
         private SipAbstractServerTransaction BeforeAddTx(SipAbstractServerTransaction tx)
         {
             if (_observer != null) _observer.OnNext(tx.Observe().Timestamp());
-            tx.Start();
+            //tx.Start(); /*removed start method.(moved logic to SendResponse method)*/
             return tx;
         }
         

@@ -6,5 +6,6 @@ namespace Hallo.Sip.Stack.Transactions
         void SendRequest();
         SipRequest Request { get;  }
         SipTransactionType Type { get;  } //really ??
+        string GetId();
     }
 }

@@ -8,7 +8,17 @@ namespace Hallo.Sdk
     public enum SoftPhoneState
     {
         Idle,
+        
+        /// <summary>
+        /// State that represents the callee, when the callee's phone is alerting.
+        /// </summary>
         Ringing,
-        Established
+
+        Established,
+
+        /// <summary>
+        /// State that represents the caller, waiting for the callee to pick up the phone.
+        /// </summary>
+        Waiting 
     }
 }

@@ -69,19 +69,22 @@ namespace Hallo.Sdk
         {
             Check.IsTrue(!_isIncoming, "Failed to start a call. Only outgoing calls can be started.");
 
+            if (!to.StartsWith("sip:")) to = "sip:" + to;
+
+            if (!SipUtil.IsSipUri(to)) throw new ArgumentException("'to' argument is not valid. 'To' argument must have ipendpoint-format or sipuri-format");
+
             if (_softPhone.RegisteredPhoneLine == null)
             {
-                /*to has to be ipendpoint*/
-                if (SipUtil.IsIpEndPoint(to)) _toUri = _softPhone.AddressFactory.CreateUri(string.Empty, to);
-                else throw new ArgumentException("'to' argument is not valid. 'To' argument must have ipendpoint-format");
+                var uri = SipUtil.ParseSipUri(to);
+                if (uri.HasNamedHost()) throw new ArgumentException("'to' argument is not valid. 'To' can not have a named host. Only ipendpoint-format is allowed.");
+                _toUri = uri;
             }
             else
             {
-                if (!to.StartsWith("sip:")) to = "sip:" + to;
-                if (SipUtil.IsSipUri(to)) _toUri = SipUtil.ParseSipUri(to);
-                else throw new ArgumentException("'to' argument is not valid. 'To' argument must have ipendpoint- or sipuri-format");
+                if (!SipUtil.IsIpEndPoint(to)) throw new ArgumentException("'to' argument is not valid. 'To' argument must have ipendpoint-format");
+                _toUri = _softPhone.AddressFactory.CreateUri(string.Empty, to);
             }
-
+            
             _startCommand.Execute(this);
         }
 

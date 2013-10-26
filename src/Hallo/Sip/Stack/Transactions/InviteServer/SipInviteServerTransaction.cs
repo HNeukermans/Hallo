@@ -40,7 +40,7 @@ namespace Hallo.Sip.Stack.Transactions.InviteServer
             }
         }
 
-        public override void Start()
+        internal override void Initialize()
         {
             if (!_table.TryAdd(this.GetId(), this))
                 throw new Exception(
@@ -108,10 +108,11 @@ namespace Hallo.Sip.Stack.Transactions.InviteServer
 
         public override void SendResponse(SipResponse response)
         {
+            
             StateResult result;
             if(LatestResponse == null)
             {
-                Start();
+                Initialize();
             }
             lock (_lock)
             {

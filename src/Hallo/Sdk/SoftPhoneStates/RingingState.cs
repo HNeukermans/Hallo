@@ -49,7 +49,7 @@ namespace Hallo.Sdk.SoftPhoneStates
             var terminateResponse = requestToCancel.CreateResponse(SipResponseCodes.x487_Request_Terminated);
 
             /*terminate pending invite.*/
-            softPhone.PendingInvite.InviteTransaction.SendResponse(terminateResponse);
+            softPhone.PendingInvite.InviteServerTransaction.SendResponse(terminateResponse);
 
             if (_logger.IsDebugEnabled) _logger.Debug("Step 1 ended.");
                 

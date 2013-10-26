@@ -53,7 +53,7 @@ namespace Hallo.Sip.Stack.Transactions
  
         public abstract void SendResponse(SipResponse response);
 
-        public abstract void Start();
+        internal abstract void Initialize();
 
         protected SipTransactionStateInfo CreateStateInfo(SipTransactionStateName name)
         {
