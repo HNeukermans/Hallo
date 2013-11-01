@@ -627,8 +627,6 @@ namespace Hallo.Sip
                     {
                         requestEvent.Dialog = found;
                     }
-                        
-                    
                 //}
             }
             else
@@ -752,7 +750,9 @@ namespace Hallo.Sip
 
         internal static string GetClientTransactionId(SipMessage message)
         {
-            return message.Vias.GetTopMost().Branch + "-" + message.CSeq.Sequence;
+            /*concatenate branch and command. Branch only does not suffice bc CANCEL request have the same branch as the request they need to cancel. To cover id-uniqueness  
+             * also for CANCEL requests, we add the Cseq Command.*/
+            return message.Vias.GetTopMost().Branch + "-" + message.CSeq.Command;
         }
 
         /// <summary>
