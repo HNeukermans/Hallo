@@ -149,9 +149,8 @@ namespace Hallo.Sip.Stack.Dialogs
                      if (_logger.IsInfoEnabled)
                          _logger.Info("ClientDialog[Id={0}]: State Transition: '{1}'-->'{2}'", GetId(), _state, newResponseState);
 
-                     _state = newResponseState;
-                     
-                     if (_state == DialogState.Early)
+                     if (_state == DialogState.Null && 
+                         (newResponseState == DialogState.Early || newResponseState == DialogState.Confirmed)) /*it is possible to receive an 'OK' without first receiving a 'RINGING'.*/
                      {
                          if (!_dialogTable.TryAdd(GetId(), this))
                          {
@@ -160,10 +159,12 @@ namespace Hallo.Sip.Stack.Dialogs
 
                          if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}] added to table.", GetId());
                      }
-                     else if (_state == DialogState.Terminated)
+                     else if (newResponseState == DialogState.Terminated)
                      {
                          terminate = true;
                      }
+
+                     _state = newResponseState;
                  }
              }
 
