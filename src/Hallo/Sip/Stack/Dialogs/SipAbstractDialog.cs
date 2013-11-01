@@ -293,7 +293,7 @@ namespace Hallo.Sip.Stack.Dialogs
             Check.Require(response, "response");
             Check.IsTrue(response.CSeq.Command == SipMethods.Invite, "The response can not have a command other then 'INVITE'");
             Check.IsTrue(response.StatusLine.StatusCode != 100, "The response can not be 'TRYING'");
-            Check.IsTrue(response.StatusLine.StatusCode / 100 == 1, "The response must be provisonal");
+            //Check.IsTrue(response.StatusLine.StatusCode / 100 == 1, "The response must be provisonal"); /*a phone can immediately send busy here response to an invite request*/
             Check.IsTrue(response.From.Tag != null, "From must have a tag");
             Check.IsTrue(response.To.Tag != null, "To must have a tag");
             Check.IsTrue(response.Contacts.GetTopMost() != null, "The response must have a Contact header.");
