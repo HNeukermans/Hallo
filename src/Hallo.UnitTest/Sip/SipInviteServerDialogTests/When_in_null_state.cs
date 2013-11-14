@@ -13,31 +13,32 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         }
 
         [Test]
-        public void Expect_the_CallId_to_be_same_as_the_request_CallId()
+        public void Expect_the_CallId_to_be_null()
         {
-            ServerDialog.CallId.Should().Be(ReceivedRequest.CallId.Value);
+            ServerDialog.CallId.Should().BeNull();
         }
 
         [Test]
-        public void Expect_the_RemoteSequenceNr_to_be_the_Cseq_of_the_request()
+        public void Expect_the_RemoteSequenceNr_to_be_minus_one()
         {
             //the remote sequence number should be set to the value of the sequence number in the CSeq header field of the request
-            ServerDialog.RemoteSequenceNr.Should().Be(ReceivedRequest.CSeq.Sequence);
+            ServerDialog.RemoteSequenceNr.Should().Be(-1);
         }
 
         [Test]
-        public void Expect_the_RemoteTarget_to_be_contact_of_the_request()
+        public void Expect_the_RemoteTarget_to_be_null()
         {
             //tthe remote target is set to the URI from the Contact header field of the request
-            ServerDialog.RemoteTarget.Should().Be(ReceivedRequest.Contacts.First().SipUri);
+            ServerDialog.RemoteTarget.Should().BeNull();
         }
 
         [Test]
-        public void Expect_the_RouteSet_to_be_RecordRoutes_of_the_request()
+        public void Expect_the_RouteSet_to_be_empty()
         {
-            var oc = ObjectComparer.Create();
-            oc.Compare(ServerDialog.RouteSet, ReceivedRequest.RecordRoutes.ToList());
-            oc.Differences.Should().BeEmpty();
+            ServerDialog.RouteSet.Should().BeEmpty();
+            //var oc = ObjectComparer.Create();
+            //oc.Compare(ServerDialog.RouteSet, ReceivedRequest.RecordRoutes.ToList());
+            //oc.Differences.Should().BeEmpty();
         }
 
         [Test]
@@ -53,21 +54,21 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         }
 
         [Test]
-        public void Expect_the_Remotetag_to_be_From_tag_of_the_request()
+        public void Expect_the_Remotetag_to_be_null()
         {
-            ServerDialog.RemoteTag.Should().Be(ReceivedRequest.From.Tag);
+            ServerDialog.RemoteTag.Should().BeNull();
         }
 
         [Test]
-        public void Expect_the_RemoteUri_to_be_FromUri_of_the_request()
+        public void Expect_the_RemoteUri_to_be_null()
         {
-            ServerDialog.RemoteUri.Should().Be(ReceivedRequest.From.SipUri);
+            ServerDialog.RemoteUri.Should().BeNull();
         }
 
         [Test]
-        public void Expect_the_LocalUri_to_be_ToUri_of_the_request()
+        public void Expect_the_LocalUri_to_be_Null()
         {
-            ServerDialog.LocalUri.Should().Be(ReceivedRequest.To.SipUri);
+            ServerDialog.LocalUri.Should().BeNull();
         }
 
         [Test]
@@ -95,6 +96,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         }
 
         [Test]
+        [Ignore("EndWaitForAckTimer is move out of Dialog, and left to the responsibility of the Dialog user.")]
         public void Expect_TimeOutTimer_not_to_be_started()
         {
             EndWaitForAckTimer.IsStarted.Should().BeFalse();

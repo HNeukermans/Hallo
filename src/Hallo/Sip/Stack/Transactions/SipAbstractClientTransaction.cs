@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
+using Hallo.Sip.Stack.Dialogs;
 using Hallo.Sip.Stack.Transactions.NonInviteServer;
 using Hallo.Util;
 using NLog;
@@ -24,6 +25,7 @@ namespace Hallo.Sip.Stack.Transactions
         protected ITimerFactory _timerFactory;
 
         protected IObserver<SipTransactionStateInfo> _stateObserver;
+        protected SipAbstractDialog _dialog;
 
         protected SipAbstractClientTransaction(
             SipClientTransactionTable table,
@@ -93,7 +95,15 @@ namespace Hallo.Sip.Stack.Transactions
         }
 
         public abstract SipTransactionType Type { get;  }
+        
+        public SipAbstractDialog GetDialog()
+        {
+            return _dialog;
+        }
 
-
+        public void SetDialog(SipAbstractDialog dialog)
+        {
+            _dialog = dialog;
+        }
     }
 }

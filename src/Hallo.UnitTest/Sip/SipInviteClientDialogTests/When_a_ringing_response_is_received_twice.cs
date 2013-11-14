@@ -51,5 +51,4 @@ namespace Hallo.UnitTest.Sip.SipClientDialogTests
             _sipResponseEvent.ClientTransaction.As<SipInviteClientTransaction>().GetDialog().State.Equals(DialogState.Early);
         }
     }
-
 }

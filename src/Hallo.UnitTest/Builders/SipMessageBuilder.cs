@@ -64,6 +64,8 @@ namespace Hallo.UnitTest.Builders
             _callId = null;
             _vias = null;
             _maxForwards = null;
+            _contacts = new SipHeaderList<SipContactHeader>();
+            _recordRoutes = new SipHeaderList<SipRecordRouteHeader>();
             return this;
         }
 
@@ -145,7 +147,11 @@ namespace Hallo.UnitTest.Builders
                              Body = _body,
                          };
 
-            _contacts.ToList().ForEach(item.Contacts.Add);
+            if (_contacts == null) _contacts = new SipHeaderList<SipContactHeader>();
+            if (_vias == null) _vias = new SipHeaderList<SipViaHeader>();
+            if (_recordRoutes == null) _recordRoutes = new SipHeaderList<SipRecordRouteHeader>();
+
+             _contacts.ToList().ForEach(item.Contacts.Add);
             _vias.ToList().ForEach(item.Vias.Add);
             _recordRoutes.ToList().ForEach(item.RecordRoutes.Add);
 

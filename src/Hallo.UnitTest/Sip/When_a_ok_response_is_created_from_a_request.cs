@@ -84,11 +84,9 @@ namespace Hallo.UnitTest.Sip
         }
 
         [Test]
-        public void Expect_the_Contact_headers_to_be_equal()
+        public void Expect_the_Contact_headers_not_to_copied_from_request()
         {
-            var c = ObjectComparer.Create();
-            c.Compare(_response.Contacts, Request.Contacts);
-            c.Differences.Should().BeEmpty();
+            _response.Contacts.Count.Should().NotBe(Request.Contacts.Count);
         }
     }
 

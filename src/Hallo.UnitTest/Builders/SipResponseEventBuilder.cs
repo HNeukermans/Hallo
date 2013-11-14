@@ -1,6 +1,7 @@
 using System.Net;
 using Hallo.Sip;
 using Hallo.Sip.Stack;
+using Hallo.Sip.Stack.Transactions;
 using Hallo.UnitTest.Helpers;
 
 namespace Hallo.UnitTest.Builders
@@ -9,6 +10,7 @@ namespace Hallo.UnitTest.Builders
     {
         private IPEndPoint _remoteEndPoint;
         private SipResponse _response;
+        private ISipClientTransaction _tx;
 
         public SipResponseEventBuilder()
         {
@@ -27,12 +29,21 @@ namespace Hallo.UnitTest.Builders
             var c = new SipContextBuilder()
                 .WithRemoteEndPoint(_remoteEndPoint)
                 .WithResponse(_response).Build();
-            return new SipResponseEvent(c);
+            var re = new SipResponseEvent(c);
+            re.ClientTransaction = _tx;
+
+            return re;
         }
 
         public SipResponseEventBuilder WithResponse(SipResponse response)
         {
             _response = response;
+            return this;
+        }
+
+        public SipResponseEventBuilder WithClientTx(ISipClientTransaction tx)
+        {
+            _tx = tx;
             return this;
         }
     }

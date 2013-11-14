@@ -15,7 +15,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
     internal class When_the_phone_is_started : SoftPhoneSpecificationBase
     {      
-        protected override void OnReceive(SipContext sipContext)
+        protected override void OnTestClientUaReceive(SipContext sipContext)
         {
             /*continue test execution*/
             //_wait.Set(); move to statechanged, as this is the last event in code.

@@ -19,7 +19,11 @@ namespace Hallo.Sip
 
         internal static bool IsMethod(string word)
         {
-            return word.Equals(Ack) || word.Equals(Register) || word.Equals(Invite) || word.Equals(Bye);
+            return word.Equals(Ack) || 
+                word.Equals(Register) || 
+                word.Equals(Invite) || 
+                word.Equals(Bye) ||
+                word.Equals(Cancel);
         }
     }
 }

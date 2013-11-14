@@ -91,7 +91,7 @@ namespace SippermanServer.UnitTests
         private void CreateBufferReader(string word)
         {
              _word = word;
-            _buffer = EncodingUtil.GetUtf8Bytes(_word);
+             _buffer = Encoding.UTF8.GetBytes(_word);
             _reader = new BufferReader(_buffer, Encoding.UTF8);
         }
     }

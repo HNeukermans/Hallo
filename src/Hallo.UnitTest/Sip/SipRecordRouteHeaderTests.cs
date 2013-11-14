@@ -16,8 +16,8 @@ namespace Hallo.UnitTest.Sip
         {
             String[] strings = 
             {
-                " <sip:100@192.168.0.1>;lr",
-                "<sip:100@192.168.0.1>;lr",
+                " <sip:100@192.168.0.1;lr>",
+                "<sip:100@192.168.0.1;lr>",
             };
 
 

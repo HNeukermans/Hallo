@@ -40,7 +40,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _firedStateChanged = true;
         }
                 
-        protected override void OnReceive(SipContext sipContext)
+        protected override void OnTestClientUaReceive(SipContext sipContext)
         {
             _counter++;
             if( _counter == 2) _wait.Set();

@@ -23,7 +23,8 @@ namespace Hallo.Sip.Stack.Dialogs
         protected readonly SipAddressFactory _addressFactory;
         protected readonly ISipMessageSender _messageSender;
         protected SipViaHeader _topMostVia;
-
+        protected SipRequest _firstRequest;
+       
         #region properties
         
         protected string _callId;
@@ -105,7 +106,8 @@ namespace Hallo.Sip.Stack.Dialogs
         }
 
         protected DateTime _createDate;
-       
+        protected ISipTransaction _firstTransaction;
+
         public DateTime CreateDate
         {
             get { return _createDate; }
@@ -118,12 +120,14 @@ namespace Hallo.Sip.Stack.Dialogs
         
         #endregion
 
+       
         protected SipAbstractDialog(SipHeaderFactory headerFactory,
              SipMessageFactory messageFactory,
              SipAddressFactory addressFactory,
              ISipMessageSender messageSender,
              ISipListener listener,
-             IPEndPoint listeningPoint)
+             IPEndPoint listeningPoint,
+             ISipTransaction transaction)
              
         {
             Check.Require(headerFactory, "headerFactory");
@@ -132,6 +136,9 @@ namespace Hallo.Sip.Stack.Dialogs
             Check.Require(messageSender, "messageSender");
             Check.Require(listener, "listener");
             Check.Require(listeningPoint, "listeningPoint");
+            Check.Require(transaction, "transaction");
+            Check.Require(transaction.Request, "transaction.Request");
+            ValidateRequest(transaction.Request);
 
             _routeSet = new List<SipRecordRouteHeader>();
             _createDate = DateTime.Now;
@@ -144,6 +151,8 @@ namespace Hallo.Sip.Stack.Dialogs
             _messageFactory = messageFactory;
             _addressFactory = addressFactory;
             _messageSender = messageSender;
+            _firstTransaction = transaction;
+            _firstRequest = transaction.Request;
         }
 
         public abstract void SetLastResponse(SipResponse response);
@@ -154,6 +163,12 @@ namespace Hallo.Sip.Stack.Dialogs
             if (missingTag) return string.Empty;
             //in comment due to logging dificulties. if(_state == DialogState.Null) throw new SipCoreException("GetId Failed. The dialog can not be in Null state.");
             return CallId + ":" + LocalTag + ":" + RemoteTag;
+        }
+
+        private void ValidateRequest(SipRequest request)
+        {
+            Check.IsTrue(request.Contacts.Count == 1, "An invite request must always have one contact header");
+            Check.IsTrue(!string.IsNullOrEmpty(request.From.Tag), "An invite request from header must have a tag");
         }
 
         public SipRequest CreateRequest(string method, SipViaHeader viaheader = null)
@@ -210,18 +225,19 @@ namespace Hallo.Sip.Stack.Dialogs
                     throw new SipCoreException("'BYE' request can not be sent. Only dialogs in 'CONFIRMED' state can send 'BYE' requests.");
             }
             
-            var method = transaction.Request.RequestLine.Method;
+            
 
             transaction.Request.CSeq.Sequence = sequenceNr;
 
             transaction.SendRequest();
             
-            if (method == SipMethods.Bye)
-            {
-                if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] has send '{1}' request. Terminating dialog...", GetId(), method);
+            //leave terminate up to dialog user.
+            //if (method == SipMethods.Bye)
+            //{
+            //    if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] has send '{1}' request. Terminating dialog...", GetId(), method);
 
-                Terminate();
-            }
+            //    Terminate();
+            //}
         }
 
         public void ProcessRequest(SipRequestEvent requestEvent)
@@ -259,20 +275,45 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public void ProcessResponse(SipResponseEvent responseEvent)
         {
-            if(_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received response[StatusCode={1}].", GetId(), responseEvent.Response.StatusLine.StatusCode);
+            var statusCode = responseEvent.Response.StatusLine.StatusCode;
 
-            /*moved invocation out of ctx, to here. ctx now invokes ProcessResponse*/
-            SetLastResponse(responseEvent.Response);
+            if (_logger.IsDebugEnabled) _logger.Debug("Dialog[Id={0}] received a response[StatusCode={1}]. Verifying if response is targetted to this Dialog...", GetId(), statusCode);
+            
+            var match = State == DialogState.Null ? IsMatchByFirstTransaction(responseEvent) : IsMatchByDialogId(responseEvent.Response);
+
+            if (_logger.IsDebugEnabled) _logger.Debug("Response does {0} match.", match ? "" : "NOT");
 
             var r = new DialogResult();
             r.InformToUser = true;
-            ProcessResponseOverride(r, responseEvent);
 
+            if (match)
+            {
+                if (_logger.IsDebugEnabled) _logger.Debug("Setting the Dialog on responseEvent.");
+
+                responseEvent.Dialog = this;
+
+                /*moved invocation out of ctx, to here. ctx now invokes ProcessResponse*/
+                SetLastResponse(responseEvent.Response);
+                
+                ProcessResponseOverride(r, responseEvent);
+            }
+            
             if (r.InformToUser)
             {
                 /*forward TODO: check rfc*/
                 _listener.ProcessResponse(responseEvent);
             }
+        }
+
+        private bool IsMatchByDialogId(SipResponse response)
+        {
+            return GetId() == SipProvider.GetDialogId(response, this is SipInviteServerDialog);
+        }
+
+        private bool IsMatchByFirstTransaction(SipResponseEvent responseEvent)
+        {
+            return responseEvent.ClientTransaction != null &&
+                   responseEvent.ClientTransaction.GetId() == _firstTransaction.GetId();
         }
 
         protected abstract void ProcessResponseOverride(DialogResult result, SipResponseEvent responseEvent);

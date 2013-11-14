@@ -44,7 +44,12 @@ namespace Hallo.UnitTest.Helpers
         {
             _state.Initialize(softPhone);
 
-            _afterInitialized(softPhone);
+            _afterInitialized(softPhone);//TODO: rename 
+        }
+
+        public void AfterInitialize(IInternalSoftPhone softPhone)
+        {
+            _state.AfterInitialize(softPhone);
         }
 
         public void ProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)
@@ -64,13 +69,7 @@ namespace Hallo.UnitTest.Helpers
 
             _afterProcessResponse(softPhone, responseEvent);
         }
-
-        public SoftPhoneState StateName
-        {
-            get { return _state.StateName; }
-        }
-
-
+        
         public void Terminate(IInternalSoftPhone softPhone)
         {
             _state.Terminate(softPhone);

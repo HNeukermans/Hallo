@@ -140,13 +140,13 @@
     <Compile Include="Parsers\SipRouteHeaderParser.cs" />
     <Compile Include="Parsers\SipSubjectHeaderParser.cs" />
     <Compile Include="Parsers\SipUserAgentHeaderParser.cs" />
+    <Compile Include="Sdk\CallError.cs" />
     <Compile Include="Sdk\Commands\Command.cs" />
     <Compile Include="Sdk\Commands\ICommand.cs" />
-    <Compile Include="Sdk\Commands\EmptyCommand.cs" />
-    <Compile Include="Sdk\SoftPhoneProvider.cs" />
-    <Compile Include="Sdk\ICommandFactory.cs" />
-    <Compile Include="Sdk\Commands\InitialInviteSendCommand.cs" />
-    <Compile Include="Sdk\ISoftPhoneProvider.cs" />
+    <Compile Include="Sdk\IInternalPhoneCall.cs" />
+    <Compile Include="Sdk\InviteInfo.cs" />
+    <Compile Include="Sdk\SoftPhoneStateProvider.cs" />
+    <Compile Include="Sdk\ISoftPhoneStateProvider.cs" />
     <Compile Include="Sdk\SoftPhoneStates\EstablishedState.cs" />
     <Compile Include="Sdk\SoftPhoneStates\ISoftPhoneState.cs" />
     <Compile Include="Sdk\CallState.cs" />
@@ -156,7 +156,6 @@
     <Compile Include="Sdk\IPhoneLine.cs" />
     <Compile Include="Sdk\ISoftPhone.cs" />
     <Compile Include="Sdk\PhoneCall.cs" />
-    <Compile Include="Sdk\PhoneCallDirection.cs" />
     <Compile Include="Sdk\PhoneLine.cs" />
     <Compile Include="Sdk\PhoneLineState.cs" />
     <Compile Include="Sdk\SipAccount.cs" />
@@ -164,9 +163,10 @@
     <Compile Include="Sdk\SoftPhoneFactory.cs" />
     <Compile Include="Sdk\SoftPhoneSate.cs" />
     <Compile Include="Sdk\SoftPhoneStates\RingingState.cs" />
-    <Compile Include="Sdk\CommandFactory.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\WaitForCancelOkState.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\WaitForFinalState.cs" />
     <Compile Include="Sdk\SoftPhoneStates\WaitForAckState.cs" />
-    <Compile Include="Sdk\SoftPhoneStates\WaitProvisionalState.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\WaitForProvisionalState.cs" />
     <Compile Include="Sdk\VoipEventArgs.cs" />
     <Compile Include="Sdp\Parsers\ParserForAttribute.cs" />
     <Compile Include="Sdp\Parsers\SdpOriginParser.cs" />
@@ -259,6 +259,7 @@
     <Compile Include="Sip\Stack\Transactions\InviteServer\TerminatedStxState.cs" />
     <Compile Include="Sip\Stack\ISipRequestProcessor.cs" />
     <Compile Include="Sip\Stack\ISipResponseProcessor.cs" />
+    <Compile Include="Sip\Stack\Transactions\ISipTransaction.cs" />
     <Compile Include="Sip\Stack\Transactions\SipTransactionType.cs" />
     <Compile Include="Sip\Stack\Transactions\StateResult.cs" />
     <Compile Include="Sip\Stack\Transactions\SipTransactionStateName.cs" />
@@ -329,7 +330,6 @@
     <Compile Include="Util\BufferReader.cs" />
     <Compile Include="Util\Check.cs" />
     <Compile Include="Util\CodeContracts.cs" />
-    <Compile Include="Util\EncodingUtil.cs" />
     <Compile Include="Util\ExcludeFromEquality.cs" />
     <Compile Include="Util\LogUtil.cs" />
     <Compile Include="Util\ObjectUtil.cs" />

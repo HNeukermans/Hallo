@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using Hallo.Sip;
 using Hallo.UnitTest.Helpers;
@@ -15,9 +16,9 @@ namespace Hallo.UnitTest.Stubs
             _ipEndPoint = TestConstants.IpEndPoint1;
         }
 
-        public FakeSipContextSource(IPEndPoint ipEndPoint)
+        public FakeSipContextSource(IPEndPoint listeningPoint)
         {
-            _ipEndPoint = ipEndPoint;
+            _ipEndPoint = listeningPoint;
         }
 
         public void Start()
@@ -30,6 +31,10 @@ namespace Hallo.UnitTest.Stubs
            
         }
 
+        /// <summary>
+        /// Registers itself as a receiver to the network
+        /// </summary>
+        /// <param name="network"></param>
         public void AddToNetwork(FakeNetwork network)
         {
             _network = network;
@@ -64,7 +69,14 @@ namespace Hallo.UnitTest.Stubs
         internal void FireNewContextReceivedEvent(SipContext sipContext)
         {
             /*let the SipProvider know*/
-            NewContextReceived(this, new SipContextReceivedEventArgs{ Context =  sipContext});
+            try
+            {
+                NewContextReceived(this, new SipContextReceivedEventArgs { Context = sipContext });
+            }
+            catch (Exception e)
+            {
+                UnhandledException(this,new ExceptionEventArgs(){ Exception = e});
+            }
         }
 
         public void SendTo(byte[] bytes, System.Net.IPEndPoint ipEndPoint)

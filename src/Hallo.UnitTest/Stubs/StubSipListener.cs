@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Hallo.Sip.Stack;
 
-namespace Hallo.UnitTest.Sip.SipClientDialogTests
+namespace Hallo.UnitTest.Stubs
 {
     public class StubSipListener : ISipListener
     {

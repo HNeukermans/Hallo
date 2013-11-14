@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using FluentAssertions;
 using Hallo.Sdk;
@@ -23,6 +24,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected SipRequest _invite;
         protected SipRequest _ack;
         protected ManualResetEvent _wait = new ManualResetEvent(false);
+        protected ManualResetEvent _waitingforInviteReceived = new ManualResetEvent(false);
         protected decimal _counter;
         protected internal IInternalSoftPhone _phone;
         protected bool _firedStateChanged;
@@ -36,27 +38,44 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected SoftPhoneStateProxy _waitforAckStateProxy;
         protected SoftPhoneStateProxy _establishedStateProxy;
         protected SoftPhoneStateProxy _waitForProvStateProxy;
+        protected SoftPhoneStateProxy _waitForFinalStateProxy;
+        protected SoftPhoneStateProxy _waitForCancelOkStateProxy;
+        protected IPEndPoint _testClientUaEndPoint;
+        protected SipUri _testClientUaUri;
+        protected SipUri _phoneUaUri;
+        protected IPEndPoint _phoneUaEndPoint;
+        protected CallState? _callState;
+        protected ManualResetEvent _waitingforOkReceived = new ManualResetEvent(false);
+        protected ManualResetEvent _waitingforInviteProcessed = new ManualResetEvent(false);
 
         protected SoftPhoneSpecificationBase()
         {
+            _testClientUaUri = TestConstants.EndPoint1Uri;
+            _testClientUaEndPoint = TestConstants.IpEndPoint1;
+            _phoneUaUri = TestConstants.EndPoint2Uri;
+            _phoneUaEndPoint = TestConstants.IpEndPoint2;
             _timerFactory = new TimerFactoryStubBuilder().Build();
             _stateProvider = CreateStateProviderMock();
         }
 
         private ISoftPhoneStateProvider CreateStateProviderMock()
         {
-            _idleStateProxy = new SoftPhoneStateProxy(new IdleState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
-            _ringingStateProxy = new SoftPhoneStateProxy(new RingingState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
-            _waitforAckStateProxy = new SoftPhoneStateProxy(new WaitForAckState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
-            _establishedStateProxy = new SoftPhoneStateProxy(new EstablishedState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
-            _waitForProvStateProxy = new SoftPhoneStateProxy(new WaitProvisionalState(), AfterProcessRequest, AfterProcessResponse, AfterInitialized);
-            
+            _idleStateProxy = new SoftPhoneStateProxy(new IdleState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
+            _ringingStateProxy = new SoftPhoneStateProxy(new RingingState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
+            _waitforAckStateProxy = new SoftPhoneStateProxy(new WaitForAckState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
+            _establishedStateProxy = new SoftPhoneStateProxy(new EstablishedState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
+            _waitForProvStateProxy = new SoftPhoneStateProxy(new WaitForProvisionalState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
+            _waitForFinalStateProxy = new SoftPhoneStateProxy(new WaitForFinalState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
+            _waitForCancelOkStateProxy = new SoftPhoneStateProxy(new WaitForCancelOkState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
+
             Mock<ISoftPhoneStateProvider> mock = new Mock<ISoftPhoneStateProvider>();
             mock.Setup(s => s.GetIdle()).Returns(_idleStateProxy);
             mock.Setup(s => s.GetRinging()).Returns(_ringingStateProxy);
             mock.Setup(s => s.GetWaitForAck()).Returns(_waitforAckStateProxy);
             mock.Setup(s => s.GetEstablished()).Returns(_establishedStateProxy);
             mock.Setup(s => s.GetWaitProvisional()).Returns(_waitForProvStateProxy);
+            mock.Setup(s => s.GetWaitFinal()).Returns(_waitForFinalStateProxy);
+            mock.Setup(s => s.GetWaitCancelOk()).Returns(_waitForCancelOkStateProxy);
             return mock.Object;
         }
 
@@ -65,29 +84,29 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
            
         }
 
-        protected virtual void AfterProcessResponse(IInternalSoftPhone softPhone, SipResponseEvent responseEvent)
+        protected virtual void AfterPhoneProcessedResponse(IInternalSoftPhone softPhone, SipResponseEvent responseEvent)
         {
             
         }
 
-        protected virtual void AfterProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)
+        protected virtual void AfterPhoneProcessedRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)
         {
            
         }
 
         protected override void Given()
         {
-            //create invite.
-            _invite = CreateInviteRequest(TestConstants.EndPoint1Uri, TestConstants.EndPoint2Uri);
-            //create phone
-            var cs1 = new FakeSipContextSource(TestConstants.IpEndPoint2);
+            //create invite that is addresses to the phone's sipuri
+            _invite = CreateInviteRequest(_testClientUaUri, _phoneUaUri);
+            //create phone that is located at IpEndPoint2
+            var phoneCs = new FakeSipContextSource(_phoneUaEndPoint);
 
             _network = new FakeNetwork();
-            _sipProvider1 = new SipProvider(new SipStack(), cs1);
+            _sipProvider1 = new SipProvider(new SipStack(), phoneCs);
 
             _phone = new SoftPhone(_sipProvider1, new SipMessageFactory(), new SipHeaderFactory(), new SipAddressFactory(), _stateProvider, _timerFactory);
-            cs1.AddToNetwork(_network);
-            _network.AddReceiver(TestConstants.IpEndPoint1, OnReceive);
+            phoneCs.AddToNetwork(_network);
+            _network.AddReceiver(_testClientUaEndPoint, OnTestClientUaReceive);
             _phone.StateChanged += new EventHandler<VoipEventArgs<SoftPhoneState>>(_calleePhone_StateChanged);
             _phone.InternalStateChanged += new EventHandler<EventArgs>(_calleePhone_InternalStateChanged);     
             _phone.IncomingCall += new EventHandler<VoipEventArgs<IPhoneCall>>(_calleePhone_IncomingCall);
@@ -98,7 +117,13 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 
         protected virtual void _calleePhone_InternalStateChanged(object sender, EventArgs e) 
         { }
-        
+
+        /// <summary>
+        /// creates a ack. this is to be sent by the testclient UA
+        /// </summary>
+        /// <param name="invite"></param>
+        /// <param name="ringing"></param>
+        /// <returns></returns>
         protected SipRequest CreateAckRequest(SipRequest invite, SipResponse ringing)
         {
             var addressFactory = new SipAddressFactory();
@@ -145,6 +170,13 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             return request;
         }
 
+
+        /// <summary>
+        /// creates a bye. this is to be sent by the testclient UA
+        /// </summary>
+        /// <param name="invite"></param>
+        /// <param name="ringing"></param>
+        /// <returns></returns>
         protected SipRequest CreateByeRequest(SipRequest invite, SipResponse ringing)
         {
             var addressFactory = new SipAddressFactory();
@@ -169,7 +201,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             var fromAddress = addressFactory.CreateAddress(null, localUri);
             var fromHeader = headerFactory.CreateFromHeader(fromAddress, localTag);
             var callIdheader = headerFactory.CreateCallIdHeader(callId);
-            var viaHeader = new SipViaHeaderBuilder().WithSentBy(TestConstants.IpEndPoint1).Build();
+            var viaHeader = new SipViaHeaderBuilder().WithSentBy(_testClientUaEndPoint).Build();
             var requestUri = remoteUri.Clone();
 
             var maxForwardsHeader = headerFactory.CreateMaxForwardsHeader();
@@ -189,6 +221,42 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             }
 
             return request;
+        }
+
+        /// <summary>
+        /// creates a ringing. this is to be sent by the testclient UA
+        /// </summary>
+        protected SipResponse CreateRingingResponse(SipRequest receivedInvite, string toTag)
+        {
+            var ringing = receivedInvite.CreateResponse(SipResponseCodes.x180_Ringing);
+            ringing.To.Tag = toTag;
+            var contactUri = _phone.AddressFactory.CreateUri("", _phone.SipProvider.ListeningPoint.ToString());
+            ringing.Contacts.Add(_phone.HeaderFactory.CreateContactHeader(contactUri));
+            
+            return ringing;
+        }
+
+        /// <summary>
+        /// creates a ringing. this is to be sent by the testclient UA
+        /// </summary>
+        protected SipResponse CreateOkResponse(SipRequest receivedInvite, string toTag)
+        {
+            var r = receivedInvite.CreateResponse(SipResponseCodes.x200_Ok);
+            r.To.Tag = toTag;
+            var contactUri = _phone.AddressFactory.CreateUri("", _phone.SipProvider.ListeningPoint.ToString());
+            r.Contacts.Add(_phone.HeaderFactory.CreateContactHeader(contactUri));
+
+            return r;
+        }
+
+        protected SipResponse CreateResponse(SipRequest receivedInvite, string toTag, string responseCode)
+        {
+            var r = receivedInvite.CreateResponse(responseCode);
+            r.To.Tag = toTag;
+            var contactUri = _phone.AddressFactory.CreateUri("", _phone.SipProvider.ListeningPoint.ToString());
+            r.Contacts.Add(_phone.HeaderFactory.CreateContactHeader(contactUri));
+
+            return r;
         }
 
         protected virtual void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
@@ -227,7 +295,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             return r;
         }
 
-        protected abstract void OnReceive(SipContext sipContext);
+        protected abstract void OnTestClientUaReceive(SipContext sipContext);
 
         
 

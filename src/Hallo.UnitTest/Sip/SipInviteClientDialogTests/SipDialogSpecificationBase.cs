@@ -1,11 +1,13 @@
 using FluentAssertions;
 using Hallo.Sip;
+using Hallo.Sip.Headers;
 using Hallo.Sip.Stack;
 using Hallo.Sip.Stack.Dialogs;
 using Hallo.Sip.Stack.Transactions;
 using Hallo.Sip.Stack.Transactions.InviteClient;
 using Hallo.Sip.Util;
 using Hallo.UnitTest.Builders;
+using Hallo.UnitTest.Helpers;
 using Hallo.UnitTest.Stubs;
 
 namespace Hallo.UnitTest.Sip.SipClientDialogTests
@@ -37,6 +39,10 @@ namespace Hallo.UnitTest.Sip.SipClientDialogTests
                     new SipFromHeaderBuilder().WithTag(_fromTag).Build())
                 .WithCallId(
                     new SipCallIdHeaderBuilder().WithValue(_callId).Build())
+                .WithContacts(
+                    new SipContactHeaderListBuilder()
+                        .Add(new SipContactHeaderBuilder().WithSipUri(TestConstants.AliceContactUri).Build())
+                        .Build())
                 .Build();
 
             return r;
@@ -46,6 +52,9 @@ namespace Hallo.UnitTest.Sip.SipClientDialogTests
         {
             var r = _inviteRequest.CreateResponse(SipResponseCodes.x180_Ringing);
             r.To.Tag = _toTag;
+
+            _inviteRequest.Contacts.ToList().ForEach(r.Contacts.Add);
+
             return r;
         }
 

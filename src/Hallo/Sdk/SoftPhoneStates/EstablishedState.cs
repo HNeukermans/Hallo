@@ -17,6 +17,14 @@ namespace Hallo.Sdk.SoftPhoneStates
             _logger.Debug("Initialized.");
         }
 
+        public void AfterInitialize(IInternalSoftPhone softPhone)
+        {
+            Check.Require(softPhone, "softPhone");
+            Check.Require(softPhone.PendingCall, "softPhone.PendingCall");
+
+            softPhone.PendingCall.ChangeState(CallState.InCall);
+        }
+
         public void ProcessRequest(IInternalSoftPhone softPhone, Sip.Stack.SipRequestEvent requestEvent)
         {
             string method = requestEvent.Request.RequestLine.Method;
@@ -77,10 +85,6 @@ namespace Hallo.Sdk.SoftPhoneStates
         {
             
         }
-
-        public SoftPhoneState StateName
-        {
-            get { return SoftPhoneState.Established; }
-        }
+        
     }
 }

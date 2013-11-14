@@ -1,6 +1,7 @@
 using Hallo.Sdk.Commands;
 using Hallo.Sip;
 using Hallo.Sip.Stack;
+using Hallo.Util;
 using NLog;
 
 namespace Hallo.Sdk.SoftPhoneStates
@@ -12,20 +13,26 @@ namespace Hallo.Sdk.SoftPhoneStates
         public RingingState()
         {           
         }
-                           
-        public SoftPhoneState StateName
-        {
-            get { return SoftPhoneState.Ringing; }
-        }
-
+         
         public void Initialize(IInternalSoftPhone softPhone)
         {
+            Check.Require(softPhone, "softPhone");
+            Check.Require(softPhone.PendingInvite, "softPhone.PendingInvite");
+
             if (softPhone.PendingInvite.IsIncomingCall)
             {
                 softPhone.RetransmitRingingTimer.Start();
             }
 
             _logger.Debug("Initialized.");
+        }
+
+        public void AfterInitialize(IInternalSoftPhone softPhone)
+        {
+            Check.Require(softPhone, "softPhone");
+            Check.Require(softPhone.PendingCall, "softPhone.PendingCall");
+
+            softPhone.PendingCall.ChangeState(CallState.Ringing);
         }
 
         public void ProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)

@@ -136,20 +136,18 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
             
             if (result.InformToUser)
             {
-                /*put this before 'inform to user', bc user can be a dialog TODO: use Lock*/
                 if (GetDialog() != null)
                 {
                     if (_logger.IsDebugEnabled) _logger.Debug("Tx is holding a dialog. Invoking ProcessResponse on Dialog.");
-            
-                    //if (GetDialog().State != DialogState.Null)
-                    //    throw new SipCoreException("Invalid Dialog state. Only dialogs in NULL state can be referenced by Tx." +
-                    //                               "In any other state a dialog is listener of the Tx");
+           
                     GetDialog().ProcessResponse(responseEvent);
                 }
+                else
+                {
+                    if (_logger.IsDebugEnabled) _logger.Debug("Passing response to listener: '{0}'", _listener.GetType().Name);
 
-                if (_logger.IsDebugEnabled) _logger.Debug("Passing response to listener: '{0}'", _listener.GetType().Name);
-            
-                _listener.ProcessResponse(responseEvent);
+                    _listener.ProcessResponse(responseEvent);
+                }
             }
             if(result.Dispose)
             {
@@ -158,7 +156,6 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
                 Dispose();
 
                 if (_logger.IsDebugEnabled) _logger.Debug("InviteCtx[Id={0}]. Disposed.", GetId());
-            
             }
         }
         
@@ -178,8 +175,8 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
             var ackRequest = CreateAckRequest();
             _messageSender.SendRequest(ackRequest);
         }
-
-        internal SipRequest CreateAckRequest()
+        
+        private SipRequest CreateAckRequest()
         {
             if (State != CompletedState) throw new InvalidOperationException(string.Format("The Tx is unable to create an 'ACK' Request. To be able to create an 'ACK' request, the Tx must be in 'Completed' state. CurrentState:{0}", State.Name));
 
@@ -211,19 +208,39 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
             return ackRequest;
         }
 
+        public SipRequest CreateCancelRequest()
+        {
+            Check.IsTrue(State != null, "The Tx is is unable to create an 'CANCEL' request while in 'NULL state'. A request has to be sent first by this Tx.");
+            
+            var requestUri = Request.RequestLine.Uri.Clone();
+            var callIdheader = (SipCallIdHeader)Request.CallId.Clone();
+            var cseqHeader = _headerFactory.CreateSCeqHeader(SipMethods.Cancel, Request.CSeq.Sequence);
+            var fromHeader = (SipFromHeader)Request.From.Clone();
+            var toHeader = (SipToHeader)Request.To.Clone();
+            var viaHeader = (SipViaHeader)Request.Vias.GetTopMost().Clone();
+            var maxForwardsHeader = _headerFactory.CreateMaxForwardsHeader();
+            var cancelRequest = _messageFactory.CreateRequest(
+                requestUri,
+                SipMethods.Cancel,
+                callIdheader,
+                cseqHeader,
+                fromHeader,
+                toHeader,
+                viaHeader,
+                maxForwardsHeader);
+
+            foreach (var route in Request.Routes)
+            {
+                cancelRequest.Routes.Add((SipRouteHeader)route.Clone());
+            }
+
+            return cancelRequest;
+        }
+
         public override SipTransactionType Type
         {
             get { return SipTransactionType.InviteClient; }
         }
-
-        internal void SetDialog(SipAbstractDialog dialog)
-        {
-            _dialog = dialog;
-        }
-
-        public SipAbstractDialog GetDialog()
-        {
-            return _dialog;
-        }
+        
     }
 }

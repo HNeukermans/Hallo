@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using FluentAssertions;
 using Hallo.Sdk;
 using Hallo.Sip;
@@ -9,16 +10,25 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
     internal class When_a_new_call_is_started : SoftPhoneSpecificationBase
     {
-        protected override void OnReceive(SipContext sipContext)
+        SipUri _toUri;
+        private SipRequest _receivedInvite;
+        
+
+        protected override void OnTestClientUaReceive(SipContext sipContext)
         {
-            /*continue test execution*/
-            //_wait.Set(); move to statechanged, as this is the last event in code.
+            if (sipContext.Request.RequestLine.Method == SipMethods.Invite)
+            {
+                _receivedInvite = sipContext.Request;
+                _waitingforInviteReceived.Set();
+            }
         }
 
         protected override void When()
         {
             var call = _phone.CreateCall();
-            call.Start(TestConstants.EndPoint2Uri.FormatToString());
+            _toUri = TestConstants.EndPoint1Uri;
+            call.Start(_toUri.FormatToString());
+            _waitingforInviteReceived.WaitOne();
         }
 
         [Test]
@@ -28,9 +38,22 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
+        [Ignore("State has moved from softphone to phonecall and phoneline")]
         public void Expect_the_phone_to_transition_to_Waiting_state()
         {
             _phone.CurrentState.Should().Be(SoftPhoneState.Waiting);
+        }
+
+        [Test]
+        public void Expect_an_invite_request_is_received()
+        {
+            _receivedInvite.Should().NotBeNull();
+        }
+
+        [Test]
+        public void Expect_an_invite_to_ToUri_be_sent()
+        {
+            _receivedInvite.To.SipUri.Equals(_toUri).Should().BeTrue();
         }
 
         protected override void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)

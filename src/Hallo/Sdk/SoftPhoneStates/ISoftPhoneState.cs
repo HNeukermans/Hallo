@@ -11,12 +11,14 @@ namespace Hallo.Sdk.SoftPhoneStates
     {
         void Initialize(IInternalSoftPhone softPhone);
 
+        void AfterInitialize(IInternalSoftPhone softPhone);
+
         void ProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent);
 
         void ProcessResponse(IInternalSoftPhone softPhone, SipResponseEvent responseEvent);
 
         void Terminate(IInternalSoftPhone softPhone);
 
-        SoftPhoneState StateName { get; }
+        //SoftPhoneState StateName { get; }
     }
 }

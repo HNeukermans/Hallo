@@ -1,84 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Hallo.Sip;
-using System.Threading;
-using Hallo.Component;
 using Hallo.Sdk.SoftPhoneStates;
-using Hallo.Sdk;
+using Hallo.Sip.Stack.Transactions.InviteServer;
 using Hallo.UnitTest.Helpers;
 using FluentAssertions;
-using Hallo.Sip.Stack;
 using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
 
-    internal class When_WaitForAck : SoftPhoneSpecificationBase
+    internal class When_WaitForAck : When_WaitForAck_Base
     {
-        SipResponse _receivedRingingResponse;
-        protected ManualResetEvent _waitForRinging = new ManualResetEvent(false);
-        protected ManualResetEvent _waitForAck = new ManualResetEvent(false);
-
-        public When_WaitForAck()
-        {
-            _timerFactory = new TimerFactoryStubBuilder()
-                .WithRingingTimerInterceptor(OnCreateRingingTimer)
-                .WithInviteCtxTimeOutTimerInterceptor(OnWaitForAckTimer).Build();
-        }
-
-        protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
-        {
-            if (_phone.InternalState == _stateProvider.GetRinging())
-            {
-                _waitForRinging.Set();
-            }
-
-            if (_phone.InternalState == _stateProvider.GetWaitForAck())
-            {
-                _waitForAck.Set();
-            }
-        }
-
-        protected override void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
-        {
-            /*immediately accept*/
-            e.Item.Accept();
-        }
-
-        protected override void GivenOverride()
-        {
-            _network.SendTo(SipFormatter.FormatMessage(_invite), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
-            _waitForRinging.WaitOne();
-            _waitForAck.WaitOne();
-
-            _phone.InternalState.Should().Be(_stateProvider.GetWaitForAck()); /*required assertion*/
-        }
-
-        protected virtual ITimer OnCreateRingingTimer(Action action)
-        {
-            _ringingTimer = new TxTimerStub(action, 200, true, null);
-            return _ringingTimer;
-        }
-
-        protected virtual ITimer OnWaitForAckTimer(Action action)
-        {
-            _waitforAckTimer = new TxTimerStub(action, int.MaxValue, false, null);
-            return _waitforAckTimer;
-        }
-
-        protected override void OnReceive(SipContext sipContext)
-        {
-            if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
-            {
-                if (_receivedRingingResponse == null)
-                {
-                    _receivedRingingResponse = sipContext.Response;
-                }
-            }
-        }
-
+        
         protected override void When()
         {
 
@@ -88,6 +22,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         public void Expect_at_least_a_ringing_response_is_sent()
         {
             _receivedRingingResponse.Should().NotBeNull();
+        }
+        
+        [Test]
+        public void Expect_ok_response_to_have_received()
+        {
+            _okResponse.Should().NotBeNull();
         }
 
         [Test]
@@ -137,6 +77,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             _phone.PendingInvite.RingingResponse.Should().NotBeNull();
         }
+        
+        [Test]
+        public void Expect_InviteTransaction_to_be_terminated()
+        {
+            _phone.PendingInvite.InviteServerTransaction.State.Should().Be(SipInviteServerTransaction.TerminatedState);
+        }
 
         [Test]
         public void Expect_Provider_DialogTable_to_have_1_dialog()
@@ -149,9 +95,5 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             _phone.PendingInvite.ServerDialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Confirmed);
         }
-
-        private TxTimerStub _ringingTimer;
-        private TxTimerStub _waitforAckTimer;
-
     }
 }

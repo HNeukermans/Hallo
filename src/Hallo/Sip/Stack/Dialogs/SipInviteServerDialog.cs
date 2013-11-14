@@ -19,10 +19,10 @@ namespace Hallo.Sip.Stack.Dialogs
         private ITimer _retransmitOkTimer;
         //private ITimer _endWaitForAckTimer;
         private object _lock = new object();
-        private readonly SipRequest _firstRequest;
+        
 
         public SipInviteServerDialog(
-             ISipServerTransaction transaction, 
+             ISipTransaction transaction, 
              SipDialogTable dialogTable,
              ITimerFactory timerFactory,
              SipHeaderFactory headerFactory,
@@ -31,21 +31,18 @@ namespace Hallo.Sip.Stack.Dialogs
              ISipMessageSender messageSender,
              ISipListener listener,
             IPEndPoint listeningPoint)
-            : base(headerFactory, messageFactory, addressFactory, messageSender, listener, listeningPoint)
+            : base(headerFactory, messageFactory, addressFactory, messageSender, listener, listeningPoint, transaction)
         {
             Check.Require(transaction, "transaction");
             Check.Require(dialogTable, "dialogTable");
             Check.Require(timerFactory, "timerFactory");
-            Check.Require(transaction.Request, "transaction.Request");
-            ValidateRequest(transaction.Request);
-            
+           
             _logger = NLog.LogManager.GetCurrentClassLogger();
 
             _dialogTable = dialogTable;
             _state = DialogState.Null;
             _timerFactory = timerFactory;
 
-            _firstRequest = transaction.Request;
             //(only ?) localtag is set on firstresponse
             //localtarget is not defined, because is has no use, (every user agent knows it local address)
 
@@ -53,12 +50,6 @@ namespace Hallo.Sip.Stack.Dialogs
             //_endWaitForAckTimer = _timerFactory.CreateInviteCtxTimeOutTimer(OnWaitForAckTimeOut);
             
             if (_logger.IsInfoEnabled) _logger.Info("ServerDialog[Id={0}] created.", GetId());
-        }
-
-        private void ValidateRequest(SipRequest request)
-        {
-            Check.IsTrue(request.Contacts.Count == 1, "An invite request must always have one contact header");
-            Check.IsTrue(!string.IsNullOrEmpty(request.From.Tag), "An invite request from header must have a tag");
         }
 
         public override void SendRequest(ISipClientTransaction transaction)

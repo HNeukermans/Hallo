@@ -44,6 +44,7 @@ namespace Hallo.UnitTest.Sip.SipInviteClientDialogTests
         }
 
         [Test]
+        [Ignore("Automatic terminate on bye, is not supported. The user must terminate the dialog explicitly.")]
         public void Expect_the_dialog_to_transition_to_terminated_state()
         {
             ClientDialog.State.Should().Be(DialogState.Terminated);

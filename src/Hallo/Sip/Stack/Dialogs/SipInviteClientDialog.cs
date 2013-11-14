@@ -13,14 +13,13 @@ namespace Hallo.Sip.Stack.Dialogs
     public class SipInviteClientDialog : SipAbstractDialog, ISipDialog
     {
         private readonly SipDialogTable _dialogTable;
-        private readonly SipRequest _firstRequest;
         private SipResponse _firstResponse;
         private bool _isAckSent = false;
         private object _lock = new object();
         private int _lastOKSequenceNr;
 
         public SipInviteClientDialog(
-             ISipClientTransaction transaction, 
+             ISipTransaction transaction, 
              SipDialogTable dialogTable, 
              SipHeaderFactory headerFactory,
              SipMessageFactory messageFactory,
@@ -28,7 +27,7 @@ namespace Hallo.Sip.Stack.Dialogs
              ISipMessageSender messageSender,
              ISipListener listener,
              IPEndPoint listeningPoint)
-            : base(headerFactory, messageFactory, addressFactory, messageSender, listener, listeningPoint)
+            : base(headerFactory, messageFactory, addressFactory, messageSender, listener, listeningPoint, transaction)
          {
              Check.Require(transaction, "transaction");
              Check.Require(dialogTable, "dialogTable");
@@ -38,9 +37,7 @@ namespace Hallo.Sip.Stack.Dialogs
 
              _dialogTable = dialogTable;
              _state = DialogState.Null;
-             _firstRequest = transaction.Request;
              _topMostVia = (SipViaHeader)transaction.Request.Vias.GetTopMost().Clone();
-             
          }
         
        
@@ -193,16 +190,20 @@ namespace Hallo.Sip.Stack.Dialogs
 
         public override void Terminate()
         {
+            if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}]. Terminating dialog...", GetId());
+
             lock(_lock)
             {
                 SipAbstractDialog removed;
                 if (!_dialogTable.TryRemove(GetId(), out removed))
                 {
-                    _logger.Warn("could not remove dialog with id: {0}", GetId());
+                    if (_logger.IsWarnEnabled)  _logger.Warn("could not remove dialog with id: {0}", GetId());
                 }
 
                 _state = DialogState.Terminated;
             }
+
+            if (_logger.IsDebugEnabled) _logger.Debug("ClientDialog[Id={0}]. Terminated.", GetId());
         }
 
         protected override void ProcessRequestOverride(DialogResult result, SipRequestEvent requestEvent)

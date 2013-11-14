@@ -25,7 +25,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerTransactionTests
 
         protected override void GivenOverride()
         {
-            ((SipAbstractServerTransaction) Stx).Initialize();
+            //((SipAbstractServerTransaction) Stx).Initialize();
             var non200FinalResponse = CreateFinalResponse(302, "Moved Temporarily");
             Stx.SendResponse(non200FinalResponse);
             var ackRequest = new SipRequestBuilder().WithRequestLine(

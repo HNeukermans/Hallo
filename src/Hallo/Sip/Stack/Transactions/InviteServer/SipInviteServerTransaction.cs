@@ -24,7 +24,9 @@ namespace Hallo.Sip.Stack.Transactions.InviteServer
             : base(table, request, listener, messageSender, timerFactory)
         {
             Check.IsTrue(request.RequestLine.Method == SipMethods.Invite, "Method other then 'INVITE' is not allowed");
-            
+
+            _logger = NLog.LogManager.GetCurrentClassLogger();
+
             ReTransmitNonx200FinalResponseTimer = _timerFactory.CreateInviteStxRetransmitTimer(OnReTransmitNonx200FinalResponse);
             EndCompletedTimer = _timerFactory.CreateInviteStxEndCompletedTimer(OnCompletedEnded);
             EndConfirmedTimer = _timerFactory.CreateInviteStxEndConfirmed(OnConfirmedEnded);
@@ -108,7 +110,6 @@ namespace Hallo.Sip.Stack.Transactions.InviteServer
 
         public override void SendResponse(SipResponse response)
         {
-            
             StateResult result;
             if(LatestResponse == null)
             {
@@ -141,7 +142,18 @@ namespace Hallo.Sip.Stack.Transactions.InviteServer
             }
             if(result.InformToUser)
             {
-                _listener.ProcessRequest(requestEvent);
+                if (GetDialog() != null)
+                {
+                    if (_logger.IsDebugEnabled) _logger.Debug("Tx is holding a dialog. Invoking ProcessResponse on Dialog.");
+
+                    GetDialog().ProcessRequest(requestEvent);
+                }
+                else
+                {
+                    if (_logger.IsDebugEnabled) _logger.Debug("Passing response to listener: '{0}'", _listener.GetType().Name);
+
+                    _listener.ProcessRequest(requestEvent);
+                }
             }
         }
 
@@ -159,15 +171,6 @@ namespace Hallo.Sip.Stack.Transactions.InviteServer
             get { return  SipTransactionType.InviteServer; }
         }
 
-        public void SetDialog(SipInviteServerDialog dialog)
-        {
-            _dialog = dialog;
-        }
-
-        internal SipInviteServerDialog GetDialog()
-        {
-            return _dialog;
-        }
-
+        
     }
 }

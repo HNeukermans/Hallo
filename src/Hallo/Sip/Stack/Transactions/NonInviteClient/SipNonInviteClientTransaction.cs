@@ -28,6 +28,8 @@ namespace Hallo.Sip.Stack.Transactions.NonInviteClient
             Check.IsTrue(request.RequestLine.Method != SipMethods.Invite, "Method 'INVITE' is not allowed");
             Check.IsTrue(request.RequestLine.Method != SipMethods.Ack, "Method 'ACK' is not allowed");
 
+            _logger = NLog.LogManager.GetCurrentClassLogger();
+
             ReTransmitTimer = _timerFactory.CreateNonInviteCtxRetransmitTimer(OnReTransmit);
             TimeOutTimer = _timerFactory.CreateNonInviteCtxTimeOutTimer(OnTimeOut);
             EndCompletedTimer = _timerFactory.CreateNonInviteCtxEndCompletedTimer(OnCompletedEnded);
@@ -103,10 +105,22 @@ namespace Hallo.Sip.Stack.Transactions.NonInviteClient
                 result = State.HandleResponse(this, responseEvent.Response);
             }
 
+            responseEvent.ClientTransaction = this;
+
             if (result.InformToUser)
             {
-                responseEvent.ClientTransaction = this;
-                _listener.ProcessResponse(responseEvent);
+                if (GetDialog() != null)
+                {
+                    if (_logger.IsDebugEnabled) _logger.Debug("Tx is holding a dialog. Invoking ProcessResponse on Dialog.");
+
+                    GetDialog().ProcessResponse(responseEvent);
+                }
+                else
+                {
+                    if (_logger.IsDebugEnabled) _logger.Debug("Passing response to listener: '{0}'", _listener.GetType().Name);
+
+                    _listener.ProcessResponse(responseEvent);
+                }
             }
         }
        

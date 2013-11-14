@@ -28,7 +28,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _wait.Set();
         }
 
-        protected override void OnReceive(SipContext sipContext)
+        protected override void OnTestClientUaReceive(SipContext sipContext)
         {
             /*continue test execution*/
             //_wait.Set(); move to statechanged, as this is the last event in code.
@@ -42,15 +42,10 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
+        [Ignore("State has moved from softphone to phonecall and phoneline")]
         public void Expect_the_phone_to_transition_to_Ringing_state()
         {
             _phone.CurrentState.Should().Be(SoftPhoneState.Ringing);
-        }
-
-        [Test]
-        public void Expect_the_StateChanged_event_to_be_raised()
-        {
-            _firedStateChanged.Should().BeTrue();
         }
 
         [Test]

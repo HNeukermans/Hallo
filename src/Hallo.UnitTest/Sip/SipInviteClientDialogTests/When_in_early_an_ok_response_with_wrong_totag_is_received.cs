@@ -3,12 +3,13 @@ using Hallo.Sip;
 using Hallo.Sip.Stack;
 using Hallo.Sip.Stack.Dialogs;
 using Hallo.Sip.Stack.Transactions.InviteClient;
+using Hallo.UnitTest.Stubs;
 using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sip.SipClientDialogTests
 {
     [TestFixture]
-    public class When_an_ok_response_is_received : SipDialogSpecificationBase
+    public class When_in_early_an_ok_response_with_wrong_totag_is_received : SipDialogSpecificationBase
     {
         private SipInviteClientTransaction _transaction;
 
@@ -38,6 +39,7 @@ namespace Hallo.UnitTest.Sip.SipClientDialogTests
             /*fire ok response*/
             var c = new SipContext();
             _response = CreateOkResponse();
+            _response.To.Tag = "different";
             c.Response = _response;
             _contextSource.FireNewContextReceivedEvent(c);
         }
@@ -49,9 +51,22 @@ namespace Hallo.UnitTest.Sip.SipClientDialogTests
         }
 
         [Test]
-        public void Expect_the_dialog_to_be_in_confirmed_state()
+        public void Expect_the_dialog_to_remain_in_early()
         {
-            _transaction.GetDialog().State.Equals(DialogState.Confirmed);
+            _transaction.GetDialog().State.Equals(DialogState.Early);
+        }
+
+        [Test]
+        public void Expect_the_Event_dialog_to_be_null()
+        {
+            /*since ok does not match dialog*/
+            _sipResponseEvent.Dialog.Should().BeNull();
+        }
+
+        [Test]
+        public void Expect_OnProcessResponse_to_be_invoked_2()
+        {
+            _onProcessResponseCount.Should().Be(2);
         }
     }
 }

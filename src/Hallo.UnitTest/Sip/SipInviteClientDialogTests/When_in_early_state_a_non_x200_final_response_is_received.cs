@@ -15,8 +15,8 @@ namespace Hallo.UnitTest.Sip.SipInviteClientDialogTests
         {
             /*force it to go into early state*/
             var ringingResponse = CreateRingingResponse();
-            var c = new SipContextBuilder().WithResponse(ringingResponse).Build();
-            ClientDialog.ProcessResponse(new SipResponseEvent(c));
+            var c = new SipResponseEventBuilder().WithResponse(ringingResponse).WithClientTx(InviteCtx.Object).Build();
+            ClientDialog.ProcessResponse(c);
             ClientDialog.State.Should().Be(DialogState.Early); /*required assertion*/
         }
 

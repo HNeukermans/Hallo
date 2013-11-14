@@ -20,8 +20,14 @@ namespace Hallo.UnitTest.Sip.SipInviteClientTransactionTests
         public When_in_calling_state_the_timeout_timer_has_fired()
         {
             var tf = new TimerFactoryStubBuilder()
-                .WithInviteCtxTimeOutTimerInterceptor((a) => new TxTimerStub(a, 2000, false, AftertimeOut)).Build();
+                .WithInviteCtxTimeOutTimerInterceptor(OnCreateTimeOutTimerStub).Build();
             TimerFactory = tf;
+        }
+
+        private ITimer OnCreateTimeOutTimerStub(Action a)
+        {
+            TimeOutTimer = new TxTimerStub(a, 2000, false, AftertimeOut);
+            return TimeOutTimer;
         }
         
         private void AftertimeOut()

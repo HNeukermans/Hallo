@@ -69,6 +69,7 @@ namespace Hallo
 
         private bool ValidateCSeqMethod(SipRequest sipMessage)
         {
+            /*8.1.1.5: The cseq command MUST match method of the request.*/
             return sipMessage.RequestLine.Method.Equals(sipMessage.CSeq.Command, StringComparison.CurrentCultureIgnoreCase);
         }
 

@@ -18,8 +18,8 @@ namespace Hallo.UnitTest.Sip.SipInviteServerTransactionTests
 
         protected override void GivenOverride()
         {
-            ((SipAbstractServerTransaction) Stx).Initialize();
-            TxTable.ContainsKey(Stx.GetId()).Should().BeTrue();
+            //((SipAbstractServerTransaction) Stx).Initialize();
+            
         }
 
         protected override void When()

@@ -4,6 +4,7 @@ using FluentAssertions;
 using Hallo.Sdk;
 using Hallo.Sip;
 using Hallo.Sip.Stack;
+using Hallo.Sip.Stack.Transactions.InviteServer;
 using Hallo.Sip.Util;
 using Hallo.UnitTest.Builders;
 using Hallo.UnitTest.Helpers;
@@ -13,50 +14,9 @@ using Hallo.Component;
 using System.Linq;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
-{      
-    internal class When_ringing : SoftPhoneSpecificationBase
+{
+    internal class When_Ringing : When_Ringing_Base
     {
-        SipResponse _receivedRingingResponse;
-
-        public When_ringing() 
-        {
-            _timerFactory = new TimerFactoryStubBuilder().WithRingingTimerInterceptor(OnCreateRingingTimer).Build();
-        }
-        
-        protected override void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
-        {
-            
-        }
-
-        protected override void _calleePhone_StateChanged(object sender, VoipEventArgs<SoftPhoneState> e)
-        {
-            if (e.Item == SoftPhoneState.Ringing) _wait.Set();
-        }
-
-        
-        protected override void GivenOverride()
-        {
-            _network.SendTo(SipFormatter.FormatMessage(_invite), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
-            _wait.WaitOne(TimeSpan.FromSeconds(3));
-            //_wait.WaitOne();
-
-            _phone.InternalState.Should().Be(_stateProvider.GetRinging()); /*required assertion*/
-        }
-
-        protected virtual ITimer OnCreateRingingTimer(Action action)
-        {
-            _ringingTimer = new TxTimerStub(action, 200, true, null);
-            return _ringingTimer;
-        }
-
-        protected override void OnReceive(SipContext sipContext)
-        {
-            if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
-            {
-                if (_receivedRingingResponse == null) _receivedRingingResponse = sipContext.Response;                
-            }
-        }
-
         protected override void When()
         {            
             
@@ -67,8 +27,6 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             _receivedRingingResponse.Should().NotBeNull();
         }
-
-
 
         [Test]
         public void Expect_ringing_timer_to_be_started()
@@ -86,6 +44,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         public void Expect_InviteTransaction_not_to_be_null()
         {
             _phone.PendingInvite.InviteServerTransaction.Should().NotBeNull();
+        }
+
+        [Test]
+        public void Expect_InviteTransaction_to_be_proceeding()
+        {
+            _phone.PendingInvite.InviteServerTransaction.State.Should().Be(SipInviteServerTransaction.ProceedingState);
         }
 
         [Test]
@@ -119,21 +83,17 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
-        public void Expect_dialog_to_be_early()
+        public void Expect_dialog_to_be_in_early_state()
         {
             _phone.PendingInvite.ServerDialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Early);
         }
 
-
-        private TxTimerStub _ringingTimer;
-
-
-        protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
+        [Test]
+        public void Expect_the_phone_call_state_to_be_Ringing()
         {
-            
+            _callState.Should().Be(CallState.Ringing);
         }
+
+
     }
-
-
-    
 }

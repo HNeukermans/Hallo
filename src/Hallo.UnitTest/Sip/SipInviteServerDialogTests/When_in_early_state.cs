@@ -58,6 +58,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         }
 
         [Test]
+        [Ignore("EndWaitForAckTimer is move out of Dialog, and left to the responsibility of the Dialog user.")]
         public void Expect_TimeOutTimer_not_to_be_started()
         {
             EndWaitForAckTimer.IsStarted.Should().BeFalse();

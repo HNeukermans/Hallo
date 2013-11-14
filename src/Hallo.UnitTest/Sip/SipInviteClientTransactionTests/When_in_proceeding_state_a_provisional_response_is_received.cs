@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sip.SipInviteClientTransactionTests
 {
-    [TestFixture("Transactions")]
+    [TestFixture()]
     public class When_in_proceeding_state_a_provisional_response_is_received : SipInviteClientTransactionTests.TxSpecificationBase
     {
         protected override void GivenOverride()

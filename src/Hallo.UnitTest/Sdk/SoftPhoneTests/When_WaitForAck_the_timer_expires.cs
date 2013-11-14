@@ -10,84 +10,54 @@ using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
-    internal class When_WaitForAck_the_timer_expires : SoftPhoneSpecificationBase
+    internal class When_WaitForAck_the_timer_expires : When_WaitForAck_Base
     {
-        SipResponse _receivedRingingResponse;
-        protected ManualResetEvent _waitForRinging = new ManualResetEvent(false);
-        protected ManualResetEvent _waitForAck = new ManualResetEvent(false);
+        private SipRequest _receivedByeRequest;
+        private ManualResetEvent _waitForTimeOut;
 
         public When_WaitForAck_the_timer_expires()
         {
             _waitForTimeOut = new ManualResetEvent(false);
             _timerFactory = new TimerFactoryStubBuilder()
                 .WithRingingTimerInterceptor(OnCreateRingingTimer)
-                .WithInviteCtxTimeOutTimerInterceptor(OnWaitForAckTimer).Build();
+                .WithInviteCtxTimeOutTimerInterceptor(OnCreateWaitForAckTimer).Build();
         }
 
-        protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
+        protected override void When()
         {
-            if (_phone.InternalState == _stateProvider.GetRinging())
-            {
-                _waitForRinging.Set();
-            }
-
-            if (_phone.InternalState == _stateProvider.GetWaitForAck())
-            {
-                _waitForAck.Set();
-            }
+            /*wait for the timeout to happen*/
+            _waitForTimeOut.WaitOne(TimeSpan.FromSeconds(3));
         }
 
-        protected override void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
+        protected override void OnTestClientUaReceive(SipContext sipContext)
         {
-            /*immediately accept*/
-            _phoneCall = e.Item;
-            _phoneCall.CallErrorOccured += (s, ev) => _callError = ev.Item;
-            _phoneCall.Accept(); ;
-        }
-
-        protected override void GivenOverride()
-        {
-            _network.SendTo(SipFormatter.FormatMessage(_invite), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
-            _waitForRinging.WaitOne();
-           
-        }
-
-        protected virtual ITimer OnCreateRingingTimer(Action action)
-        {
-            _ringingTimer = new TxTimerStub(action, 200, true, null);
-            return _ringingTimer;
-        }
-
-        protected virtual ITimer OnWaitForAckTimer(Action action)
-        {
-            _waitforAckTimer = new TxTimerStub(action, 200, false, AfterCallBack);
-            return _waitforAckTimer;
-        }
-
-        private void AfterCallBack()
-        {
-            _waitForTimeOut.Set();
-        }
-
-        protected override void OnReceive(SipContext sipContext)
-        {
-            if (sipContext.Response != null && sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
+            if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
             {
                 if (_receivedRingingResponse == null)
                 {
                     _receivedRingingResponse = sipContext.Response;
                 }
             }
-            if (sipContext.Request != null && sipContext.Request.RequestLine.Method == SipMethods.Bye)
+            if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x200_Ok)
             {
-                _receivedByeRequest = sipContext.Request;
-            }
+                _okResponse = sipContext.Response;
+                _waitingforOkReceived.Set();
+           }
+           if (sipContext.Request != null && sipContext.Request.RequestLine.Method == SipMethods.Bye)
+           {
+               _receivedByeRequest = sipContext.Request;
+           }
         }
+        
 
-        protected override void When()
+        protected virtual ITimer OnCreateWaitForAckTimer(Action action)
         {
-            _waitForTimeOut.WaitOne(TimeSpan.FromSeconds(3));
+            Action afterCallBack = () => _waitForTimeOut.Set();
+            _waitforAckTimer = new TxTimerStub(action, 200, false, afterCallBack);
+            return _waitforAckTimer;
         }
+        
+       
 
         [Test]
         public void Expect_the_call_error_to_have_fired()
@@ -102,7 +72,8 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
-        public void Expect_to_have_received_a_bye_request_()
+        [Ignore("This test should not belong to this behavior.")]
+        public void Expect_to_have_received_a_bye_request()
         {
             _receivedByeRequest.Should().NotBeNull();
         }
@@ -112,13 +83,6 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             _phone.InternalState.Should().Be(_stateProvider.GetIdle());
         }
-      
-        private TxTimerStub _ringingTimer;
-        private TxTimerStub _waitforAckTimer;
-        private IPhoneCall _phoneCall;
-        private ManualResetEvent _waitForTimeOut;
-        private CallError? _callError;
-        private SipRequest _receivedByeRequest
-            ;
+       
     }
 }

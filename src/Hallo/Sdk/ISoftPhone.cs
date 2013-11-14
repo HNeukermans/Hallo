@@ -13,5 +13,6 @@ namespace Hallo.Sdk
         void Start();
         event EventHandler<VoipEventArgs<SoftPhoneState>> StateChanged;
         SoftPhoneState CurrentState { get; }
+        bool IsRunning { get; }
     }
 }

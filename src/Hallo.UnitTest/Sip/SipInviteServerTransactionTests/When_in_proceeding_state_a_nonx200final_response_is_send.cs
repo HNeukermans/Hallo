@@ -19,7 +19,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerTransactionTests
 
         protected override void GivenOverride()
         {
-            ((SipAbstractServerTransaction) Stx).Initialize();
+            //((SipAbstractServerTransaction) Stx).Initialize();
         }
 
         protected override void When()

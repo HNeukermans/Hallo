@@ -3,6 +3,7 @@ using Hallo.Sip;
 using Hallo.Sip.Stack;
 using Hallo.Sip.Stack.Dialogs;
 using Hallo.Sip.Stack.Transactions.InviteClient;
+using Hallo.UnitTest.Stubs;
 using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sip.SipClientDialogTests

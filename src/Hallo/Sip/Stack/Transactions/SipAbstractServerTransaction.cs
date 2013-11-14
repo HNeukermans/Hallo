@@ -2,8 +2,10 @@ using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using Hallo.Sip.Stack.Dialogs;
 using Hallo.Sip.Stack.Transactions.NonInviteServer;
 using Hallo.Util;
+using NLog;
 
 namespace Hallo.Sip.Stack.Transactions
 {
@@ -18,6 +20,8 @@ namespace Hallo.Sip.Stack.Transactions
         protected readonly SipRequest _request;
         protected bool _isDisposed;
         protected SipTransactionType _type;
+        protected SipAbstractDialog _dialog;
+        protected Logger _logger;
 
         protected SipAbstractServerTransaction(SipServerTransactionTable table, SipRequest request, ISipListener listener, ISipMessageSender messageSender, ITimerFactory timerFactory)
         {
@@ -96,6 +100,15 @@ namespace Hallo.Sip.Stack.Transactions
         }
 
         public abstract void ProcessRequest(SipRequestEvent requestEvent);
+        
+        public SipAbstractDialog GetDialog()
+        {
+            return _dialog;
+        }
 
+        public void SetDialog(SipAbstractDialog dialog)
+        {
+            _dialog = dialog;
+        }
     }
 }

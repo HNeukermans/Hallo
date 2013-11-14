@@ -20,7 +20,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerTransactionTests
 
         protected override void GivenOverride()
         {
-            ((SipAbstractServerTransaction) Stx).Initialize();
+            //((SipAbstractServerTransaction) Stx).Initialize();
             _provisionalResponse = CreateProvisionalResponse();
             Stx.SendResponse(_provisionalResponse);
             Stx.State.Should().Be(SipInviteServerTransaction.ProceedingState); /*assertion*/

@@ -18,17 +18,17 @@ namespace Hallo.Sdk.SoftPhoneStates
 
         }
 
-        public SoftPhoneState StateName
-        {
-            get { return SoftPhoneState.Ringing; }
-        }
-
         public void Initialize(IInternalSoftPhone softPhone)
         {
             Check.Require(softPhone.EndWaitForAckTimer, "softPhone.EndWaitForAckTimer");
 
             softPhone.EndWaitForAckTimer.Start();
             _logger.Debug("Initialized.");
+        }
+
+        public void AfterInitialize(IInternalSoftPhone softPhone)
+        {
+            
         }
 
         public void ProcessRequest(IInternalSoftPhone softPhone, Sip.Stack.SipRequestEvent requestEvent)
@@ -82,5 +82,4 @@ namespace Hallo.Sdk.SoftPhoneStates
              softPhone.EndWaitForAckTimer.Stop();
         }
     }
-
 }

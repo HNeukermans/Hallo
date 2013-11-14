@@ -14,13 +14,12 @@ using System.Threading;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
-    internal class When_Ringing_a_long_time : SoftPhoneSpecificationBase
+    internal class When_Ringing_a_long_time : When_Ringing_Base
     {
         int _ringingSendCounter = 0;
         int _ringingReceivedCounter = 0;
         int _periodicity = 1000;
         int _longtimeSpan = 3000;
-        private TxTimerStub _ringingTimer;
         private object _lock;
         
         public When_Ringing_a_long_time()
@@ -29,18 +28,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _wait = new ManualResetEvent(false);
             _timerFactory = new TimerFactoryStubBuilder().WithRingingTimerInterceptor((a) => OnCreateRingingTimer(a, _periodicity)).Build();
         }
-
-
-        protected override void _calleePhone_IncomingCall(object sender, VoipEventArgs<IPhoneCall> e)
-        {
-
-        }
-
-        protected override void _calleePhone_StateChanged(object sender, VoipEventArgs<SoftPhoneState> e)
-        {
-            
-        }
-
+        
         protected override void GivenOverride()
         {
             _network.SendTo(SipFormatter.FormatMessage(_invite), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
@@ -56,7 +44,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             return _ringingTimer;
         }
 
-        protected override void OnReceive(SipContext sipContext)
+        protected override void OnTestClientUaReceive(SipContext sipContext)
         {
             if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
             {
@@ -82,10 +70,5 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _ringingReceivedCounter.Should().BeGreaterThan((_longtimeSpan / _periodicity));
         }
 
-
-        protected override void _calleePhone_InternalStateChanged(object sender, EventArgs e)
-        {
-            
-        }
     }
 }

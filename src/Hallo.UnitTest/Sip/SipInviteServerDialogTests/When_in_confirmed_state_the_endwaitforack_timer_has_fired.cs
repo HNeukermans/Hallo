@@ -37,6 +37,7 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         }
 
         [Test]
+        [Ignore("EndWaitForAckTimer is move out of Dialog, and left to the responsibility of the Dialog user.")]
         public void Expect_the_dialog_to_transition_to_Terminated_state()
         {
             ServerDialog.State.Should().Be(DialogState.Terminated);

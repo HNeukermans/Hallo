@@ -524,30 +524,25 @@ namespace Hallo.Sip
             if(_ctxTable.TryGetValue(GetClientTransactionId(responseEvent.Response), out ctx))
             {
                 if (_logger.IsTraceEnabled) _logger.Trace("Found a matching tx. Setting it as the responseProcessor.");
-
+                
                 sipResponseProcessor = ctx;
-
-                if (_logger.IsDebugEnabled) _logger.Debug("Setting the Dialog on responseEvent.");
-
+                
                 SipAbstractDialog found;
-                /*dialog can come from cxt or table*/
-                if(IsDialogInitiatingRequest(ctx.Request))
-                {
-                    if (_logger.IsDebugEnabled) _logger.Debug("Received a response, for a clientransaction. Getting dialog of the Ctx.");
-                    found = ((SipInviteClientTransaction) ctx).GetDialog();
-                }
-                else
+                   
+                if (ctx.GetDialog() == null)
                 {
                     if (_logger.IsDebugEnabled) _logger.Debug("Searching the table for a matching dialog...");
                     if(_dialogTable.TryGetValue(GetDialogId(responseEvent.Response, false), out found))
                     {
                         if (_logger.IsDebugEnabled) _logger.Debug("Found a matching dialog.");
-                    }
-                    //stx.SetDialog((SipInviteServerDialog)inTableDialog);
-                }
-                responseEvent.Dialog = found;
 
-                if (_logger.IsDebugEnabled) _logger.Debug("Dialog on responseEvent set. Dialog is null:{0}", responseEvent.Dialog == null);
+                        ctx.SetDialog(found);
+                    }
+                    else
+                    {
+                        if (_logger.IsDebugEnabled) _logger.Debug("A matching dialog could not be found.");
+                    }
+                }
             }
             else
             {
@@ -562,8 +557,6 @@ namespace Hallo.Sip
                     if (_logger.IsTraceEnabled) _logger.Trace("Found a matching dialog. Setting it as the responseProcessor.");
                     
                     sipResponseProcessor = dialog;
-                    responseEvent.Dialog = dialog;
-                    //stx.SetDialog((SipInviteServerDialog)inTableDialog);
                 }
                 else
                 {
@@ -704,9 +697,9 @@ namespace Hallo.Sip
             }
         }
 
-        private bool IsDialogInitiatingRequest(SipRequest message)
+        private bool IsResponseToInvite(SipResponse message)
         {
-            return message.RequestLine.Method == SipMethods.Invite;
+            return message.CSeq.Command == SipMethods.Invite;
         }
 
         private bool ShouldHaveResponse(SipRequest request)

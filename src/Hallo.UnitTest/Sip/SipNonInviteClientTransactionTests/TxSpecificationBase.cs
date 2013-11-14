@@ -79,16 +79,7 @@ namespace Hallo.UnitTest.Sip.SipNonInviteClientTransactionTests
             c.Response = r;
             return new SipResponseEvent(c);
         }
-
-        //protected SipResponseEvent CreateFinalResponseEvent()
-        //{
-        //    var statusLine = new SipStatusLineBuilder().WithStatusCode(200).WithReason("OK").Build();
-        //    var r = new SipResponseBuilder().WithStatusLine(statusLine).Build();
-        //    var c = new SipContext();
-        //    c.Response = r;
-        //    return new SipResponseEvent(c);
-        //}
-
+        
         protected SipResponseEvent CreateProvisionalResponseEvent()
         {
             var statusLine = new SipStatusLineBuilder().WithStatusCode(180).WithReason("Ringing").Build();

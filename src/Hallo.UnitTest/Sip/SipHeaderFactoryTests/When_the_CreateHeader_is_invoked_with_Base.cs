@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sip
 {
-    public class When_the_CreateHeader_is_invoked_with_Base : Specification
+    public abstract class When_the_CreateHeader_is_invoked_with_Base : Specification
     {
         protected SipHeaderFactory _headerFactory;
         protected SipFromHeader _fromHeader;

@@ -74,8 +74,16 @@ namespace Hallo.UnitTest.Sip.SipInviteServerDialogTests
         {
             var r = ReceivedRequest.CreateResponse(SipResponseCodes.x180_Ringing);
             r.To.Tag = _toTag;
+            AddContactHeader(r);
             return r;
         }
+
+        private void AddContactHeader(SipResponse response)
+        {
+            var contactHeader = new SipContactHeaderBuilder().WithSipUri(TestConstants.BobContactUri).Build();
+            response.Contacts.Add(contactHeader);
+        }
+
 
         protected SipResponse CreateOkResponse()
         {

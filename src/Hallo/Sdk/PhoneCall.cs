@@ -15,7 +15,7 @@ namespace Hallo.Sdk
     /// <summary>
     /// serves as a facade.
     /// </summary>
-    internal class PhoneCall : IPhoneCall
+    internal class PhoneCall : IInternalPhoneCall
     {
         public event EventHandler<VoipEventArgs<CallError>> CallErrorOccured;
 
@@ -27,24 +27,27 @@ namespace Hallo.Sdk
         private IDisposable _ringingRetransmit;
         private int _counter = 0;
         private bool _isIncoming;
-        private readonly ICommand<IPhoneCall> _startCommand;
-        private readonly ICommand _answerCommand;
+        private readonly ICommand<IInternalPhoneCall> _startCommand;
+        private readonly ICommand _stopCommand;
+        private readonly ICommand _acceptCommand;
         private SoftPhone _softPhone;
         private SipUri _toUri;
         private ICommand _rejectCommand;
+        private CallState _state;
 
-        public PhoneCall(SoftPhone softPhone, bool isIncoming, ICommand<IPhoneCall> startCommand)
+        public PhoneCall(SoftPhone softPhone, bool isIncoming, ICommand<IInternalPhoneCall> startCommand, ICommand stopCommand)
         {
             _softPhone = softPhone;
             _isIncoming = isIncoming;
             _startCommand = startCommand;
+            _stopCommand = stopCommand;
         }
 
         public PhoneCall(SoftPhone softPhone, bool isIncoming, SipUri from, ICommand answerCommand, ICommand rejectCommand)
         {
             _softPhone = softPhone;
             _isIncoming = isIncoming;
-            _answerCommand = answerCommand;
+            _acceptCommand = answerCommand;
             _rejectCommand = rejectCommand;
         }
 
@@ -62,8 +65,11 @@ namespace Hallo.Sdk
         {
             get { return _from; }
         }
-        
-        public CallState State { get; set; }
+
+        public CallState State
+        {
+            get { return _state; }
+        }
 
         public void Start(string to)
         {
@@ -71,18 +77,18 @@ namespace Hallo.Sdk
 
             if (!to.StartsWith("sip:")) to = "sip:" + to;
 
-            if (!SipUtil.IsSipUri(to)) throw new ArgumentException("'to' argument is not valid. 'To' argument must have ipendpoint-format or sipuri-format");
+            if (!SipUtil.IsSipUri(to)) throw new ArgumentException("'to' argument is has invalid format.");
+
+            var uri = SipUtil.ParseSipUri(to);
 
             if (_softPhone.RegisteredPhoneLine == null)
             {
-                var uri = SipUtil.ParseSipUri(to);
-                if (uri.HasNamedHost()) throw new ArgumentException("'to' argument is not valid. 'To' can not have a named host. Only ipendpoint-format is allowed.");
+                if (uri.HasNamedHost()) throw new ArgumentException("'to' argument is not valid. Since phone is not registered, 'to' can not be a named host. Only numeric IP hosts are supported.");
                 _toUri = uri;
             }
             else
             {
-                if (!SipUtil.IsIpEndPoint(to)) throw new ArgumentException("'to' argument is not valid. 'To' argument must have ipendpoint-format");
-                _toUri = _softPhone.AddressFactory.CreateUri(string.Empty, to);
+                _toUri = uri;
             }
             
             _startCommand.Execute(this);
@@ -95,8 +101,7 @@ namespace Hallo.Sdk
 
         public void Accept()
         {
-            Check.IsTrue(_isIncoming, "Failed to Answer the call. Only incoming calls can be answered.");
-            _answerCommand.Execute();
+            _acceptCommand.Execute();
         }
 
         //internal void InternalSendRinging()
@@ -122,7 +127,24 @@ namespace Hallo.Sdk
 
         public void RaiseCallErrorOccured(CallError error)
         {
-            CallErrorOccured(this, new VoipEventArgs<CallError>(error));
+            Action raiseOnNewThread = () => CallErrorOccured(this, new VoipEventArgs<CallError>(error));
+            raiseOnNewThread.BeginInvoke(null, null);
         }
+
+        public void Stop()
+        {
+            _stopCommand.Execute();
+        }
+
+        public void ChangeState(CallState state)
+        {
+            _state = state;
+            Action raiseOnNewThread = () =>  CallStateChanged(this, new VoipEventArgs<CallState>(state));
+            raiseOnNewThread.BeginInvoke(null,null);
+        }
+
+
+        public event EventHandler<VoipEventArgs<CallState>> CallStateChanged = delegate { };
+
     }
 }
