@@ -2,7 +2,6 @@ using System;
 using FluentAssertions;
 using Hallo.Sdk;
 using Hallo.Sip;
-using Hallo.Sip.Util;
 using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
@@ -24,9 +23,15 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
         
         [Test]
-        public void Expect_the_phone_to_transition_to_WaitCancelOk_state()
+        public void Expect_the_phone_to_remain_in_WaitProvisional()
         {
-            _phone.InternalState.Should().Be(_stateProvider.GetWaitCancelOk());
+            _phone.InternalState.Should().Be(_stateProvider.GetWaitProvisional());
+        }
+
+        [Test]
+        public void Expect_the_CancelOnWaitFinal_to_be_true()
+        {
+            _phone.PendingInvite.CancelOnWaitFinal.Should().BeTrue();
         }
 
         [Test]

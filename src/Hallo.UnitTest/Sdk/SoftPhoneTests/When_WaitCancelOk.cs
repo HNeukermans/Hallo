@@ -9,9 +9,9 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
     internal class When_WaitCancelOk : When_WaitCancelOk_Base
     {
         [Test]
-        public void Expect_the_callstate_to_be_Ringing()
+        public void Expect_the_callstate_to_be_Ringback()
         {
-            _callState.Should().Be(CallState.Ringing);
+            _callState.Should().Be(CallState.Ringback);
         }
 
         [Test]
@@ -24,6 +24,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         public void Expect_PendingCall_not_to_be_null()
         {
             _phone.PendingCall.Should().NotBeNull();
+        }
+
+        [Test]
+        public void Expect_a_cancel_is_received_by_ua_testclient()
+        {
+            _receivedCancel.Should().NotBeNull();
         }
 
         [Test]
@@ -58,7 +64,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
-        public void Expect_InviteClientTransaction_to_be_in_calling_state()
+        public void Expect_InviteClientTransaction_to_be_in_proceeding_state()
         {
             _phone.PendingInvite.InviteClientTransaction.State.Should().Be(SipInviteClientTransaction.ProceedingState);
         }
@@ -66,7 +72,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_CancelTransaction_to_be_in_Trying_state()
         {
-            _phone.PendingInvite.CancelTransaction.State.Should().Be(SipNonInviteClientTransaction.TryingState);
+            _phone.PendingInvite.CancelTransaction.As<SipNonInviteClientTransaction>().State.Should().Be(SipNonInviteClientTransaction.TryingState);
         }
         
         

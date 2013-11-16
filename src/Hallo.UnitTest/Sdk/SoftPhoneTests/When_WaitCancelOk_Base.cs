@@ -12,7 +12,9 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected CallState? _callState;
         protected string _toTag;
         protected ManualResetEvent _ringingProcessed = new ManualResetEvent(false);
+        protected ManualResetEvent _waitingforCancelReceived = new ManualResetEvent(false);
         protected IPhoneCall _call;
+        protected SipRequest _receivedCancel;
 
         protected override void GivenOverride()
         {
@@ -31,6 +33,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _phone.InternalState.Should().Be(_stateProvider.GetWaitFinal()); /*required assertion*/
 
             _call.Stop();
+            _waitingforCancelReceived.Set();
         }
 
         void call_CallStateChanged(object sender, VoipEventArgs<CallState> e)
@@ -49,6 +52,11 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             {
                 _receivedInvite = sipContext.Request;
                 _waitingforInviteReceived.Set();
+            }
+            if (sipContext.Request.RequestLine.Method == SipMethods.Cancel)
+            {
+                _receivedCancel = sipContext.Request;
+                _waitingforCancelReceived.Set();
             }
         }
 

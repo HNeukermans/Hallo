@@ -2,21 +2,23 @@ using System.Threading;
 using FluentAssertions;
 using Hallo.Sdk;
 using Hallo.Sip;
+using Hallo.Sip.Stack.Transactions.NonInviteClient;
 using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
-    internal class When_WaitCancelOk_finalcancel_and_finalinvite_are_received : When_WaitCancelOk_Base
+    /// <summary>
+    /// Tests the condition under which an ok is received with a branchid that does not match the cancel brnachid.
+    /// </summary>
+    internal class When_WaitCancelOk_a_not_tx_matching_ok_cancel_is_received : When_WaitCancelOk_Base
     {
         protected ManualResetEvent _waitforOkCancelProcessed = new ManualResetEvent(false);
-        protected ManualResetEvent _waitforFinalInviteProcessed = new ManualResetEvent(false);
 
         protected override void When()
         {
-            var response = _receivedInvite.CreateResponse(SipResponseCodes.x487_Request_Terminated);
-            _network.SendTo(SipFormatter.FormatMessage(response), _testClientUaEndPoint, _phoneUaEndPoint);
-            _waitforFinalInviteProcessed.WaitOne();
+            /*send ok to cancel*/
             var ok = _receivedCancel.CreateResponse(SipResponseCodes.x200_Ok);
+            ok.Vias.GetTopMost().Branch = "no match";
             _network.SendTo(SipFormatter.FormatMessage(ok), _testClientUaEndPoint, _phoneUaEndPoint);
             _waitforOkCancelProcessed.WaitOne();
         }
@@ -28,11 +30,6 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
                 _ringingProcessed.Set();
             }
 
-            if (responseEvent.Response.StatusLine.StatusCode == 487 && responseEvent.Response.CSeq.Command == SipMethods.Invite)
-            {
-                _waitforFinalInviteProcessed.Set();
-            }
-
             if (responseEvent.Response.StatusLine.StatusCode == 200 && responseEvent.Response.CSeq.Command == SipMethods.Cancel)
             {
                 _waitforOkCancelProcessed.Set();
@@ -40,15 +37,11 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
-        public void Expect_the_InternalState_to_transition_to_Idle()
+        public void Expect_CancelTransaction_to_be_remain_in_trying_state()
         {
-            _phone.InternalState.Should().Be(_stateProvider.GetIdle());
+            _phone.PendingInvite.CancelTransaction.As<SipNonInviteClientTransaction>().State.Should().Be(SipNonInviteClientTransaction.TryingState);
         }
 
-        [Test]
-        public void Expect_the_callstate_to_be_Completed()
-        {
-            _callState.Should().Be(CallState.Completed);
-        }
+
     }
 }

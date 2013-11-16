@@ -140,6 +140,7 @@
     <Compile Include="Sdk\SoftPhoneTests\When_WaitCancelOk_an_ok_cancel_is_received.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitCancelOk_an_x481_cancel_is_received.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitCancelOk_an_x487_invite_is_received.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_WaitCancelOk_a_not_tx_matching_ok_cancel_is_received.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitCancelOk_Base.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitCancelOk_finalcancel_and_finalinvite_are_received.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitFinal.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Sdk\SoftPhoneTests\When_WaitProvisional_an_x100_response_is_received.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitProvisional_Base.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitProvisional_the_call_is_cancelled.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_WaitProvisional_the_call_is_cancelled_and_a_ringing_is_received.cs" />
     <Compile Include="Sdp\ParserTests\SdpOriginParserTests.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Idle_an_invite_is_received.cs" />
     <Compile Include="Sip\SipAllowHeaderTests.cs" />

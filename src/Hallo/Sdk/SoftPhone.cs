@@ -335,12 +335,16 @@ namespace Hallo.Sdk
                 /*If no provisional response has been received, the CANCEL request MUST
                NOT be sent; rather, the client MUST wait for the arrival of a
                provisional response before sending the request.*/
-               
+
+                if (_logger.IsInfoEnabled) _logger.Info("The call will automatically be stopped when transitioning to 'WAITFINAL' state. Waiting for transition...");
+
                PendingInvite.CancelOnWaitFinal = true;
             }
             else if(InternalState == _stateProvider.GetWaitFinal())
             {
                 SendCancel();
+
+                if (_logger.IsInfoEnabled) _logger.Info("Phonecall stopped.");
 
                 //TODO: send bye also to prevent possible peer-state race conditions?*/
             }
@@ -396,19 +400,13 @@ namespace Hallo.Sdk
             var ctx = _provider.CreateClientTransaction(cancelRequest);
             ctx.SendRequest();
 
+            PendingInvite.CancelTransaction = ctx;
+
             if (_logger.IsDebugEnabled) _logger.Debug("'CANCEL' sent.");
-
-            //PendingInvite.ClientDialog.Terminate();
-
-            //if (_logger.IsDebugEnabled) _logger.Debug("Dialog terminated.");
-
-            //_pendingPhoneCall = null;
 
             if (_logger.IsInfoEnabled) _logger.Info("Transitioning to 'WAITFORCANCELOK' state...");
 
             ChangeState(_stateProvider.GetWaitCancelOk());
-
-            if (_logger.IsInfoEnabled) _logger.Info("Phonecall stopped.");
         }
 
         private void OnPhoneCallStarted(IInternalPhoneCall phoneCall)

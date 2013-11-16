@@ -18,13 +18,15 @@ namespace Hallo.Sdk.SoftPhoneStates
 
         public void Initialize(IInternalSoftPhone softPhone)
         {
+            Check.Require(softPhone.PendingInvite, "softPhone.PendingInvite");
+            Check.Require(softPhone.PendingInvite.CancelTransaction, "softPhone.PendingInvite.CancelTransaction");
+            Check.Require(softPhone.PendingInvite.InviteClientTransaction, "softPhone.PendingInvite.InviteClientTransaction");
+
             _logger.Debug("Initialized.");
         }
 
         public void AfterInitialize(IInternalSoftPhone softPhone)
         {
-            Check.Require(softPhone, "softPhone");
-            Check.Require(softPhone.PendingCall, "softPhone.PendingCall");
         }
 
         public void ProcessRequest(IInternalSoftPhone softPhone, Sip.Stack.SipRequestEvent requestEvent)
@@ -49,40 +51,43 @@ namespace Hallo.Sdk.SoftPhoneStates
             /*wait for ok on cancel + 487 for invite*/
 
             if (_logger.IsInfoEnabled) _logger.Info("'{0}XX' response. Begin processing...", statusCodeDiv100);
-
-
-            if (statusCodeDiv100 != 2)
+            
+            if (statusCodeDiv100 < 2)
             {
-                if (_logger.IsInfoEnabled) _logger.Info("Processing ABORTED. Only '2XX' responses are processed in this state.");
+                if (_logger.IsInfoEnabled) _logger.Info("Processing ABORTED. Only FINAL (x200-x500) responses are processed in this state.");
                 return;
             }
 
             if (responseEvent.ClientTransaction.GetId() == softPhone.PendingInvite.CancelTransaction.GetId())
             {
-                if (_logger.IsInfoEnabled) _logger.Info("Received response on 'CANCEL' request.");
+                if (_logger.IsInfoEnabled) _logger.Info("Received final response on 'CANCEL' request.");
 
                 _receivedFinalCancelResponse = true;
 
-                return;
             }
 
             if (responseEvent.ClientTransaction.GetId() == softPhone.PendingInvite.InviteClientTransaction.GetId())
             {
-                if (_logger.IsInfoEnabled) _logger.Info("Received response on 'INVITE' request.");
+                if (_logger.IsInfoEnabled) _logger.Info("Received final response on 'INVITE' request.");
 
                 _receivedFinalInviteResponse = true;
 
-                return;
-            }
+                if (_logger.IsDebugEnabled) _logger.Debug("Changing CallState to 'Completed', and terminating the Dialog...");
 
+                softPhone.PendingCall.ChangeState(CallState.Completed);
+
+                softPhone.PendingInvite.ClientDialog.Terminate();
+
+                if (_logger.IsDebugEnabled) _logger.Debug("Dialog terminated.");
+            }
+            
+            //TODO: use locks.
             if (_receivedFinalInviteResponse && _receivedFinalCancelResponse)
             {
                 /*go to idle*/
+                if (_logger.IsDebugEnabled) _logger.Debug("Both 'CANCEL' & 'INVITE' Tx have received a final response. Transitioning to Idle...");
+                softPhone.ChangeState(softPhone.StateProvider.GetIdle());
             }
-
-            if (_logger.IsInfoEnabled) _logger.Info("OK response to 'CANCEL' received. Transitioning to 'IDLE'...");
-
-            softPhone.ChangeState(softPhone.StateProvider.GetIdle());
         }
 
         public void Terminate(IInternalSoftPhone softPhone)

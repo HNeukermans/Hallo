@@ -1,8 +1,9 @@
 using Hallo.Sip;
 using Hallo.Sip.Stack.Dialogs;
+using Hallo.Sip.Stack.Transactions;
 using Hallo.Sip.Stack.Transactions.InviteClient;
 using Hallo.Sip.Stack.Transactions.InviteServer;
-using Hallo.Sip.Stack.Transactions.NonInviteClient;
+
 
 namespace Hallo.Sdk
 {
@@ -18,7 +19,7 @@ namespace Hallo.Sdk
         public SipUri From { get; set; }
         public SipUri To { get; set; }
         public bool IsIncomingCall { get; set; }
-        public SipNonInviteClientTransaction CancelTransaction { get; set; }
+        public ISipClientTransaction CancelTransaction { get; set; }
         
     }
 }
