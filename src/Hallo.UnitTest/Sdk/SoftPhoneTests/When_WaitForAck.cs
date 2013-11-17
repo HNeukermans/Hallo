@@ -63,7 +63,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_Dailog_not_to_be_null()
         {
-            _phone.PendingInvite.ServerDialog.Should().NotBeNull();
+            _phone.PendingInvite.Dialog.Should().NotBeNull();
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_dialog_to_be_confirmed()
         {
-            _phone.PendingInvite.ServerDialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Confirmed);
+            _phone.PendingInvite.Dialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Confirmed);
         }
     }
 }

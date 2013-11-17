@@ -163,6 +163,7 @@
     <Compile Include="Sdk\SoftPhoneFactory.cs" />
     <Compile Include="Sdk\SoftPhoneSate.cs" />
     <Compile Include="Sdk\SoftPhoneStates\RingingState.cs" />
+    <Compile Include="Sdk\SoftPhoneStates\WaitForByeOkState.cs" />
     <Compile Include="Sdk\SoftPhoneStates\WaitForCancelOkState.cs" />
     <Compile Include="Sdk\SoftPhoneStates\WaitForFinalState.cs" />
     <Compile Include="Sdk\SoftPhoneStates\WaitForAckState.cs" />

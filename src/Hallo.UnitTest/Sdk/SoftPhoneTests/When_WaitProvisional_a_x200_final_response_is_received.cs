@@ -28,6 +28,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             var provResponse = CreateOkResponse(_receivedInvite, _toTag);
             _network.SendTo(SipFormatter.FormatMessage(provResponse), _testClientUaEndPoint, _phoneUaEndPoint);
             _waitingforOkProcessed.WaitOne();
+            _waitingForAckReceived.WaitOne(3000);
         }
        
 
@@ -35,6 +36,13 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         public void Expect_the_phone_to_transition_to_Established_state()
         {
             _phone.InternalState.Should().Be(_stateProvider.GetEstablished());
+        }
+
+
+        [Test]
+        public void Expect_the_ua_testclient_to_have_received_an_ack_request()
+        {
+            _receivedAck.Should().NotBeNull();
         }
     }
 }

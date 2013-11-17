@@ -12,7 +12,9 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected CallState? _callState;
         protected string _toTag;
         protected ManualResetEvent _ringingProcessed = new ManualResetEvent(false);
+        protected ManualResetEvent _waitingForAckReceived = new ManualResetEvent(false);
         protected IPhoneCall _call;
+        protected SipRequest _receivedAck;
 
         protected override void GivenOverride()
         {
@@ -47,6 +49,11 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             {
                 _receivedInvite = sipContext.Request;
                 _waitingforInviteReceived.Set();
+            }
+            else if (sipContext.Request.RequestLine.Method == SipMethods.Ack)
+            {
+                _receivedAck = sipContext.Request;
+                _waitingForAckReceived.Set();
             }
         }
 

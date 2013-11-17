@@ -43,12 +43,13 @@ namespace Hallo.Sdk
             _stopCommand = stopCommand;
         }
 
-        public PhoneCall(SoftPhone softPhone, bool isIncoming, SipUri from, ICommand answerCommand, ICommand rejectCommand)
+        public PhoneCall(SoftPhone softPhone, bool isIncoming, SipUri from, ICommand acceptCommand, ICommand rejectCommand, ICommand stopCommand)
         {
             _softPhone = softPhone;
             _isIncoming = isIncoming;
-            _acceptCommand = answerCommand;
+            _acceptCommand = acceptCommand;
             _rejectCommand = rejectCommand;
+            _stopCommand = stopCommand;
         }
 
         public bool IsIncoming
@@ -101,6 +102,8 @@ namespace Hallo.Sdk
 
         public void Accept()
         {
+            Check.IsTrue(_isIncoming, "Failed to accept the call. Only incoming calls can be accepted.");
+
             _acceptCommand.Execute();
         }
 
@@ -143,8 +146,14 @@ namespace Hallo.Sdk
             raiseOnNewThread.BeginInvoke(null,null);
         }
 
-
         public event EventHandler<VoipEventArgs<CallState>> CallStateChanged = delegate { };
+        
 
+        public void Reject()
+        {
+            Check.IsTrue(_isIncoming, "Failed to reject the call. Only incoming calls can be rejected.");
+
+            _rejectCommand.Execute();
+        }
     }
 }

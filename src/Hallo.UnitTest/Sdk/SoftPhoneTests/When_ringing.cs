@@ -61,7 +61,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_Dailog_not_to_be_null()
         {
-            _phone.PendingInvite.ServerDialog.Should().NotBeNull();
+            _phone.PendingInvite.Dialog.Should().NotBeNull();
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_dialog_to_be_in_early_state()
         {
-            _phone.PendingInvite.ServerDialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Early);
+            _phone.PendingInvite.Dialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Early);
         }
 
         [Test]

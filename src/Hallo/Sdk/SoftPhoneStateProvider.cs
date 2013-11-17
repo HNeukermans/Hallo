@@ -15,6 +15,7 @@ namespace Hallo.Sdk
         public readonly ISoftPhoneState _waitProv = new WaitForProvisionalState();
         public readonly ISoftPhoneState _waitFinal = new WaitForFinalState();
         public readonly ISoftPhoneState _waitCancelOk = new WaitForCancelOkState();
+        public readonly ISoftPhoneState _waitByeOk = new WaitForByeOkState();
 
         public ISoftPhoneState GetRinging()
         {
@@ -49,6 +50,11 @@ namespace Hallo.Sdk
         public ISoftPhoneState GetWaitCancelOk()
         {
             return _waitCancelOk;
+        }
+
+        public ISoftPhoneState GetWaitByeOk()
+        {
+            return _waitByeOk;
         }
     }
 }

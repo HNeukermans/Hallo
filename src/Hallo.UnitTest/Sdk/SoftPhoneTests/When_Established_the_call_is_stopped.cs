@@ -1,17 +1,13 @@
-using System;
 using System.Threading;
 using FluentAssertions;
-using Hallo.Component;
 using Hallo.Sdk;
 using Hallo.Sip;
-using Hallo.Sip.Stack;
 using Hallo.UnitTest.Helpers;
-using Moq;
 using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
-    internal class When_Established_a_bye_is_received : When_Established_Base
+    internal class When_Established_the_call_is_stopped : When_Established_Base
     {
         protected ManualResetEvent _waitForByeReceived = new ManualResetEvent(false);
         private SipResponse _receivedOkByeResponse;
@@ -39,31 +35,26 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             {
                 _receivedOkByeResponse = sipContext.Response;
                 _waitForByeReceived.Set();
-            }
+            } 
         }
 
         [Test]
-        public void Expect_the_phone_to_transition_to_idle_state()
+        public void Expect_the_phone_to_transition_to_waitbyeok_state()
         {
-            _phone.InternalState.Should().Be(_stateProvider.GetIdle());
+            _phone.InternalState.Should().Be(_stateProvider.GetWaitByeOk());
         }
 
         [Test]
-        public void Expect_the_dialog_to_be_removed_from_the_table()
-        {
-            _sipProvider1.DialogTable.Count.Should().Be(0);
-        }
-
-        [Test]
-        public void Expect_the_phone_to_have_replied_to_bye_with_ok_response()
-        {
-            _receivedOkByeResponse.Should().NotBeNull();
+        public void Expect_the_dialog_not_yet_to_be_removed_from_the_table()
+        { 
+            _sipProvider1.DialogTable.Count.Should().Be(1);
         }
 
         [Test]
         public void Expect_the_callstate_to_be_completed()
         {
-            _callState.Should().Be(CallState.Completed);
+             _callState.Should().Be(CallState.Completed);
         }
+        
     }
 }

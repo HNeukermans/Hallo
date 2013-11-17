@@ -40,6 +40,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected SoftPhoneStateProxy _waitForProvStateProxy;
         protected SoftPhoneStateProxy _waitForFinalStateProxy;
         protected SoftPhoneStateProxy _waitForCancelOkStateProxy;
+        protected SoftPhoneStateProxy _waitForByeOkStateProxy;
         protected IPEndPoint _testClientUaEndPoint;
         protected SipUri _testClientUaUri;
         protected SipUri _phoneUaUri;
@@ -67,6 +68,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _waitForProvStateProxy = new SoftPhoneStateProxy(new WaitForProvisionalState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
             _waitForFinalStateProxy = new SoftPhoneStateProxy(new WaitForFinalState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
             _waitForCancelOkStateProxy = new SoftPhoneStateProxy(new WaitForCancelOkState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
+            _waitForByeOkStateProxy = new SoftPhoneStateProxy(new WaitForByeOkState(), AfterPhoneProcessedRequest, AfterPhoneProcessedResponse, AfterInitialized);
 
             Mock<ISoftPhoneStateProvider> mock = new Mock<ISoftPhoneStateProvider>();
             mock.Setup(s => s.GetIdle()).Returns(_idleStateProxy);
@@ -76,6 +78,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             mock.Setup(s => s.GetWaitProvisional()).Returns(_waitForProvStateProxy);
             mock.Setup(s => s.GetWaitFinal()).Returns(_waitForFinalStateProxy);
             mock.Setup(s => s.GetWaitCancelOk()).Returns(_waitForCancelOkStateProxy);
+            mock.Setup(s => s.GetWaitByeOk()).Returns(_waitForByeOkStateProxy);
             return mock.Object;
         }
 

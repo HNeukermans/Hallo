@@ -1,4 +1,5 @@
 using Hallo.Sip;
+using Hallo.Sip.Stack.Dialogs;
 using NLog;
 using Hallo.Util;
 
@@ -63,7 +64,7 @@ namespace Hallo.Sdk.SoftPhoneStates
                 return;
             }
 
-            if (responseEvent.Dialog.GetId() != softPhone.PendingInvite.ClientDialog.GetId())
+            if (responseEvent.Dialog.GetId() != softPhone.PendingInvite.Dialog.GetId())
             {
                 if (_logger.IsInfoEnabled) _logger.Info("Processing ABORTED. In this state the 'ResponseEvent' it's Dialog, is expected to match only to the Dialog of the PendingInvite. DebugInfo: DialogId created from response: '{0}'. This case is not supposed to occur, since the phone can only process ONE dialog at a time. Check what's going on !!", SipProvider.GetDialogId(responseEvent.Response, false));
                 return;
@@ -76,6 +77,12 @@ namespace Hallo.Sdk.SoftPhoneStates
             else if (statusCodeDiv100 == 2)
             {
                 if (_logger.IsInfoEnabled) _logger.Info("Transitioning to 'ESTABLISHED'...");
+
+                Check.IsTrue(responseEvent.Dialog is SipInviteClientDialog, "Failed to respond to '200' response with ACK request. The 'ACK' can not be created. The responseEvent.Dialog is expected to be of type SipInviteClientDialog.");
+
+                var clientDialog = (SipInviteClientDialog) softPhone.PendingInvite.Dialog;
+                var ack = clientDialog.CreateAck();
+                clientDialog.SendAck(ack);
 
                 softPhone.ChangeState(softPhone.StateProvider.GetEstablished());
             }
@@ -93,7 +100,7 @@ namespace Hallo.Sdk.SoftPhoneStates
                     softPhone.PendingCall.ChangeState(CallState.Error);
                 }
 
-                softPhone.PendingInvite.ClientDialog.Terminate();
+                softPhone.PendingInvite.Dialog.Terminate();
             }
         }
 

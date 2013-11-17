@@ -41,7 +41,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_dialog_to_be_Early()
         {
-            _phone.PendingInvite.ClientDialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Early);
+            _phone.PendingInvite.Dialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Early);
         }
 
         [Test]

@@ -65,7 +65,7 @@ namespace Hallo.Sdk.SoftPhoneStates
                 To = requestEvent.Request.To.SipUri,
                 InviteServerTransaction = (SipInviteServerTransaction) serverTransaction,
                 IsIncomingCall = true,
-                ServerDialog = dialog
+                Dialog = dialog
             };
 
             softPhone.RaiseIncomingCall();//requestEvent.Request.From.SipUri);

@@ -36,5 +36,11 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             _callState.Should().Be(CallState.BusyHere);
         }
+
+        [Test]
+        public void Expect_the_ua_testclient_to_have_received_an_ack_request()
+        {
+            _receivedAck.Should().NotBeNull();
+        }
     }
 }

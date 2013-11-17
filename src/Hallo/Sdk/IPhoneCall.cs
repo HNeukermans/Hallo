@@ -14,6 +14,8 @@ namespace Hallo.Sdk
 
         void Accept();
 
+        void Reject();
+
         void Stop();
 
         bool IsIncoming { get; }

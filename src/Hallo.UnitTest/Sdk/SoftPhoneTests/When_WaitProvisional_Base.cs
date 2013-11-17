@@ -13,7 +13,9 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected SipRequest _receivedInvite;
         protected string _toTag;
         protected ManualResetEvent _waitingforResponseProcessed = new ManualResetEvent(false);
-        
+        protected ManualResetEvent _waitingForAckReceived = new ManualResetEvent(false);
+        protected SipRequest _receivedAck;
+
         protected override void GivenOverride()
         {
             _call = _phone.CreateCall();
@@ -31,6 +33,11 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             {
                 _receivedInvite = sipContext.Request;
                 _waitingforInviteReceived.Set();
+            }
+            else if (sipContext.Request.RequestLine.Method == SipMethods.Ack)
+            {
+                _receivedAck = sipContext.Request;
+                _waitingForAckReceived.Set();
             }
         }
     }

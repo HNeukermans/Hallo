@@ -15,5 +15,6 @@ namespace Hallo.Sdk
         ISoftPhoneState GetWaitFinal();
         ISoftPhoneState GetWaitProvisional();
         ISoftPhoneState GetWaitCancelOk();
+        ISoftPhoneState GetWaitByeOk();
     }
 }

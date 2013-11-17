@@ -129,6 +129,7 @@
     <Compile Include="Sdk\SoftPhoneTests\When_Established.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Established_a_bye_is_received.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Established_Base.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_Established_the_call_is_stopped.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Idle.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Ringing.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Ringing_a_long_time.cs" />
@@ -136,6 +137,9 @@
     <Compile Include="Sdk\SoftPhoneTests\When_Ringing_the_call_is_accepted.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_the_phone_is_started.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_Idle_a_retransmitted_invite_is_received.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_WaitByeOk.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_WaitByeOk_an_ok_is_received.cs" />
+    <Compile Include="Sdk\SoftPhoneTests\When_WaitByeOk_Base.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitCancelOk.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitCancelOk_an_ok_cancel_is_received.cs" />
     <Compile Include="Sdk\SoftPhoneTests\When_WaitCancelOk_an_x481_cancel_is_received.cs" />

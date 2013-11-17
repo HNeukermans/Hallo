@@ -12,9 +12,8 @@ namespace Hallo.Sdk
         public bool CancelOnWaitFinal { get; set; }
         public SipRequest OriginalRequest { get; set; }
         public SipInviteServerTransaction InviteServerTransaction { get; set; }
-        public SipInviteServerDialog ServerDialog { get; set; }
         public SipInviteClientTransaction InviteClientTransaction { get; set; }
-        public SipInviteClientDialog ClientDialog { get; set; }
+        public SipAbstractDialog Dialog { get; set; }
         public SipResponse RingingResponse { get; set; }
         public SipUri From { get; set; }
         public SipUri To { get; set; }

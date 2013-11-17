@@ -188,8 +188,6 @@ namespace Hallo.Sdk
         {
             Check.IsTrue(!state.Equals(InternalState), string.Format("Can not change state to '{0}'. The phone is already in '{0}' state",  this.InternalState.GetType().Name));
 
-            //var previousStateName = InternalState.StateName;
-
             InternalState.Terminate(this);
 
             state.Initialize(this);
@@ -199,12 +197,6 @@ namespace Hallo.Sdk
             state.AfterInitialize(this);
             /*fire internal event*/
             InternalStateChanged(this, new EventArgs());
-            
-            //TODO: remove this event???
-            //if (previousStateName != InternalState.StateName) StateChanged(this, new VoipEventArgs<SoftPhoneState>(InternalState.StateName));
-            StateChanged(this, new VoipEventArgs<SoftPhoneState>(SoftPhoneState.Idle));
-
-            
         }
 
         public SipAddressFactory AddressFactory { get { return _addressFactory; } }
@@ -253,14 +245,14 @@ namespace Hallo.Sdk
             if (_logger.IsInfoEnabled) _logger.Info("ACK has not been received after 64 * T1. Sending Bye and terminating dialog...");
 
            /*ack not been received after 64 * T1 end dialog. TODO:terminate session*/
-           var bye = PendingInvite.ServerDialog.CreateRequest(SipMethods.Bye);
+           var bye = PendingInvite.Dialog.CreateRequest(SipMethods.Bye);
 
            var ctx = _provider.CreateClientTransaction(bye);
                       
            /*send bye in-dialog*/
-           PendingInvite.ServerDialog.SendRequest(ctx);
+           PendingInvite.Dialog.SendRequest(ctx);
 
-           PendingInvite.ServerDialog.Terminate();
+           PendingInvite.Dialog.Terminate();
 
            _pendingPhoneCall.RaiseCallErrorOccured(CallError.WaitForAckTimeOut);
 
@@ -275,7 +267,7 @@ namespace Hallo.Sdk
 
             var from = PendingInvite.OriginalRequest.From.SipUri;
 
-            _pendingPhoneCall = new PhoneCall(this, true, from, new Command(OnPhoneCallAccepted), new Command(OnPhoneCallRejected));
+            _pendingPhoneCall = new PhoneCall(this, true, from, new Command(OnPhoneCallAccepted), new Command(OnPhoneCallRejected), new Command(OnPhoneCallStopped));
             IncomingCall(this, new VoipEventArgs<IPhoneCall>(_pendingPhoneCall));
         }
 
@@ -309,6 +301,7 @@ namespace Hallo.Sdk
 
         private void OnPhoneCallRejected() 
         {
+            throw new NotSupportedException(); //TODO: support it.
             Check.IsTrue(_isRunning, "Failed to reject the call. The phone can only reject calls while in 'RUNNING' state.");
             Check.Require(_pendingPhoneCall, "The phone has no call pending.");
             Check.IsTrue(InternalState == _stateProvider.GetRinging(),
@@ -353,21 +346,15 @@ namespace Hallo.Sdk
                 if (_logger.IsDebugEnabled) _logger.Debug("Sending 'BYE'...");
 
                 /*send bye + terminate dialog*/
-                var byeRequest = PendingInvite.ClientDialog.CreateRequest(SipMethods.Bye);
+                var byeRequest = PendingInvite.Dialog.CreateRequest(SipMethods.Bye);
                 var byeCtx = _provider.CreateClientTransaction(byeRequest);
-                PendingInvite.ClientDialog.SendRequest(byeCtx);
+                PendingInvite.Dialog.SendRequest(byeCtx);
 
                 if (_logger.IsDebugEnabled) _logger.Debug("'BYE' sent.");
+                
+                if (_logger.IsInfoEnabled) _logger.Info("Transitioning to 'WAITBYEOK' state...");
 
-                PendingInvite.ClientDialog.Terminate();
-
-                if (_logger.IsDebugEnabled) _logger.Debug("Dialog terminated.");
-
-                _pendingPhoneCall = null;
-
-                if (_logger.IsInfoEnabled) _logger.Info("Transitioning to 'IDLE' state...");
-
-                ChangeState(_stateProvider.GetIdle());
+                ChangeState(_stateProvider.GetWaitByeOk());
 
                 if (_logger.IsInfoEnabled) _logger.Info("Phonecall stopped.");
             }
@@ -464,7 +451,7 @@ namespace Hallo.Sdk
                 To = request.To.SipUri,
                 InviteClientTransaction = (SipInviteClientTransaction)clientTransaction,
                 IsIncomingCall = false,
-                ClientDialog = dialog
+                Dialog = dialog
             };
 
             ChangeState(_stateProvider.GetWaitProvisional());

@@ -29,11 +29,13 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             var provResponse = CreateResponse(_receivedInvite, _toTag, SipResponseCodes.x486_Busy_Here);
             _network.SendTo(SipFormatter.FormatMessage(provResponse), _testClientUaEndPoint, _phoneUaEndPoint);
             _waitingforResponseProcessed.WaitOne();
+            _waitingForAckReceived.WaitOne(3000); /*test also if ack is received by testclient.*/
         }
 
         [Test]
         public void Expect_the_phone_to_remain_in_WaitFinal_state()
         {
+            /*the user must call stop manually, in order for the phone to transtion to idle.*/
             _phone.InternalState.Should().Be(_stateProvider.GetWaitFinal());
         }
 
@@ -41,6 +43,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         public void Expect_the_phonecall_state_to_have_changed_to_BusyHere()
         {
             _callState.Should().Be(CallState.BusyHere);
+        }
+
+        [Test]
+        public void Expect_the_ua_testclient_to_have_received_an_ack_request()
+        {
+            _receivedAck.Should().NotBeNull();
         }
     }
 }

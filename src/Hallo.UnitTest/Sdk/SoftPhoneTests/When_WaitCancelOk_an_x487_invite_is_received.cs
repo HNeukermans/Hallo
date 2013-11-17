@@ -52,7 +52,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         [Test]
         public void Expect_dialog_to_be_Terminated()
         {
-            _phone.PendingInvite.ClientDialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Terminated);
+            _phone.PendingInvite.Dialog.State.Should().Be(Hallo.Sip.Stack.Dialogs.DialogState.Terminated);
         }
 
         [Test]

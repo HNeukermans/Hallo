@@ -48,7 +48,7 @@ namespace Hallo.Sdk.SoftPhoneStates
                 return;
             }
 
-            if (requestEvent.Dialog.GetId() != softPhone.PendingInvite.ServerDialog.GetId())
+            if (requestEvent.Dialog.GetId() != softPhone.PendingInvite.Dialog.GetId())
             {
                 if (_logger.IsInfoEnabled) _logger.Info("Processing ABORTED. The 'BYE' RequestEvent.Dialog, is expected to match only to the Dialog of the PendingInvite. DebugInfo: DialogId created from BYE: '{0}'. This case is not supposed to occur, since the phone can only process ONE dialog at a time. Check what's going on !!", SipProvider.GetDialogId(requestEvent.Request, true));
                 return;
@@ -64,7 +64,9 @@ namespace Hallo.Sdk.SoftPhoneStates
 
             requestEvent.IsSent = true;
 
-            softPhone.PendingInvite.ServerDialog.Terminate();
+            softPhone.PendingInvite.Dialog.Terminate();
+
+            softPhone.PendingCall.ChangeState(CallState.Completed);
 
             if (_logger.IsDebugEnabled) _logger.Debug("OK Send.");
 
