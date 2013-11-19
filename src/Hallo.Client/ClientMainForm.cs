@@ -175,5 +175,13 @@ namespace Hallo.Client
                 EventAggregator.Instance.Publish(new ExceptionEvent(e));
             });
         }
+
+        private void _btnPhoneMain_Click(object sender, EventArgs e)
+        {
+            ExecuteActionHelper.ExecuteAction(delegate()
+            {
+                FormsManager.OpenForm(typeof(SoftPhoneForm), null);
+            });
+        }
     }
 }

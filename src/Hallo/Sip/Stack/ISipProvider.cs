@@ -42,6 +42,7 @@ namespace Hallo.Sip
         void AddSipListener(ISipListener listener);
         void AddExceptionHandler(IExceptionHandler handler);
         void Start();
+        void Stop();
         ISipClientTransaction CreateClientTransaction(SipRequest invite);
         SipInviteClientDialog CreateClientDialog(ISipClientTransaction transaction);
     }

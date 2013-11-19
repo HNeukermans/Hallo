@@ -42,20 +42,25 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this._lblIpAddress = new System.Windows.Forms.Label();
             this._lblPID = new System.Windows.Forms.Label();
+            this._grbSoftPhone = new System.Windows.Forms.GroupBox();
+            this._btnPhoneMain = new System.Windows.Forms.Button();
             this._pnlNavigation.SuspendLayout();
             this._grbActions.SuspendLayout();
             this._grbNavigation.SuspendLayout();
             this.panel1.SuspendLayout();
+            this._grbSoftPhone.SuspendLayout();
             this.SuspendLayout();
             // 
             // _pnlNavigation
             // 
+            this._pnlNavigation.Controls.Add(this._grbSoftPhone);
             this._pnlNavigation.Controls.Add(this.panel1);
             this._pnlNavigation.Location = new System.Drawing.Point(0, 25);
             this._pnlNavigation.Size = new System.Drawing.Size(125, 461);
             this._pnlNavigation.Controls.SetChildIndex(this.panel1, 0);
             this._pnlNavigation.Controls.SetChildIndex(this._grbActions, 0);
             this._pnlNavigation.Controls.SetChildIndex(this._grbNavigation, 0);
+            this._pnlNavigation.Controls.SetChildIndex(this._grbSoftPhone, 0);
             // 
             // _grbActions
             // 
@@ -203,7 +208,7 @@
             // 
             this._lblIpAddress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this._lblIpAddress.AutoSize = true;
-            this._lblIpAddress.Location = new System.Drawing.Point(4, 20);
+            this._lblIpAddress.Location = new System.Drawing.Point(-6, 20);
             this._lblIpAddress.Name = "_lblIpAddress";
             this._lblIpAddress.Size = new System.Drawing.Size(17, 13);
             this._lblIpAddress.TabIndex = 0;
@@ -213,11 +218,33 @@
             // 
             this._lblPID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this._lblPID.AutoSize = true;
-            this._lblPID.Location = new System.Drawing.Point(4, 6);
+            this._lblPID.Location = new System.Drawing.Point(-6, 6);
             this._lblPID.Name = "_lblPID";
             this._lblPID.Size = new System.Drawing.Size(25, 13);
             this._lblPID.TabIndex = 1;
             this._lblPID.Text = "PID";
+            // 
+            // _grbSoftPhone
+            // 
+            this._grbSoftPhone.Controls.Add(this._btnPhoneMain);
+            this._grbSoftPhone.Dock = System.Windows.Forms.DockStyle.Top;
+            this._grbSoftPhone.Location = new System.Drawing.Point(0, 352);
+            this._grbSoftPhone.Name = "_grbSoftPhone";
+            this._grbSoftPhone.Size = new System.Drawing.Size(125, 97);
+            this._grbSoftPhone.TabIndex = 6;
+            this._grbSoftPhone.TabStop = false;
+            this._grbSoftPhone.Text = "SoftPhone";
+            // 
+            // _btnPhoneMain
+            // 
+            this._btnPhoneMain.Dock = System.Windows.Forms.DockStyle.Top;
+            this._btnPhoneMain.Location = new System.Drawing.Point(3, 16);
+            this._btnPhoneMain.Name = "_btnPhoneMain";
+            this._btnPhoneMain.Size = new System.Drawing.Size(119, 23);
+            this._btnPhoneMain.TabIndex = 16;
+            this._btnPhoneMain.Text = "Main";
+            this._btnPhoneMain.UseVisualStyleBackColor = true;
+            this._btnPhoneMain.Click += new System.EventHandler(this._btnPhoneMain_Click);
             // 
             // ClientMainForm
             // 
@@ -232,6 +259,7 @@
             this._grbNavigation.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this._grbSoftPhone.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -252,5 +280,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label _lblIpAddress;
         private System.Windows.Forms.Label _lblPID;
+        private System.Windows.Forms.GroupBox _grbSoftPhone;
+        protected System.Windows.Forms.Button _btnPhoneMain;
     }
 }

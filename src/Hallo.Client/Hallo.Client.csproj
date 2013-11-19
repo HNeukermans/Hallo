@@ -84,6 +84,12 @@
     <Compile Include="Forms\ConfigurationForm.Designer.cs">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SoftPhoneForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SoftPhoneForm.Designer.cs">
+      <DependentUpon>SoftPhoneForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DialogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -155,6 +161,9 @@
     <Content Include="Resources\ringing.wav" />
     <EmbeddedResource Include="Forms\ConfigurationForm.resx">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SoftPhoneForm.resx">
+      <DependentUpon>SoftPhoneForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DialogForm.resx">
       <DependentUpon>DialogForm.cs</DependentUpon>
