@@ -24,5 +24,7 @@ namespace Hallo.Sdk
         ISoftPhoneStateProvider StateProvider { get; }
         event EventHandler<EventArgs> InternalStateChanged;
         void SendCancel();
+        SoftPhoneState CurrentState { get; }
+        bool IsRunning { get; }
     }
 }

@@ -218,6 +218,12 @@ namespace Hallo.Sdk
             _provider.Start();
         }
 
+        public void Stop()
+        {
+            _isRunning = false;
+            _provider.Stop();
+        }
+
         public event EventHandler<VoipEventArgs<SoftPhoneState>> StateChanged = delegate {};
 
         public event EventHandler<EventArgs> InternalStateChanged = delegate { };
@@ -464,7 +470,8 @@ namespace Hallo.Sdk
                 _pendingPhoneCall.RaiseCallErrorOccured(CallError.UnHandeldException);
             }
         }
-        
+
+       
     }
        
 }

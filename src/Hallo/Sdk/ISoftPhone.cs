@@ -12,7 +12,6 @@ namespace Hallo.Sdk
         event EventHandler<VoipEventArgs<IPhoneCall>> IncomingCall;
         void Start();
         event EventHandler<VoipEventArgs<SoftPhoneState>> StateChanged;
-        SoftPhoneState CurrentState { get; }
-        bool IsRunning { get; }
+        void Stop();
     }
 }
