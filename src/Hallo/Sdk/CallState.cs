@@ -31,6 +31,11 @@ namespace Hallo.Sdk
         /// the call has started
         /// </summary>
         Setup,
-        BusyHere
+        BusyHere,
+
+        /// <summary>
+        /// the call was cancelled
+        /// </summary>
+        Cancelled
     }
 }

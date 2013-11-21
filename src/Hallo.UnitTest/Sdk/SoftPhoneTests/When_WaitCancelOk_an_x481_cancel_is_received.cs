@@ -1,8 +1,12 @@
+using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using Hallo.Sdk;
 using Hallo.Sip;
+using Hallo.Sip.Stack.Transactions.InviteClient;
+using Hallo.Sip.Stack.Transactions.InviteServer;
 using Hallo.Sip.Stack.Transactions.NonInviteClient;
+using Hallo.Sip.Stack.Transactions.NonInviteServer;
 using NUnit.Framework;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
@@ -32,15 +36,9 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
-        public void Expect_the_InternalState_to_remain_in_WaitCancelOk()
+        public void Expect_the_InternalState_to_transition_to_idle()
         {
-            _phone.InternalState.Should().Be(_stateProvider.GetWaitCancelOk());
-        }
-
-        [Test]
-        public void Expect_CancelTransaction_to_transition_to_completed_state()
-        {
-            _phone.PendingInvite.CancelTransaction.As<SipNonInviteClientTransaction>().State.Should().Be(SipNonInviteClientTransaction.CompletedState);
+            _phone.InternalState.Should().Be(_stateProvider.GetIdle());
         }
 
         [Test]
@@ -49,5 +47,31 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             /*invite + cancel. Cancel tx is removed from table after the endcompleted timer fires.*/
             _sipProvider1.ClientTransactionTable.Count.Should().Be(2);
         }
+
+        [Test]
+        public void Expect_one_of_the_tx_to_be_inviteclient_in_proceeding_state()
+        {
+            /*invite*/
+            var inviteTx = _sipProvider1.ClientTransactionTable.Values.ToList().OfType<SipInviteClientTransaction>().SingleOrDefault();
+            inviteTx.Should().NotBeNull();
+            inviteTx.State.Should().Be(SipInviteClientTransaction.ProceedingState);
+        }
+
+        [Test]
+        public void Expect_the_second_tx_to_be_noninviteclient_in_completed_state()
+        {
+            /*cancel*/
+            var cancelTx = _sipProvider1.ClientTransactionTable.Values.ToList().OfType<SipNonInviteClientTransaction>().SingleOrDefault();
+            cancelTx.Should().NotBeNull();
+            cancelTx.State.Should().Be(SipNonInviteClientTransaction.CompletedState);
+        }
+
+        [Test]
+        public void Expect_the_callstate_to_be_Cancelled()
+        {
+            _callState.Should().Be(CallState.Cancelled);
+        }
+
+       
     }
 }

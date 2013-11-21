@@ -8,7 +8,7 @@ namespace Hallo.Sdk.SoftPhoneStates
     {
         private static readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private bool _receivedFinalCancelResponse;
+        private int _receivedFinalCancelStatusCode;
         private bool _receivedFinalInviteResponse;
 
         public void ProcessResponse(Sip.Stack.SipResponseEvent responseEvent)
@@ -60,10 +60,9 @@ namespace Hallo.Sdk.SoftPhoneStates
 
             if (responseEvent.ClientTransaction.GetId() == softPhone.PendingInvite.CancelTransaction.GetId())
             {
-                if (_logger.IsInfoEnabled) _logger.Info("Received final response on 'CANCEL' request.");
+                _receivedFinalCancelStatusCode = responseEvent.Response.StatusLine.StatusCode;
 
-                _receivedFinalCancelResponse = true;
-
+                if (_logger.IsInfoEnabled) _logger.Info("Received final response on 'CANCEL' request. StatusCode: {0}", _receivedFinalCancelStatusCode);
             }
 
             if (responseEvent.ClientTransaction.GetId() == softPhone.PendingInvite.InviteClientTransaction.GetId())
@@ -72,18 +71,21 @@ namespace Hallo.Sdk.SoftPhoneStates
 
                 _receivedFinalInviteResponse = true;
 
-                if (_logger.IsDebugEnabled) _logger.Debug("Changing CallState to 'Completed', and terminating the Dialog...");
-
-                softPhone.PendingCall.ChangeState(CallState.Completed);
-
+                if (_logger.IsDebugEnabled) _logger.Debug("Terminating the Dialog...");
+                
                 softPhone.PendingInvite.Dialog.Terminate();
 
                 if (_logger.IsDebugEnabled) _logger.Debug("Dialog terminated.");
             }
             
             //TODO: use locks.
-            if (_receivedFinalInviteResponse && _receivedFinalCancelResponse)
+            if (_receivedFinalCancelStatusCode == 481  || /*when cancel-tx x481 is received, the invite will NOT receive a final response. => go to idle immediately*/
+                (_receivedFinalCancelStatusCode == 200 && _receivedFinalInviteResponse))  /*when cancel-tx x200 is received, the invite will receive a final response. => wait for x487  before going to idle*/
             {
+                 if (_logger.IsDebugEnabled) _logger.Debug("Changing CallState to 'Cancelled'");
+
+                softPhone.PendingCall.ChangeState(CallState.Cancelled);
+
                 /*go to idle*/
                 if (_logger.IsDebugEnabled) _logger.Debug("Both 'CANCEL' & 'INVITE' Tx have received a final response. Transitioning to Idle...");
                 softPhone.ChangeState(softPhone.StateProvider.GetIdle());

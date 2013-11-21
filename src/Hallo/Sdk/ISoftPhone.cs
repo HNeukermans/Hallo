@@ -11,7 +11,6 @@ namespace Hallo.Sdk
         IPhoneCall CreateCall();
         event EventHandler<VoipEventArgs<IPhoneCall>> IncomingCall;
         void Start();
-        event EventHandler<VoipEventArgs<SoftPhoneState>> StateChanged;
         void Stop();
     }
 }

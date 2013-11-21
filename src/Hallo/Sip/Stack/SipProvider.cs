@@ -326,7 +326,14 @@ namespace Hallo.Sip
 
             return dialog;
         }
-        
+
+        public ISipServerTransaction FindServerTransactionById(string id)
+        {
+            SipAbstractServerTransaction found;
+            _stxTable.TryGetValue(id, out found);
+            return found;
+        }
+
         #endregion
 
         private void ThrowSipException(ValidateMessageResult result)
@@ -749,19 +756,22 @@ namespace Hallo.Sip
         }
 
         /// <summary>
-        /// Determines the condition under which a request matches a server transactions, according to rfc 3261 (17.2.3)
+        /// Determines the condition under which a request matches a server transaction, according to rfc 3261 (17.2.3)
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="request">the request that will be used to create the transactionid</param>
+        /// <param name="methodoverride">if not null, this value will be used in the creation of the resulting id</param>
         /// <returns></returns>
-        internal static string GetServerTransactionId(SipRequest request)
+        internal static string GetServerTransactionId(SipRequest request, string methodoverride = null)
         {
             string idMethod = request.RequestLine.Method;
             /*for an incoming ACK request we must take INVITE, bc it needs to match the INVITE server transaction it is going to acknowledge */
             if (request.RequestLine.Method.Equals(SipMethods.Ack)) idMethod = SipMethods.Invite;
             
             /*the request that created the server transaction + incoming requests get applied this method*/
-            return request.Vias.GetTopMost().Branch + "-" + request.Vias.GetTopMost().SentBy + "-" + idMethod;
+            return request.Vias.GetTopMost().Branch + "-" + request.Vias.GetTopMost().SentBy + "-" + (methodoverride ?? idMethod);
         }
+
+        
         
         private void OnNewContextReceived(SipContext context)
         {

@@ -10,32 +10,35 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
     internal class When_Established_the_call_is_stopped : When_Established_Base
     {
         protected ManualResetEvent _waitForByeReceived = new ManualResetEvent(false);
-        private SipResponse _receivedOkByeResponse;
+        private SipRequest _receivedByeRequest;
 
         protected override void When()
         {
-            var bye = CreateByeRequest(_invite, _receivedRingingResponse);
-            _network.SendTo(SipFormatter.FormatMessage(bye), TestConstants.IpEndPoint1, TestConstants.IpEndPoint2);
-
-            _waitForByeReceived.WaitOne();
+            _incomingCall.Stop();
+            _waitForByeReceived.WaitOne(3000);
         }
 
         protected override void OnTestClientUaReceive(SipContext sipContext)
         {
-            if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
+            if (sipContext.Response != null)
             {
-                _receivedRingingResponse = sipContext.Response;
+                if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x180_Ringing)
+                {
+                    _receivedRingingResponse = sipContext.Response;
+                }
+                if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x200_Ok)
+                {
+                    _waitingforOkReceived.Set();
+                }
             }
-            if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x200_Ok)
+            else if (sipContext.Request != null)
             {
-                _waitingforOkReceived.Set();
+                if (sipContext.Request.CSeq.Command == SipMethods.Bye)
+                {
+                    _receivedByeRequest = sipContext.Request;
+                    _waitForByeReceived.Set();
+                } 
             }
-            if (sipContext.Response.StatusLine.ResponseCode == SipResponseCodes.x200_Ok &&
-                sipContext.Response.CSeq.Command == SipMethods.Bye)
-            {
-                _receivedOkByeResponse = sipContext.Response;
-                _waitForByeReceived.Set();
-            } 
         }
 
         [Test]
@@ -45,16 +48,12 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
-        public void Expect_the_dialog_not_yet_to_be_removed_from_the_table()
-        { 
-            _sipProvider1.DialogTable.Count.Should().Be(1);
+        public void Expect_the_testclientua_to_have_received_a_bye_request()
+        {
+            _receivedByeRequest.Should().NotBeNull();
         }
 
-        [Test]
-        public void Expect_the_callstate_to_be_completed()
-        {
-             _callState.Should().Be(CallState.Completed);
-        }
+
         
     }
 }

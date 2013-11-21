@@ -11,6 +11,8 @@ namespace Hallo.UnitTest.Helpers
 {
     public class TestConstants
     {
+        public static IPEndPoint LocalEndPoint1 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 22221);
+        public static IPEndPoint LocalEndPoint2 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 22222);
         public static IPAddress MyIpAddress = Dns.GetHostAddresses("").First(i=> i.AddressFamily == AddressFamily.InterNetwork);
         public static IPAddress IpAddress1 = IPAddress.Parse("192.168.0.1");
         public static IPAddress IpAddress2 = IPAddress.Parse("192.168.0.2");

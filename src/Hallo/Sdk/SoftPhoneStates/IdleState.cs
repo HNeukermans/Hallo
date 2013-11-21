@@ -68,10 +68,10 @@ namespace Hallo.Sdk.SoftPhoneStates
                 Dialog = dialog
             };
 
-            softPhone.RaiseIncomingCall();//requestEvent.Request.From.SipUri);
+            softPhone.RaiseIncomingCall();/* !! the incoming call event is raised, before any callstate events can occur*/
 
-            softPhone.ChangeState(softPhone.StateProvider.GetRinging());
-
+            softPhone.ChangeState(softPhone.StateProvider.GetRinging()); 
+            
             if (_logger.IsDebugEnabled) _logger.Debug("'RINGING' response created. Raising Incoming PhoneCall...");
             
             if (_logger.IsDebugEnabled) _logger.Debug("Raised.");

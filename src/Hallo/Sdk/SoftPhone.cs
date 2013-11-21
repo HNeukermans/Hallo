@@ -464,7 +464,7 @@ namespace Hallo.Sdk
         }
         
         public void Handle(Exception e)
-        {
+       { 
             if (_pendingPhoneCall != null)
             {
                 _pendingPhoneCall.RaiseCallErrorOccured(CallError.UnHandeldException);

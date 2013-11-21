@@ -56,9 +56,10 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
-        public void Expect_the_callstate_to_be_Completed()
+        public void Expect_the_callstate_still_to_be_ringback()
         {
-            _callState.Should().Be(CallState.Completed);
+            /*this is transient. since the invite is cancellled, we wait for the ok response to cancel and then transtion to cancelled*/
+            _callState.Should().Be(CallState.Ringback);
         }
     }
 }

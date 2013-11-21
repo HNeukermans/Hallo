@@ -46,9 +46,9 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         }
 
         [Test]
-        public void Expect_the_callstate_to_be_Completed()
+        public void Expect_the_callstate_to_be_Cancelled()
         {
-            _callState.Should().Be(CallState.Completed);
+            _callState.Should().Be(CallState.Cancelled);
         }
     }
 }

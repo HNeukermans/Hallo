@@ -8,6 +8,9 @@ using Hallo.Sip.Stack;
 
 namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
+    /// <summary>
+    /// Sets up an incoming call to established state. 
+    /// </summary>
     internal class When_Established_Base : SoftPhoneSpecificationBase
     {
         protected TxTimerStub _waitforAckTimer;

@@ -2,7 +2,6 @@
 using System.Threading;
 using FluentAssertions;
 using Hallo.Sdk;
-using Hallo.Sip;
 using Hallo.Sip.Stack;
 using Hallo.Sip.Stack.Transactions.InviteServer;
 using Hallo.Sip.Util;
@@ -37,5 +36,4 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _phone.PendingInvite.InviteServerTransaction.State.Should().Be(SipInviteServerTransaction.TerminatedState);
         }
     }
-  
 }

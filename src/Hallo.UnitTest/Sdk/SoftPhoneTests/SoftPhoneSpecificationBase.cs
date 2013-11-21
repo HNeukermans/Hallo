@@ -110,7 +110,6 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _phone = new SoftPhone(_sipProvider1, new SipMessageFactory(), new SipHeaderFactory(), new SipAddressFactory(), _stateProvider, _timerFactory);
             phoneCs.AddToNetwork(_network);
             _network.AddReceiver(_testClientUaEndPoint, OnTestClientUaReceive);
-            _phone.StateChanged += new EventHandler<VoipEventArgs<SoftPhoneState>>(_calleePhone_StateChanged);
             _phone.InternalStateChanged += new EventHandler<EventArgs>(_calleePhone_InternalStateChanged);     
             _phone.IncomingCall += new EventHandler<VoipEventArgs<IPhoneCall>>(_calleePhone_IncomingCall);
             _phone.Start();
@@ -274,6 +273,36 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
 
         }
+
+        protected SipRequest CreateCancelRequest(SipRequest request)
+        {
+            var hf = new SipHeaderFactory();
+            var mf = new SipMessageFactory();
+            var requestUri = request.RequestLine.Uri.Clone();
+            var callIdheader = (SipCallIdHeader)request.CallId.Clone();
+            var cseqHeader = new SipHeaderFactory().CreateSCeqHeader(SipMethods.Cancel, request.CSeq.Sequence);
+            var fromHeader = (SipFromHeader)request.From.Clone();
+            var toHeader = (SipToHeader)request.To.Clone();
+            var viaHeader = (SipViaHeader)request.Vias.GetTopMost().Clone();
+            var maxForwardsHeader = hf.CreateMaxForwardsHeader();
+            var cancelRequest = mf.CreateRequest(
+                requestUri,
+                SipMethods.Cancel,
+                callIdheader,
+                cseqHeader,
+                fromHeader,
+                toHeader,
+                viaHeader,
+                maxForwardsHeader);
+
+            foreach (var route in request.Routes)
+            {
+                cancelRequest.Routes.Add((SipRouteHeader)route.Clone());
+            }
+
+            return cancelRequest;
+        }
+
 
         protected SipRequest CreateInviteRequest(SipUri from, SipUri to)
         {
