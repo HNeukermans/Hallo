@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Hallo.Sip.Stack.Transactions.InviteClient.SipInviteClientTransaction">
+    <Position X="10.5" Y="9.25" Width="2.25" />
+    <Members>
+      <Method Name="Dispose" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Class Name="Hallo.Sip.Stack.Transactions.InviteClient.SipInviteClientTransaction.CallingCtxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\InviteClient\CallingCtxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Hallo.Sip.Stack.Transactions.InviteClient.SipInviteClientTransaction.CompletedCtxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\InviteClient\CompletedCtxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Hallo.Sip.Stack.Transactions.InviteClient.SipInviteClientTransaction.ProceedingCtxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\InviteClient\ProceedingCtxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Hallo.Sip.Stack.Transactions.InviteClient.SipInviteClientTransaction.TerminatedCtxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\InviteClient\TerminatedCtxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BAAAQAEAICAADABAAAggCEiAgBAAAACAAQAABoEAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\InviteClient\CallingCtxState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Transactions.NonInviteServer.SipNonInviteServerTransaction">
+    <Position X="1.25" Y="9" Width="1.5" />
+    <NestedTypes>
+      <Class Name="Hallo.Sip.Stack.Transactions.NonInviteServer.SipNonInviteServerTransaction.CompletedStxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\NonInviteServer\CompletedStxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Hallo.Sip.Stack.Transactions.NonInviteServer.SipNonInviteServerTransaction.ProceedingStxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\NonInviteServer\ProceedingStxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Hallo.Sip.Stack.Transactions.NonInviteServer.SipNonInviteServerTransaction.TryingStxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\NonInviteServer\TryingStxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAABEAACAABQAAABgACAAAIBIAAACAAQAABAAAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\NonInviteServer\CompletedStxState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Transactions.InviteServer.SipInviteServerTransaction">
+    <Position X="3.25" Y="9" Width="1.5" />
+    <NestedTypes>
+      <Class Name="Hallo.Sip.Stack.Transactions.InviteServer.SipInviteServerTransaction.CompletedStxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\InviteServer\CompletedStxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Hallo.Sip.Stack.Transactions.InviteServer.SipInviteServerTransaction.ConfirmedStxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\InviteServer\ConfirmedStxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Hallo.Sip.Stack.Transactions.InviteServer.SipInviteServerTransaction.ProceedingStxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\InviteServer\ProceedingStxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Hallo.Sip.Stack.Transactions.InviteServer.SipInviteServerTransaction.TerminatedStxState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\Transactions\InviteServer\TerminatedStxState.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAABEAACAgBQAIADgACEgAABAIAUCAAQAABAAAACA=</HashCode>
+      <FileName>Sip\Stack\Transactions\InviteServer\CompletedStxState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Transactions.NonInviteClient.SipNonInviteClientTransaction">
+    <Position X="8.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAACAADAAAAAgACACAABIAAACAAQAABoEAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\NonInviteClient\SipNonInviteClientTransaction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Transactions.SipAbstractClientTransaction" Collapsed="true">
+    <Position X="9.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAABACACQgggQAAAAAiAKAAAkAAAAQECEgIAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\SipAbstractClientTransaction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Transactions.SipAbstractServerTransaction" Collapsed="true">
+    <Position X="1.75" Y="7.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQBABICCCQwwgQBAAAAiAIAAAkAAAAQEAEAIAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\SipAbstractServerTransaction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Hallo.Sip.Stack.Transactions.ISipClientTransaction">
+    <Position X="5" Y="4" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\ISipClientTransaction.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Hallo.Sip.Stack.Transactions.ISipServerTransaction">
+    <Position X="2.5" Y="4" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\ISipServerTransaction.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Hallo.Sip.Stack.Transactions.ISipTransaction" Collapsed="true">
+    <Position X="4.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAQEAEAIAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\ISipTransaction.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -17,7 +17,7 @@ namespace Hallo.Sdk
     /// </summary>
     internal class PhoneCall : IInternalPhoneCall
     {
-        public event EventHandler<VoipEventArgs<CallError>> CallErrorOccured;
+        public event EventHandler<VoipEventArgs<CallErrorObject>> CallErrorOccured;
 
         private SipInviteServerTransaction _inviteTransaction;
         private SipResponse _ringingResponse;
@@ -128,10 +128,9 @@ namespace Hallo.Sdk
         //    });
         //}
 
-        public void RaiseCallErrorOccured(CallError error)
+        public void RaiseCallErrorOccured(CallError error, string message = null)
         {
-            Action raiseOnNewThread = () => CallErrorOccured(this, new VoipEventArgs<CallError>(error));
-            raiseOnNewThread.BeginInvoke(null, null);
+            CallErrorOccured(this, new VoipEventArgs<CallErrorObject>(new CallErrorObject() {Type = error, Message = message }));
         }
 
         public void Stop()
@@ -139,7 +138,7 @@ namespace Hallo.Sdk
             _stopCommand.Execute();
         }
 
-        public void ChangeState(CallState state)
+        public void RaiseCallStateChanged(CallState state)
         {
             _state = state;
             Action raiseOnNewThread = () =>  CallStateChanged(this, new VoipEventArgs<CallState>(state));

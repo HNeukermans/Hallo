@@ -7,7 +7,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
 {
     internal class When_WaitProvisional_Base : SoftPhoneSpecificationBase
     {
-        protected CallError? _callError;
+        protected CallErrorObject _callError;
         protected IPhoneCall _call;
         protected CallState? _callState;
         protected SipRequest _receivedInvite;

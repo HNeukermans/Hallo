@@ -5,8 +5,8 @@ namespace Hallo.Sdk
 {
     public interface IInternalPhoneCall : IPhoneCall
     {
-        void ChangeState(CallState state);
-        void RaiseCallErrorOccured(CallError error);
+        void RaiseCallStateChanged(CallState state);
+        void RaiseCallErrorOccured(CallError error, string message = null);
         SipAddress From { get; }
         SipUri GetToUri();
         

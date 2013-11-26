@@ -137,7 +137,6 @@
     <Compile Include="MediaPlayer\AudioFormat.cs" />
     <Compile Include="MediaPlayer\AudioIn.cs" />
     <Compile Include="MediaPlayer\AudioInDevice.cs" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="MediaPlayer\AudioIn_RTP.cs" />
     <Compile Include="MediaPlayer\AudioOut.cs" />
     <Compile Include="MediaPlayer\AudioOutDevice.cs" />

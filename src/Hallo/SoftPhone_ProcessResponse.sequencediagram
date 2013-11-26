@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SequenceDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" dslVersion="1.0.0.0" Id="9d454cee-fa0f-4967-9ca3-d65e1c73e820" name="SoftPhone_ProcessResponse" mode="DotNet" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner">
+  <packagedElements>
+    <packageHasNamedElement>
+      <interaction Id="04186256-8f65-42c9-94ab-3b03ee5bd23b" name="SoftPhone_ProcessResponse" collapseFragmentsFlag="false" isActiveClass="false" isAbstract="false" isLeaf="false" isReentrant="false">
+        <fragments>
+          <behaviorExecutionSpecification Id="b71174f9-b5d2-4395-a852-2c1401548130" name="BehaviorExecutionSpecification">
+            <coveredLifelines>
+              <lifelineMoniker Id="dc69a1fb-7c9c-4282-a1c2-27af27a6eae5" LastKnownName="this : SoftPhone" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker Id="a4ffbb61-dc36-43b9-aa50-8a4945d9e5ed" LastKnownName="ExecutionOccurrenceSpecification" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker Id="3a98fdee-4855-4ee0-8fd9-8d82de997b37" LastKnownName="ExecutionOccurrenceSpecification" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="16b21e19-f56c-402a-8d5d-af3951dcf950" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="e4a0b334-0218-46ee-bb48-1ca38d15d782" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="9ef0c441-b4a6-462a-a82b-c4d531102344" LastKnownName="MessageOccurrenceSpecification" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification Id="3a98fdee-4855-4ee0-8fd9-8d82de997b37" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="8e640e8e-1c14-4182-bc2a-0c00f314d491" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="dc69a1fb-7c9c-4282-a1c2-27af27a6eae5" LastKnownName="this : SoftPhone" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="16b21e19-f56c-402a-8d5d-af3951dcf950" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="dc69a1fb-7c9c-4282-a1c2-27af27a6eae5" LastKnownName="this : SoftPhone" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <lostFoundTarget Id="f17d5010-13ea-4a6d-b333-25eb38b3bc98" name="LostFoundTarget" />
+          <behaviorExecutionSpecification Id="2c2cafd7-66e0-4b1d-a274-63921eb29cf1" name="BehaviorExecutionSpecification">
+            <coveredLifelines>
+              <lifelineMoniker Id="d590f461-8f89-4288-a6e5-5cfb4ab25b55" LastKnownName="InternalState : ISoftPhoneState" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker Id="e22ba7a4-c12d-4f2b-b8b5-f4f16db730e7" LastKnownName="ExecutionOccurrenceSpecification" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker Id="41e6d88b-5c2d-43ea-a36f-a79b4be5800b" LastKnownName="ExecutionOccurrenceSpecification" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="a5dc707b-56cb-4dda-8ea3-50cc0d364776" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="cd15457f-8b34-4e23-a0ce-5da3f65357fa" LastKnownName="MessageOccurrenceSpecification" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification Id="41e6d88b-5c2d-43ea-a36f-a79b4be5800b" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="813b0d76-d3cc-4db5-b104-1ca037aeb537" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="d590f461-8f89-4288-a6e5-5cfb4ab25b55" LastKnownName="InternalState : ISoftPhoneState" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="a5dc707b-56cb-4dda-8ea3-50cc0d364776" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="d590f461-8f89-4288-a6e5-5cfb4ab25b55" LastKnownName="InternalState : ISoftPhoneState" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="e4a0b334-0218-46ee-bb48-1ca38d15d782" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="dc69a1fb-7c9c-4282-a1c2-27af27a6eae5" LastKnownName="this : SoftPhone" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="cd15457f-8b34-4e23-a0ce-5da3f65357fa" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="d590f461-8f89-4288-a6e5-5cfb4ab25b55" LastKnownName="InternalState : ISoftPhoneState" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="9ef0c441-b4a6-462a-a82b-c4d531102344" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="dc69a1fb-7c9c-4282-a1c2-27af27a6eae5" LastKnownName="this : SoftPhone" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification Id="e22ba7a4-c12d-4f2b-b8b5-f4f16db730e7" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="f8a2dbc4-74a5-4c41-a4c8-01ec4e9f73e7" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="d590f461-8f89-4288-a6e5-5cfb4ab25b55" LastKnownName="InternalState : ISoftPhoneState" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification Id="a4ffbb61-dc36-43b9-aa50-8a4945d9e5ed" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="11744037-94e0-4fa3-ace7-d13201930143" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="dc69a1fb-7c9c-4282-a1c2-27af27a6eae5" LastKnownName="this : SoftPhone" />
+            </covered>
+          </executionOccurrenceSpecification>
+        </fragments>
+        <lifelines>
+          <lifeline Id="dc69a1fb-7c9c-4282-a1c2-27af27a6eae5" name="this : SoftPhone" isActor="false" lifelineDisplayName="this : SoftPhone" referencedInstance="(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sdk Type=SoftPhone ObjectInstance=&quot;Object instance 2&quot;)" referencedType="Hallo.Sdk.SoftPhone">
+            <referencesInternal>
+              <reference Id="2b748d77-e6df-49d3-8c2e-6775ee0bdc64" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Hallo.Sdk)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sdk Type=SoftPhone)&quot;)" tag="DGQL" />
+              <reference Id="5d996067-284f-470a-abf5-d44d4393827f" handle="(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sdk Type=SoftPhone)" tag="DGML" />
+            </referencesInternal>
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker Id="3a98fdee-4855-4ee0-8fd9-8d82de997b37" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="a4ffbb61-dc36-43b9-aa50-8a4945d9e5ed" LastKnownName="ExecutionOccurrenceSpecification" />
+            </topLevelOccurrences>
+          </lifeline>
+          <lifeline Id="d590f461-8f89-4288-a6e5-5cfb4ab25b55" name="InternalState : ISoftPhoneState" isActor="false" lifelineDisplayName="InternalState : ISoftPhoneState" referencedInstance="(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sdk Type=SoftPhone Member=(Name=ProcessResponse OverloadingParameters=[(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sip.Stack Type=SipResponseEvent)]) Statement=[1,3,3] ObjectInstance=&quot;Object instance 14&quot;)" referencedType="Hallo.Sdk.SoftPhoneStates.ISoftPhoneState">
+            <referencesInternal>
+              <reference Id="a9df274e-9579-4e63-b43a-048fdbfa656a" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Hallo.Sdk.SoftPhoneStates)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sdk.SoftPhoneStates Type=ISoftPhoneState)&quot;)" tag="DGQL" />
+              <reference Id="bbab4e98-6747-4867-b0de-10dae1d7064a" handle="(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sdk.SoftPhoneStates Type=ISoftPhoneState)" tag="DGML" />
+            </referencesInternal>
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker Id="41e6d88b-5c2d-43ea-a36f-a79b4be5800b" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="e22ba7a4-c12d-4f2b-b8b5-f4f16db730e7" LastKnownName="ExecutionOccurrenceSpecification" />
+            </topLevelOccurrences>
+          </lifeline>
+        </lifelines>
+        <messages>
+          <message Id="47bd9f8a-b91f-449f-ab1e-d24f8134a651" name="ProcessResponse" messageKind="Found" messageSort="AsynchCall" createSelfMessage="false">
+            <referencesInternal>
+              <reference Id="7dff24f2-3339-4b6a-864f-edf88f2e47b4" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Hallo.Sdk)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sdk Type=SoftPhone)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sdk Type=SoftPhone Member=(Name=ProcessResponse OverloadingParameters=[(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sip.Stack Type=SipResponseEvent)]))&quot;)" tag="DGQL" />
+              <reference Id="804ab8ce-78bc-4bf2-999e-4a9309617d75" handle="(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sdk Type=SoftPhone Member=(Name=ProcessResponse OverloadingParameters=[(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sip.Stack Type=SipResponseEvent)]))" tag="DGML" />
+            </referencesInternal>
+            <sendEvent>
+              <lostFoundTargetMoniker Id="f17d5010-13ea-4a6d-b333-25eb38b3bc98" LastKnownName="LostFoundTarget" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="16b21e19-f56c-402a-8d5d-af3951dcf950" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="3955ae9a-1bb0-4b85-8cd5-f6d9c9274e3a" name="ProcessResponse" messageKind="Complete" messageSort="SynchCall" createSelfMessage="false" signatureText="InternalState.ProcessResponse(this, responseEvent)">
+            <referencesInternal>
+              <reference Id="7bf707a9-b0ee-4bb2-9dee-57b944bcc3d5" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Hallo.Sdk.SoftPhoneStates)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sdk.SoftPhoneStates Type=ISoftPhoneState)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sdk.SoftPhoneStates Type=ISoftPhoneState Member=(Name=ProcessResponse OverloadingParameters=[(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sdk Type=IInternalSoftPhone),(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sip.Stack Type=SipResponseEvent)]))&quot;)" tag="DGQL" />
+              <reference Id="3f67d7a3-627f-410b-94af-875785904c6e" handle="(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sdk.SoftPhoneStates Type=ISoftPhoneState Member=(Name=ProcessResponse OverloadingParameters=[(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sdk Type=IInternalSoftPhone),(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sip.Stack Type=SipResponseEvent)]))" tag="DGML" />
+            </referencesInternal>
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="e4a0b334-0218-46ee-bb48-1ca38d15d782" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="a5dc707b-56cb-4dda-8ea3-50cc0d364776" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="643cb836-e90a-4622-b5e5-b259056352fd" name="&lt;&lt;return&gt;&gt;" messageKind="Complete" messageSort="Reply" createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="cd15457f-8b34-4e23-a0ce-5da3f65357fa" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="9ef0c441-b4a6-462a-a82b-c4d531102344" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+        </messages>
+      </interaction>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="8e640e8e-1c14-4182-bc2a-0c00f314d491" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="11744037-94e0-4fa3-ace7-d13201930143" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="813b0d76-d3cc-4db5-b104-1ca037aeb537" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="f8a2dbc4-74a5-4c41-a4c8-01ec4e9f73e7" name="ExecutionEvent" />
+    </packageHasNamedElement>
+  </packagedElements>
+</SequenceDesignerModel>

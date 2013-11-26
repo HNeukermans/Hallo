@@ -10,6 +10,5 @@ namespace Hallo.Sip.Stack
     public interface ISipListener : ISipRequestProcessor, ISipResponseProcessor
     {
         void ProcessTimeOut(SipTimeOutEvent timeOutEvent);
-        
     }
 }

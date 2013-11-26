@@ -11,7 +11,7 @@ using NLog;
 
 namespace Hallo.Sip.Stack.Transactions
 {
-    public abstract class SipAbstractClientTransaction : ISipClientTransaction, IDisposable, ISipResponseProcessor
+    public abstract class SipAbstractClientTransaction : ISipClientTransaction, ISipResponseProcessor
     {
         protected Logger _logger;
 

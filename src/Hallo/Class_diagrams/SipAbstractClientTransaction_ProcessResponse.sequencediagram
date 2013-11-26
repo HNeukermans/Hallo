@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SequenceDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" dslVersion="1.0.0.0" Id="0750c50c-e789-4f72-a0f9-2116e6b51a6a" name="SipAbstractClientTransaction_ProcessResponse" mode="DotNet" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner">
+  <packagedElements>
+    <packageHasNamedElement>
+      <interaction Id="5cf55e0c-5510-477a-97f3-13ada1855c94" name="SipAbstractClientTransaction_ProcessResponse" collapseFragmentsFlag="false" isActiveClass="false" isAbstract="false" isLeaf="false" isReentrant="false">
+        <fragments>
+          <behaviorExecutionSpecification Id="4ac6802b-5b7a-4860-a562-95cb960826d9" name="BehaviorExecutionSpecification">
+            <coveredLifelines>
+              <lifelineMoniker Id="592ec730-32bb-4b45-b57b-610d2ec5ae7e" LastKnownName="this : SipAbstractClientTransaction" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker Id="c6bb3610-351f-460e-b1a8-2ab89a33b528" LastKnownName="ExecutionOccurrenceSpecification" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker Id="ff6a8d28-fef0-4c29-aab7-9745705c79c1" LastKnownName="ExecutionOccurrenceSpecification" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="66dad5f3-7bb8-489b-92b6-c85693196a85" LastKnownName="MessageOccurrenceSpecification" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification Id="ff6a8d28-fef0-4c29-aab7-9745705c79c1" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="6a77b7ef-5e67-4b99-9bb9-ebd5be554086" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="592ec730-32bb-4b45-b57b-610d2ec5ae7e" LastKnownName="this : SipAbstractClientTransaction" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="66dad5f3-7bb8-489b-92b6-c85693196a85" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="592ec730-32bb-4b45-b57b-610d2ec5ae7e" LastKnownName="this : SipAbstractClientTransaction" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <lostFoundTarget Id="2e0e091f-7562-4a30-9705-355caf633f0f" name="LostFoundTarget" />
+          <executionOccurrenceSpecification Id="c6bb3610-351f-460e-b1a8-2ab89a33b528" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="a903f94d-acc3-4ebc-97b5-5df7eb2d7f63" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="592ec730-32bb-4b45-b57b-610d2ec5ae7e" LastKnownName="this : SipAbstractClientTransaction" />
+            </covered>
+          </executionOccurrenceSpecification>
+        </fragments>
+        <lifelines>
+          <lifeline Id="592ec730-32bb-4b45-b57b-610d2ec5ae7e" name="this : SipAbstractClientTransaction" isActor="false" lifelineDisplayName="this : SipAbstractClientTransaction" referencedInstance="(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sip.Stack.Transactions Type=SipAbstractClientTransaction ObjectInstance=&quot;Object instance 2&quot;)" referencedType="Hallo.Sip.Stack.Transactions.SipAbstractClientTransaction">
+            <referencesInternal>
+              <reference Id="4507ad9a-0cb5-4f2c-8ce5-c7a6fd399e81" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Hallo.Sip.Stack.Transactions)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sip.Stack.Transactions Type=SipAbstractClientTransaction)&quot;)" tag="DGQL" />
+              <reference Id="772b03d3-f3ee-446f-ae39-1c7de6b67507" handle="(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sip.Stack.Transactions Type=SipAbstractClientTransaction)" tag="DGML" />
+            </referencesInternal>
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker Id="ff6a8d28-fef0-4c29-aab7-9745705c79c1" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="c6bb3610-351f-460e-b1a8-2ab89a33b528" LastKnownName="ExecutionOccurrenceSpecification" />
+            </topLevelOccurrences>
+          </lifeline>
+        </lifelines>
+        <messages>
+          <message Id="7ca28510-8b38-4951-9cff-8e699d1084f2" name="ProcessResponse" messageKind="Found" messageSort="AsynchCall" createSelfMessage="false">
+            <referencesInternal>
+              <reference Id="ac2b5dc7-8863-44f7-b8fb-2237f7da2909" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Hallo.Sip.Stack.Transactions)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sip.Stack.Transactions Type=SipAbstractClientTransaction)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sip.Stack.Transactions Type=SipAbstractClientTransaction Member=(Name=ProcessResponse OverloadingParameters=[(Assembly=&amp;quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&amp;quot; Namespace=Hallo.Sip.Stack Type=SipResponseEvent)]))&quot;)" tag="DGQL" />
+              <reference Id="974efa05-d721-44a8-af72-a424117c123e" handle="(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sip.Stack.Transactions Type=SipAbstractClientTransaction Member=(Name=ProcessResponse OverloadingParameters=[(Assembly=&quot;$(b812b01b-5e65-4a3f-a59f-d0f97f2e52a8.OutputPathUri)&quot; Namespace=Hallo.Sip.Stack Type=SipResponseEvent)]))" tag="DGML" />
+            </referencesInternal>
+            <sendEvent>
+              <lostFoundTargetMoniker Id="2e0e091f-7562-4a30-9705-355caf633f0f" LastKnownName="LostFoundTarget" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="66dad5f3-7bb8-489b-92b6-c85693196a85" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+        </messages>
+      </interaction>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="6a77b7ef-5e67-4b99-9bb9-ebd5be554086" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="a903f94d-acc3-4ebc-97b5-5df7eb2d7f63" name="ExecutionEvent" />
+    </packageHasNamedElement>
+  </packagedElements>
+</SequenceDesignerModel>

@@ -34,7 +34,7 @@ namespace Hallo.Sdk.SoftPhoneStates
             Check.Require(softPhone, "softPhone");
             Check.Require(softPhone.PendingCall, "softPhone.PendingCall");
 
-            softPhone.PendingCall.ChangeState(CallState.Ringing);
+            softPhone.PendingCall.RaiseCallStateChanged(CallState.Ringing);
         }
 
         public void ProcessRequest(IInternalSoftPhone softPhone, SipRequestEvent requestEvent)
@@ -118,7 +118,7 @@ namespace Hallo.Sdk.SoftPhoneStates
 
                     if (_logger.IsDebugEnabled) _logger.Debug("Changing callstate to 'CANCELLED'.");
 
-                    softPhone.PendingCall.ChangeState(CallState.Cancelled);
+                    softPhone.PendingCall.RaiseCallStateChanged(CallState.Cancelled);
                     
                     if (_logger.IsInfoEnabled) _logger.Info("'CANCEL' Processed. Transitioning (back) to 'Idle'");
 

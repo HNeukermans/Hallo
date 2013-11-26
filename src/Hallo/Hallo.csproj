@@ -344,10 +344,33 @@
       <LastGenOutput>ExceptionMessage.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Class_diagrams\SipAbstractClientTransaction_ProcessResponse.sequencediagram.layout">
+      <DependentUpon>SipAbstractClientTransaction_ProcessResponse.sequencediagram</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ISoftPhoneState_ProcessResponse.sequencediagram.layout">
+      <DependentUpon>ISoftPhoneState_ProcessResponse.sequencediagram</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SipProvider_OnIncomingRequestContext_1.sequencediagram.layout">
+      <DependentUpon>SipProvider_OnIncomingRequestContext_1.sequencediagram</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoftPhone_ProcessResponse.sequencediagram.layout">
+      <DependentUpon>SoftPhone_ProcessResponse.sequencediagram</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TryGetDialogOnTx.sequencediagram.layout">
+      <DependentUpon>TryGetDialogOnTx.sequencediagram</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Class_diagrams\Facade.cd" />
+    <None Include="Class_diagrams\MessageProcessors.cd" />
+    <None Include="Class_diagrams\Transactions.cd" />
+    <None Include="ISoftPhoneState_ProcessResponse.sequencediagram" />
     <None Include="packages.config" />
+    <None Include="Class_diagrams\SipAbstractClientTransaction_ProcessResponse.sequencediagram" />
+    <None Include="SipProvider_OnIncomingRequestContext_1.sequencediagram" />
+    <None Include="SoftPhone_ProcessResponse.sequencediagram" />
+    <None Include="TryGetDialogOnTx.sequencediagram" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

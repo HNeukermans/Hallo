@@ -19,7 +19,7 @@ namespace Hallo.Sdk.SoftPhoneStates
             Check.Require(softPhone, "softPhone");
             Check.Require(softPhone.PendingCall, "softPhone.PendingCall");
 
-            softPhone.PendingCall.ChangeState(CallState.Setup);
+            softPhone.PendingCall.RaiseCallStateChanged(CallState.Setup);
         }
 
         public void ProcessRequest(IInternalSoftPhone softPhone, Sip.Stack.SipRequestEvent requestEvent)
@@ -96,16 +96,18 @@ namespace Hallo.Sdk.SoftPhoneStates
                 if (statusLine.ResponseCode == SipResponseCodes.x486_Busy_Here)
                 {
                     if (_logger.IsDebugEnabled) _logger.Debug("Changing CallState to 'BusyHere'");
-                    softPhone.PendingCall.ChangeState(CallState.BusyHere);
+                    softPhone.PendingCall.RaiseCallStateChanged(CallState.BusyHere);
                 }
                 else
                 {
                     if (_logger.IsDebugEnabled) _logger.Debug("Changing CallState to 'Error'");
-                    softPhone.PendingCall.ChangeState(CallState.Error);
+                    softPhone.PendingCall.RaiseCallErrorOccured(CallError.SipResponse, statusLine.ResponseCode);
+                    softPhone.PendingCall.RaiseCallStateChanged(CallState.Error);
                 }
 
                 softPhone.PendingInvite.Dialog.Terminate();
-               
+
+                softPhone.ChangeState(softPhone.StateProvider.GetIdle());
             }
         }
 

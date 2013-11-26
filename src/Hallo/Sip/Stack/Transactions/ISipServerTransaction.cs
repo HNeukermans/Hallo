@@ -6,7 +6,7 @@ namespace Hallo.Sip.Stack.Transactions
     /// server transaction mocking interface. (initialy intended as a facade interface, but for that purpose
     /// a separate interface is needed. (bc mocking needs more behavior then facade))
     /// </summary>
-    public interface ISipServerTransaction : ISipRequestProcessor, ISipTransaction
+    public interface ISipServerTransaction : ISipTransaction
     {
         void SendResponse(SipResponse response);
     }

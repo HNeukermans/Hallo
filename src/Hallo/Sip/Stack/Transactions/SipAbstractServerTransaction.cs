@@ -9,7 +9,7 @@ using NLog;
 
 namespace Hallo.Sip.Stack.Transactions
 {
-    public abstract class SipAbstractServerTransaction : ISipServerTransaction
+    public abstract class SipAbstractServerTransaction : ISipServerTransaction, ISipRequestProcessor
     {
         protected IObserver<SipTransactionStateInfo> _stateObserver;
         protected readonly object _lock = new object();

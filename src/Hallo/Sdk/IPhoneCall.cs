@@ -4,7 +4,7 @@ namespace Hallo.Sdk
 {
     public interface IPhoneCall
     {
-        event EventHandler<VoipEventArgs<CallError>> CallErrorOccured;
+        event EventHandler<VoipEventArgs<CallErrorObject>> CallErrorOccured;
 
         event EventHandler<VoipEventArgs<CallState>> CallStateChanged;
 

@@ -99,8 +99,8 @@ namespace Hallo.Client.Forms
 
         private void WireEvents(IPhoneCall call)
         {
-            call.CallErrorOccured += new EventHandler<VoipEventArgs<CallError>>(call_CallErrorOccured);
-            call.CallStateChanged += new EventHandler<VoipEventArgs<CallState>>(call_CallStateChanged);
+            call.CallErrorOccured += call_CallErrorOccured;
+            call.CallStateChanged += call_CallStateChanged;
         }
 
         void call_CallStateChanged(object sender, VoipEventArgs<CallState> e)
@@ -125,7 +125,7 @@ namespace Hallo.Client.Forms
             this.OnUIThread(() => _btnPhone.Text = text);
         }
 
-        void call_CallErrorOccured(object sender, VoipEventArgs<CallError> e)
+        void call_CallErrorOccured(object sender, VoipEventArgs<CallErrorObject> e)
         {
             Log("Call error occured: {0}", e.Item);
         }

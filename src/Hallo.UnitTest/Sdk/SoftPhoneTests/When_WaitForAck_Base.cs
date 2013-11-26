@@ -16,7 +16,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected ManualResetEvent _waitForAck = new ManualResetEvent(false);
         protected TxTimerStub _ringingTimer;
         protected TxTimerStub _waitforAckTimer;
-        protected CallError _callError;
+        protected CallErrorObject _callError;
 
         public When_WaitForAck_Base()
         {

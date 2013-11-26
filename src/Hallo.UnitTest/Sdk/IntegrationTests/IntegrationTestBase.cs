@@ -17,8 +17,8 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         protected CallState _callStateAlice;
         protected IPhoneCall _incomingCallBob;
         protected CallState _callStateBob;
-        protected CallError _callErrorAlice;
-        protected CallError _callErrorBob;
+        protected CallErrorObject _callErrorAlice;
+        protected CallErrorObject _callErrorBob;
         protected IPEndPoint _aliceEndPoint;
         protected IPEndPoint _bobEndPoint;
         protected IPhoneCall _outgoingCallAlice;
@@ -143,13 +143,13 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             call.CallStateChanged -= _callAlice_StateChanged;
         }
 
-        private void callBob_ErrorOccured(object sender, VoipEventArgs<CallError> e)
+        private void callBob_ErrorOccured(object sender, VoipEventArgs<CallErrorObject> e)
         {
             _callErrorBob = e.Item;
             OnBobErrorOccured();
         }
 
-        void callAlice_ErrorOccured(object sender, VoipEventArgs<CallError> e)
+        void callAlice_ErrorOccured(object sender, VoipEventArgs<CallErrorObject> e)
         {
             _callErrorAlice = e.Item;
             OnAliceErrorOccured();

@@ -162,7 +162,17 @@ namespace Hallo.Sdk
 
         public void ProcessTimeOut(SipTimeOutEvent timeOutEvent)
         {
+            Check.Require(PendingCall, "PendingCall");  /*a timeout can only come from a pending call.*/
 
+            if(_logger.IsInfoEnabled) _logger.Info("Processing Timeout...");
+            
+            PendingCall.RaiseCallErrorOccured(CallError.TransactionTimeout);
+            PendingCall.RaiseCallStateChanged(CallState.Error);
+
+            if (_logger.IsInfoEnabled) _logger.Info("Changing state to 'IDLE'...");
+            ChangeState(_stateProvider.GetIdle());
+
+            if (_logger.IsInfoEnabled) _logger.Info("Timeout processed.");
         }
 
         public SipAccount Account
@@ -262,7 +272,7 @@ namespace Hallo.Sdk
 
            _pendingPhoneCall.RaiseCallErrorOccured(CallError.WaitForAckTimeOut);
 
-           if (_logger.IsInfoEnabled) _logger.Info("Transitioning back to idle state...");
+           if (_logger.IsInfoEnabled) _logger.Info("Transitioning back to 'IDLE' state...");
             
            ChangeState(_stateProvider.GetIdle());          
         }
@@ -329,6 +339,8 @@ namespace Hallo.Sdk
 
             if (_logger.IsInfoEnabled) _logger.Info("Stopping phonecall... DebugInfo: IsIncoming: '{0}', InternalState: '{1}'", _pendingPhoneCall.IsIncoming, InternalState.GetType().Name);
             
+            
+
             if (InternalState == _stateProvider.GetWaitProvisional())
             {
                 /*If no provisional response has been received, the CANCEL request MUST
@@ -467,7 +479,7 @@ namespace Hallo.Sdk
        { 
             if (_pendingPhoneCall != null)
             {
-                _pendingPhoneCall.RaiseCallErrorOccured(CallError.UnHandeldException);
+                _pendingPhoneCall.RaiseCallErrorOccured(CallError.UnHandeldException, e.Message);
             }
         }
 

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Hallo.Sip.Stack.Transactions.SipAbstractClientTransaction" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAABACACQgggQAAAAAiAKAAAkAAAAQECEgIAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\SipAbstractClientTransaction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Transactions.SipAbstractServerTransaction" Collapsed="true">
+    <Position X="2.5" Y="4.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQBABICCCQwwgQBAAAAiAIAAAkAAAAQEAEAIAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\SipAbstractServerTransaction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Dialogs.SipAbstractDialog" Collapsed="true">
+    <Position X="6.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAQAABNhOCCAkgERAgCADAICAEQQAoAAAFDkKIIAA=</HashCode>
+      <FileName>Sip\Stack\Dialogs\SipAbstractDialog.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Hallo.Sip.Stack.ISipListener">
+    <Position X="6.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sip\Stack\ISipListener.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Hallo.Sip.Stack.ISipRequestProcessor" Collapsed="true">
+    <Position X="4.5" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sip\Stack\ISipRequestProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Hallo.Sip.Stack.ISipResponseProcessor" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Sip\Stack\ISipResponseProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

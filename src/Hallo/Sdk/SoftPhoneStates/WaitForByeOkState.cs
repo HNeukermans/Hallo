@@ -31,7 +31,7 @@ namespace Hallo.Sdk.SoftPhoneStates
             Check.Require(softPhone.PendingInvite, "softPhone.PendingInvite");
             Check.Require(softPhone.PendingInvite.Dialog, "softPhone.PendingInvite.Dialog");
             
-            softPhone.PendingCall.ChangeState(CallState.Completed);
+            softPhone.PendingCall.RaiseCallStateChanged(CallState.Completed);
 
             if (_logger.IsInfoEnabled) _logger.Info("CallState changed to 'Completed'.");
 

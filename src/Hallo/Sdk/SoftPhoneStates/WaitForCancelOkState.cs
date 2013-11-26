@@ -84,7 +84,7 @@ namespace Hallo.Sdk.SoftPhoneStates
             {
                  if (_logger.IsDebugEnabled) _logger.Debug("Changing CallState to 'Cancelled'");
 
-                softPhone.PendingCall.ChangeState(CallState.Cancelled);
+                softPhone.PendingCall.RaiseCallStateChanged(CallState.Cancelled);
 
                 /*go to idle*/
                 if (_logger.IsDebugEnabled) _logger.Debug("Both 'CANCEL' & 'INVITE' Tx have received a final response. Transitioning to Idle...");

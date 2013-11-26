@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Hallo.Sip.SipListeningPoint" Collapsed="true">
+    <Position X="14.25" Y="6" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sip\Stack\SipListeningPoint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hallo.Sip.SipStack">
+    <Position X="14.25" Y="0.5" Width="3.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Hallo.Sip.SipStack.SipStackState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sip\Stack\SipStack.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ABiA4ACAACGACEAIAoAACAAEMCQEAAAAIAAASAAgCQA=</HashCode>
+      <FileName>Sip\Stack\SipStack.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Dialogs.SipInviteClientDialog">
+    <Position X="5.25" Y="5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAgAQAAIAAABgAAAAAACAIAACAACgAEAEBAAAAAA=</HashCode>
+      <FileName>Sip\Stack\Dialogs\SipInviteClientDialog.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Dialogs.SipInviteServerDialog">
+    <Position X="1.75" Y="5" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAQgAQAAIAAIAwAEAAAACAJAACAAAgAAAEAAAAAAA=</HashCode>
+      <FileName>Sip\Stack\Dialogs\SipInviteServerDialog.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Transactions.SipAbstractServerTransaction" Collapsed="true">
+    <Position X="0.75" Y="3.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQBABICCCQwwgQBAAAAiAIAAAkAAAAQEAEAIAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\SipAbstractServerTransaction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Transactions.SipAbstractClientTransaction" Collapsed="true">
+    <Position X="6.25" Y="3.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAABACACQgggQAAAAAiAKAAAkAAAAQECEgIAAAA=</HashCode>
+      <FileName>Sip\Stack\Transactions\SipAbstractClientTransaction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hallo.Sip.Stack.Dialogs.SipAbstractDialog" Collapsed="true">
+    <Position X="4" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAQAABNhOCCAkgERAgCADAICAEQQAoAAAFDkKIIAA=</HashCode>
+      <FileName>Sip\Stack\Dialogs\SipAbstractDialog.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hallo.Sip.SipContextSource">
+    <Position X="10.75" Y="4.75" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AQgAQAEQQCIACMAAAJABAAAYoAAACIAAIBBAQAACAIA=</HashCode>
+      <FileName>Sip\SipContextSource.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Hallo.Sip.ISipProvider">
+    <Position X="10.75" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QBFAAAgAACAgAEAAgAAAAAAAEAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Sip\Stack\ISipProvider.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SipListener" />
+    </ShowAsAssociation>
+  </Interface>
+  <Interface Name="Hallo.Sip.Stack.ISipListener">
+    <Position X="5.75" Y="1.75" Width="1.5" />
+    <InheritanceLine Type="Hallo.Sip.Stack.ISipRequestProcessor" ManuallyRouted="true">
+      <Path>
+        <Point X="3.75" Y="1.062" />
+        <Point X="3.75" Y="1.375" />
+        <Point X="6.5" Y="1.375" />
+        <Point X="6.5" Y="1.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sip\Stack\ISipListener.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Hallo.Sip.Stack.ISipRequestProcessor" Collapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sip\Stack\ISipRequestProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Hallo.Sip.Stack.ISipResponseProcessor" Collapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Sip\Stack\ISipResponseProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

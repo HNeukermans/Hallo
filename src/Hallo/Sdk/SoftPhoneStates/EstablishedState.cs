@@ -22,7 +22,7 @@ namespace Hallo.Sdk.SoftPhoneStates
             Check.Require(softPhone, "softPhone");
             Check.Require(softPhone.PendingCall, "softPhone.PendingCall");
 
-            softPhone.PendingCall.ChangeState(CallState.InCall);
+            softPhone.PendingCall.RaiseCallStateChanged(CallState.InCall);
         }
 
         public void ProcessRequest(IInternalSoftPhone softPhone, Sip.Stack.SipRequestEvent requestEvent)
@@ -66,7 +66,7 @@ namespace Hallo.Sdk.SoftPhoneStates
 
             softPhone.PendingInvite.Dialog.Terminate();
 
-            softPhone.PendingCall.ChangeState(CallState.Completed);
+            softPhone.PendingCall.RaiseCallStateChanged(CallState.Completed);
 
             if (_logger.IsDebugEnabled) _logger.Debug("OK Send.");
 
