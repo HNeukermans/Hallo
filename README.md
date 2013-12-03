@@ -1,5 +1,5 @@
 Hallo
 =====
 
-My personal SIP C# protocol stack. 
+Bonjour, is French for 'Hallo', which is Flemish for 'Hello'... but allow me to continue in C#.
 
