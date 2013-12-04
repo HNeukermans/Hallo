@@ -1,7 +1,7 @@
 Hallo
 =====
 
-'Hallo' is nothing more then just another SIP stack, only this time, it's mine.
+just another SIP stack, in my language of c#oice.
 
-If you are curious, go to my wiki 'Home' page.
+Move on to the wiki 'Home' page.
 
