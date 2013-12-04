@@ -5,11 +5,11 @@ namespace Hallo.Sip
         /// <summary>
         /// sends a response to the underlying transport
         /// </summary>
-        new void SendResponse(SipResponse response);
+        void SendResponse(SipResponse response);
 
         /// <summary>
         /// sends a request to the underlying transport
         /// </summary>
-        new void SendRequest(SipRequest request);
+        void SendRequest(SipRequest request);
     }
 }

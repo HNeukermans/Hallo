@@ -32,17 +32,17 @@ namespace Hallo.Server
             _stack.MinWorkerThreads = _configuration.MinThreadPoolSize;
             _stack.EnableThreadPoolPerformanceCounters = _configuration.EnableThreadPoolPerformanceCounters;
              var listeningPoint = _stack.CreateUdpListeningPoint(_ipEndPoint);
-            _provider = _stack.CreateSipProvider(listeningPoint);
+            _provider = (SipProvider)_stack.CreateSipProvider(listeningPoint);
             _listener = new SipServerListener();
             _registrar = InitializeRegistrar();
             _listener.AddRequestHandler(_registrar);
             _provider.AddSipListener(_listener);
-            _stack.Start();
+            //_stack.Start();
         }
 
         public void Stop()
         {
-            _stack.Stop();
+            //_stack.Stop();
         }
 
         /// <summary>

@@ -10,13 +10,6 @@ namespace Hallo.Sip
 {
     public interface ISipProvider : ISipMessageSender
     {
-        /// <summary>
-        /// the listener that gets notified when new messages are received by the tranports
-        /// </summary>
-        ISipListener SipListener { get; }
-
-        SipListeningPoint ListeningPoint { get; }
-        
         ISipServerTransaction CreateServerTransaction(SipRequest request);
         
         SipInviteServerDialog CreateServerDialog(ISipServerTransaction transaction);

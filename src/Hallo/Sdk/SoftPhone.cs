@@ -13,6 +13,8 @@ namespace Hallo.Sdk
 {
     internal class SoftPhone : IInternalSoftPhone, ISipListener, IExceptionHandler
     {
+        public SipListeningPoint ListeningPoint { get; private set; }
+        
         private static readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private ISipProvider _provider = null;
@@ -39,8 +41,9 @@ namespace Hallo.Sdk
         public bool IsRunning { get { return _isRunning; } }
 
         internal SoftPhone(ISipProvider provider, SipMessageFactory messageFactory, SipHeaderFactory headerFactory,
-            SipAddressFactory addressFactory, ISoftPhoneStateProvider stateProvider, ITimerFactory timerFactory)
+            SipAddressFactory addressFactory, ISoftPhoneStateProvider stateProvider, ITimerFactory timerFactory, SipListeningPoint listeningPoint)
         {
+            ListeningPoint = listeningPoint;
             _provider = provider;
             _messageFactory = messageFactory;
             _headerFactory = headerFactory;
@@ -424,7 +427,7 @@ namespace Hallo.Sdk
 
             if (_logger.IsInfoEnabled) _logger.Info("Starting new phonecall...");
             if (_logger.IsDebugEnabled) _logger.Debug("Creating 'INVITE' request...");
-            var thisUri = AddressFactory.CreateUri(string.Empty, SipProvider.ListeningPoint.ToString());
+            var thisUri = AddressFactory.CreateUri(string.Empty, ListeningPoint.ToString());
 
             var requestUri = phoneCall.GetToUri();
             var toAddress = AddressFactory.CreateAddress(string.Empty, phoneCall.GetToUri());
@@ -433,8 +436,8 @@ namespace Hallo.Sdk
             var fromHeader = HeaderFactory.CreateFromHeader(fromAddress, SipUtil.CreateTag());
             var cseqHeader = HeaderFactory.CreateSCeqHeader(SipMethods.Invite, MessageCounter++);
             var callIdheader = HeaderFactory.CreateCallIdHeader(SipUtil.CreateCallId());
-            var viaHeader = HeaderFactory.CreateViaHeader(SipProvider.ListeningPoint.Address,
-                                                          SipProvider.ListeningPoint.Port, SipConstants.Udp,
+            var viaHeader = HeaderFactory.CreateViaHeader(ListeningPoint.Address,
+                                                          ListeningPoint.Port, SipConstants.Udp,
                                                           SipUtil.CreateBranch());
             var maxForwardsHeader = HeaderFactory.CreateMaxForwardsHeader(1);
             var request = MessageFactory.CreateRequest(

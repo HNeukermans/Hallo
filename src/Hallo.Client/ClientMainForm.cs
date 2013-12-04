@@ -73,11 +73,11 @@ namespace Hallo.Client
                 SipStack.OutBoundProxy = outboundProxy;
                 SipStack.EnableThreadPoolPerformanceCounters = Configuration.EnableThreadPoolPerformanceCounters;
                 //SipStack.IsStateFull = Configuration.IsStateFull;
-                SipProvider = SipStack.CreateSipProvider(listeningPoint);
+                SipProvider = (SipProvider)SipStack.CreateSipProvider(listeningPoint);
                 MainSipListener = new SipPipeLineListener(this);
                 SipProvider.AddSipListener(MainSipListener);
                 SipProvider.AddExceptionHandler(this);
-                SipStack.Start();
+                SipProvider.Start();
 
 
                 HeaderFactory = SipStack.CreateHeaderFactory();
@@ -93,7 +93,7 @@ namespace Hallo.Client
             }
             else
             {
-                SipStack.Stop();
+                SipProvider.Stop();
             }
 
             _isStarted = !_isStarted;

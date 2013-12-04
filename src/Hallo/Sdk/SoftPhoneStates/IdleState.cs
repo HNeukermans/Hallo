@@ -45,7 +45,7 @@ namespace Hallo.Sdk.SoftPhoneStates
 
             var ringingResponse = requestEvent.Request.CreateResponse(SipResponseCodes.x180_Ringing);
             ringingResponse.To.Tag = SipUtil.CreateTag();
-            var contactUri = softPhone.AddressFactory.CreateUri("", softPhone.SipProvider.ListeningPoint.ToString());
+            var contactUri = softPhone.AddressFactory.CreateUri("", softPhone.ListeningPoint.ToString());
             ringingResponse.Contacts.Add(softPhone.HeaderFactory.CreateContactHeader(contactUri));
 
             if (_logger.IsDebugEnabled) _logger.Debug("Sending response ... ");

@@ -100,6 +100,8 @@ namespace Hallo.Sip
         
         public void Start()
         {
+            var pool = _stack.CreateThreadPool();
+
             _logger.Trace("Starting SipProvider...");
 
             if (!_isRunning)

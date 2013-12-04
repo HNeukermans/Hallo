@@ -18,7 +18,7 @@ namespace Hallo.Sdk
             var sipStack = new SipStack();
             var sipListeningPoint = sipStack.CreateUdpListeningPoint(listeningPoint);
             var provider = sipStack.CreateSipProvider(sipListeningPoint);
-            return new SoftPhone(provider, sipStack.CreateMessageFactory(), sipStack.CreateHeaderFactory(), sipStack.CreateAddressFactory(), new SoftPhoneStateProvider(), new TimerFactory());
+            return new SoftPhone(provider, sipStack.CreateMessageFactory(), sipStack.CreateHeaderFactory(), sipStack.CreateAddressFactory(), new SoftPhoneStateProvider(), new TimerFactory(), sipListeningPoint);
         }
     }
 }

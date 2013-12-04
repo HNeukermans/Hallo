@@ -233,6 +233,7 @@ namespace Hallo.Sip
         public void Stop()
         {
             _isRunning = false;
+            _threadPool.Shutdown();
             _thread.Join();
             _socket.Close();
         }

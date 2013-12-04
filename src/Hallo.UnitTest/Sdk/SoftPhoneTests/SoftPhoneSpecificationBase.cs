@@ -107,7 +107,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
             _network = new FakeNetwork();
             _sipProvider1 = new SipProvider(new SipStack(), phoneCs);
 
-            _phone = new SoftPhone(_sipProvider1, new SipMessageFactory(), new SipHeaderFactory(), new SipAddressFactory(), _stateProvider, _timerFactory);
+            _phone = new SoftPhone(_sipProvider1, new SipMessageFactory(), new SipHeaderFactory(), new SipAddressFactory(), _stateProvider, _timerFactory, new SipListeningPoint(_phoneUaEndPoint));
             phoneCs.AddToNetwork(_network);
             _network.AddReceiver(_testClientUaEndPoint, OnTestClientUaReceive);
             _phone.InternalStateChanged += new EventHandler<EventArgs>(_calleePhone_InternalStateChanged);     
@@ -232,7 +232,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             var ringing = receivedInvite.CreateResponse(SipResponseCodes.x180_Ringing);
             ringing.To.Tag = toTag;
-            var contactUri = _phone.AddressFactory.CreateUri("", _phone.SipProvider.ListeningPoint.ToString());
+            var contactUri = _phone.AddressFactory.CreateUri("", _phoneUaEndPoint.ToString());
             ringing.Contacts.Add(_phone.HeaderFactory.CreateContactHeader(contactUri));
             
             return ringing;
@@ -245,7 +245,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             var r = receivedInvite.CreateResponse(SipResponseCodes.x200_Ok);
             r.To.Tag = toTag;
-            var contactUri = _phone.AddressFactory.CreateUri("", _phone.SipProvider.ListeningPoint.ToString());
+            var contactUri = _phone.AddressFactory.CreateUri("", _phoneUaEndPoint.ToString());
             r.Contacts.Add(_phone.HeaderFactory.CreateContactHeader(contactUri));
 
             return r;
@@ -255,7 +255,7 @@ namespace Hallo.UnitTest.Sdk.SoftPhoneTests
         {
             var r = receivedInvite.CreateResponse(responseCode);
             r.To.Tag = toTag;
-            var contactUri = _phone.AddressFactory.CreateUri("", _phone.SipProvider.ListeningPoint.ToString());
+            var contactUri = _phone.AddressFactory.CreateUri("", _phoneUaEndPoint.ToString());
             r.Contacts.Add(_phone.HeaderFactory.CreateContactHeader(contactUri));
 
             return r;

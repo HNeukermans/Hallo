@@ -26,5 +26,6 @@ namespace Hallo.Sdk
         void SendCancel();
         SoftPhoneState CurrentState { get; }
         bool IsRunning { get; }
+        SipListeningPoint ListeningPoint { get;  }
     }
 }

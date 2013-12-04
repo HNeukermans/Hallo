@@ -12,15 +12,8 @@
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
-    <NestedTypes>
-      <Enum Name="Hallo.Sip.SipStack.SipStackState" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Sip\Stack\SipStack.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>ABiA4ACAACGACEAIAoAACAAEMCQEAAAAIAAASAAgCQA=</HashCode>
+      <HashCode>ABiA4ACAAACACAAIAoAAAAAEMCQEAAAAAAAASAAgCQA=</HashCode>
       <FileName>Sip\Stack\SipStack.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -81,23 +74,12 @@
   <Interface Name="Hallo.Sip.ISipProvider">
     <Position X="10.75" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>QBFAAAgAACAgAEAAgAAAAAAAEAAAAAAAIAAAAAAAAAA=</HashCode>
+      <HashCode>QBFAAAgAACAAAAAAgAAAAAAAEAAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>Sip\Stack\ISipProvider.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="SipListener" />
-    </ShowAsAssociation>
   </Interface>
   <Interface Name="Hallo.Sip.Stack.ISipListener">
     <Position X="5.75" Y="1.75" Width="1.5" />
-    <InheritanceLine Type="Hallo.Sip.Stack.ISipRequestProcessor" ManuallyRouted="true">
-      <Path>
-        <Point X="3.75" Y="1.062" />
-        <Point X="3.75" Y="1.375" />
-        <Point X="6.5" Y="1.375" />
-        <Point X="6.5" Y="1.75" />
-      </Path>
-    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Sip\Stack\ISipListener.cs</FileName>
