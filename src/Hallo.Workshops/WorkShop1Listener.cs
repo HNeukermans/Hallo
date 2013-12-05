@@ -3,7 +3,7 @@ using Hallo.Sip.Stack;
 
 namespace Hallo.Workshops
 {
-    public class SipListener : ISipListener
+    public class WorkShop1Listener : ISipListener
     {
 
         public void ProcessTimeOut(SipTimeOutEvent timeOutEvent)

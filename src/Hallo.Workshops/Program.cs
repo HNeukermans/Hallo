@@ -12,14 +12,26 @@ namespace Hallo.Workshops
     {
         static void Main(string[] args)
         {
-            WorkShop1 ws1 = new WorkShop1();
-            ws1.Setup();
-            ws1.Start();
+            int input = 1;
+            while(input > 0)
+            {
+                Console.WriteLine("Which workshop would you like to start?");
+                Console.WriteLine("Press a number, Q to quit <ENTER>");
+                var line = Console.ReadLine();
+           
+                if(!int.TryParse(line, out input)) break;
 
-            Console.WriteLine("Waiting...");
-            Console.ReadLine();
+                string workShopName = string.Format("Hallo.Workshops.WorkShop{0}", input);
+                var workShopType = Type.GetType(workShopName);
+                var workShop = (WorkShopBase) Activator.CreateInstance(workShopType);
 
-            ws1.Stop();
+                workShop.Setup();
+                workShop.Start();
+                Console.WriteLine("Waiting...");
+                Console.ReadLine();
+                workShop.Stop();
+                Console.WriteLine("Press <ENTER>");
+            }
         }
 
         

@@ -46,8 +46,11 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkShop2.cs" />
+    <Compile Include="WorkShop2Listener.cs" />
     <Compile Include="WorkShop1.cs" />
-    <Compile Include="SipListener.cs" />
+    <Compile Include="WorkShop1Listener.cs" />
+    <Compile Include="WorkShopBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hallo\Hallo.csproj">
