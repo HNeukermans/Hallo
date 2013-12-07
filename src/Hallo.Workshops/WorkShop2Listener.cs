@@ -34,7 +34,6 @@ namespace Hallo.Workshops
         public void ProcessResponse(SipResponseEvent responseEvent)
         {
             Console.WriteLine("Received '{0}' response, from '{1}' request", responseEvent.Response.StatusLine.ResponseCode, responseEvent.Response.CSeq.Command);
-            
         }
     }
 }

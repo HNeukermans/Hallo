@@ -50,6 +50,8 @@
     <Compile Include="WorkShop2Listener.cs" />
     <Compile Include="WorkShop1.cs" />
     <Compile Include="WorkShop1Listener.cs" />
+    <Compile Include="WorkShop21.cs" />
+    <Compile Include="WorkShop21Listener.cs" />
     <Compile Include="WorkShopBase.cs" />
   </ItemGroup>
   <ItemGroup>
