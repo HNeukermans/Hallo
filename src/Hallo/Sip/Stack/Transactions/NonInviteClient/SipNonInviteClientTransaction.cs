@@ -53,6 +53,8 @@ namespace Hallo.Sip.Stack.Transactions.NonInviteClient
             if (State == CompletedState) return;
 
             Dispose();
+
+            _listener.ProcessTimeOut(new SipClientTxTimeOutEvent() { Request = Request, ClientTransaction = this });
         }
 
         private void OnCompletedEnded()

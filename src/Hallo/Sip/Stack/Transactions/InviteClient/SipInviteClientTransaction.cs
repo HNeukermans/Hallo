@@ -60,7 +60,9 @@ namespace Hallo.Sip.Stack.Transactions.InviteClient
 
         private void OnTimeOut()
         {
-            //ChangeState(SipInviteClientTransaction.TerminatedState);
+            /* ignore timeouts in the completed state. These can potentially happen when
+            * timercallbacks, queued by the threadpool, are invoked (with a certain delay !!)*/
+            if (State == CompletedState) return;
 
             Dispose();
 
