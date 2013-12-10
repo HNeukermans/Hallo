@@ -34,6 +34,7 @@ namespace Hallo.Sip
         private IObserver<SipMessage> _requestReceivedObserver;
         private IObserver<SipMessage> _responseReceivedObserver;
         private IExceptionHandler _exceptionHandler;
+        private IObservable<Timestamped<SipTransactionStateInfo>> _txObserver;
 
         #region props
 
@@ -122,6 +123,7 @@ namespace Hallo.Sip
             if (_requestReceivedObserver != null) _requestReceivedObserver.OnCompleted();
             if (_responseSentObserver != null) _responseSentObserver.OnCompleted();
             if (_responseReceivedObserver != null) _responseReceivedObserver.OnCompleted();
+            //if (_txObserver != null) _txObserver.Finally();
         }
         
         #region send methods
@@ -625,7 +627,7 @@ namespace Hallo.Sip
 
                     //set the dialog, so it can initiate
                     SipAbstractDialog found;
-                    if(TryGetDialogOnTx((SipInviteServerTransaction)stx, context.Request, out found))
+                    if(TryGetDialogOnTx(context.Request, out found))
                     {
                         requestEvent.Dialog = found;
                     }
@@ -718,7 +720,7 @@ namespace Hallo.Sip
 
         #endregion
         
-        private bool TryGetDialogOnTx(SipInviteServerTransaction stx, SipRequest request, out SipAbstractDialog dialog)
+        private bool TryGetDialogOnTx(SipRequest request, out SipAbstractDialog dialog)
         {
             dialog = null;
 
@@ -734,7 +736,6 @@ namespace Hallo.Sip
             if (_dialogTable.TryGetValue(GetDialogId(request, true), out inTableDialog))
             {
                 if (_logger.IsDebugEnabled) _logger.Debug("Found a matching dialog. Setting it on tx.");
-                //stx.SetDialog((SipInviteServerDialog)inTableDialog);
                 dialog = inTableDialog;
                 return true;
             }

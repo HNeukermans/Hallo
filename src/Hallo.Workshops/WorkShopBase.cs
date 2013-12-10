@@ -75,7 +75,7 @@ namespace Hallo.Workshops
             return request;
         }
 
-        public void Stop()
+        public virtual void Stop()
         {
             _senderProvider.Stop();
             _receiverProvider.Stop();

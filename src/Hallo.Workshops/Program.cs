@@ -27,7 +27,6 @@ namespace Hallo.Workshops
 
                 workShop.Setup();
                 workShop.Start();
-                Console.WriteLine("Waiting...");
                 Console.ReadLine();
                 workShop.Stop();
                 Console.WriteLine("Press <ENTER>");

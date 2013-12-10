@@ -2,10 +2,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Reactive;
 using System.Reactive.Disposables;
-using Hallo.Sip.Stack.Transactions;
 using System.Reactive.Linq;
 
-namespace Hallo.Sip
+namespace Hallo.Sip.Stack.Transactions
 {
     public class SipClientTransactionTable : ConcurrentDictionary<string, SipAbstractClientTransaction>
     {
