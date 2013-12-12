@@ -1,3 +1,5 @@
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/bb883a6f3400af1697d97d5a0f320a59 "githalytics.com")](http://githalytics.com/Gittermans/Hallo)
+
 Hallo
 =====
 
