@@ -9,3 +9,7 @@ just another SIP stack, in my language of C#oice.
 
 Move on to the [workshops](https://github.com/Gittermans/Hallo/wiki) to get you started.
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Gittermans/hallo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
