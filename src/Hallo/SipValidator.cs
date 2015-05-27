@@ -20,6 +20,8 @@ namespace Hallo
 
         public ValidateMessageResult ValidateMessage(SipMessage message)
         {
+
+            //testing commit
             if(message is SipRequest)
             {
                 var request = message as SipRequest;
