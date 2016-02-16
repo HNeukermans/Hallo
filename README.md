@@ -3,7 +3,7 @@
 Hallo
 =====
 
-A SIP stack, in my language of C#oice.
+A SIP stack, in my language of Ch#ice.
 
 ## Getting started
 
